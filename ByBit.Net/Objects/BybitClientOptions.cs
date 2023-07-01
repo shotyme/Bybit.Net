@@ -19,12 +19,12 @@ namespace Bybit.Net.Objects
         /// <summary>
         /// A referer, will be sent in the x-referer header
         /// </summary>
-        public string? Referer { get; set; } = "JKorf";
+        public string? Referer { get; set; } = "tvhub";
 
         /// <summary>
         /// The default receive window for requests
         /// </summary>
-        public TimeSpan ReceiveWindow { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan ReceiveWindow { get; set; } = TimeSpan.FromSeconds(25);
 
         private RestApiClientOptions _inverseFuturesApiOptions = new RestApiClientOptions(BybitApiAddresses.Default.InverseFuturesRestClientAddress);
         /// <summary>
