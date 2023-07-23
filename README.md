@@ -17,9 +17,8 @@ Sign up using the following referral link to pay a small percentage of the tradi
 ### Donate
 Make a one time donation in a crypto currency of your choice. If you prefer to donate a currency not listed here please contact me.
 
-**Btc**:  12KwZk3r2Y3JZ2uMULcjqqBvXmpDwjhhQS  
-**Eth**:  0x069176ca1a4b1d6e0b7901a6bc0dbf3bb0bf5cc2  
-**Nano**: xrb_1ocs3hbp561ef76eoctjwg85w5ugr8wgimkj8mfhoyqbx4s1pbc74zggw7gs  
+**Btc**:  bc1qz0jv0my7fc60rxeupr23e75x95qmlq6489n8gh  
+**Eth**:  0x8E21C4d955975cB645589745ac0c46ECA8FAE504  
 
 ### Sponsor
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
@@ -28,6 +27,35 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 3.0.2 - 23 Jul 2023
+    * Fixed AveragePrice not set on V5 position update
+    * Fixed multiple decimal field nullability
+    * Fixed V5 spot symbol MarginTrading incorrect property name
+    * Added missing tpslMode on V5 PlaceOrder
+    * Fixed typo in Deactivated V5 order status mapping
+    * Fixed incorrect filter types in V5 LinearInverse symbol model
+
+* Version 3.0.1 - 11 Jul 2023
+    * Fixed invalid V5 GetOrderHistory endpoint check
+    * Fixed bool parameters V5 PlaceOrder
+    * Removed Liquidation stream from V5 SpotApi
+
+* Version 3.0.0 - 25 Jun 2023
+    * Updated CryptoExchange.Net to version 6.0.0
+    * Renamed BybitClient to BybitRestClient
+    * Renamed **Streams to **Api on the BybitSocketClient
+    * Updated endpoints to consistently use a base url without any path as basis to make switching environments/base urls clearer
+    * Added IBybitOrderBookFactory and implementation for creating order books
+    * Updated dependency injection register method (AddBybit)
+    * Updated V5 socket API kline update topic to include the interval
+    * Added CopyTrading SetTradingStopAsync endpoint
+    * Fixed V5 GetMarginAccountInfoAsync endpoint
+
+* Version 2.0.5 - 19 Jun 2023
+    * Fixed V5 GetLinearInverseTickersAsync response model nullability
+    * Added missing parameters V5 SetTradingStopAsync
+    * Fixed incorrect V5 GetOrderAsync check
+
 * Version 2.0.4 - 02 Jun 2023
     * Fixed deserialization error on V5 Inverse ticker model
     * Fixed V5 GetOrder incorrect validation check

@@ -42,7 +42,7 @@ var orderData = await bybitClient.SpotApi.Trading.PlaceOrderAsync(
                 0.001m,
                 50000,
                 timeInForce: TimeInForce.GoodTillCanceled);
-													
+                                                    
 // Placing a buy market order, spending 50 USDT. When placing a Buy Market order the quantity is quote asset. Any other time it's in base asset.
 var orderData = await bybitClient.SpotApi.Trading.PlaceOrderAsync(
                 "BTCUSDT",
@@ -76,27 +76,27 @@ var userTradesResult = await bybitClient.SpotApi.Trading.GetUserTradesAsync();
 
 ### Subscribing to market data updates
 ```csharp
-var subscribeResult = await bybitSocketClient.SpotStreams.SubscribeToTickerUpdatesAsync("BTCUSDT", data =>
+var subscribeResult = await bybitSocketClient.SpotApi.SubscribeToTickerUpdatesAsync("BTCUSDT", data =>
 {
-	// Handle ticker data
+    // Handle ticker data
 });
 ```
 
 ### Subscribing to order updates
 ```csharp
-await bybitSocketClient.SpotStreams.SubscribeToAccountUpdatesAsync(
-	accountUpdate =>
-	{
-		// Handle balance or permissions update
-	},
-	orderUpdate =>
-	{
-		// Handle order update
-	},
-	tradeUpdate =>
-	{
-		// Handle trade update
-	});
+await bybitSocketClient.SpotApi.SubscribeToAccountUpdatesAsync(
+    accountUpdate =>
+    {
+        // Handle balance or permissions update
+    },
+    orderUpdate =>
+    {
+        // Handle order update
+    },
+    tradeUpdate =>
+    {
+        // Handle trade update
+    });
 ```
 
 </BlockQuote>
@@ -168,11 +168,11 @@ var userTradesResult = await bybitClient.UsdPerpetualApi.Trading.GetUserTradesAs
 
 ### Subscribing to position updates
 ```csharp
-await bybitSocketClient.UsdPerpetualStreams.SubscribeToPositionUpdatesAsync(
-	data =>
-	{
-		// Handle position update
-	});
+await bybitSocketClient.UsdPerpetualApi.SubscribeToPositionUpdatesAsync(
+    data =>
+    {
+        // Handle position update
+    });
 ```
 
 </BlockQuote>
@@ -309,11 +309,11 @@ var userTradesResult = await bybitClient.InversePerpetualApi.Trading.GetUserTrad
 
 ### Subscribing to position updates
 ```csharp
-await bybitSocketClient.InversePerpetualStreams.SubscribeToPositionUpdatesAsync(
-	data =>
-	{
-		// Handle position update
-	});
+await bybitSocketClient.InversePerpetualApi.SubscribeToPositionUpdatesAsync(
+    data =>
+    {
+        // Handle position update
+    });
 ```
 
 </BlockQuote>
