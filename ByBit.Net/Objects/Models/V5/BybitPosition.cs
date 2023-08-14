@@ -33,7 +33,7 @@ namespace Bybit.Net.Objects.Models.V5
         /// Position side
         /// </summary>
         [JsonConverter(typeof(EnumConverter))]
-        public PositionSide Side { get; set; }
+        public PositionSide? Side { get; set; }
         /// <summary>
         /// Position size
         /// </summary>
@@ -43,10 +43,10 @@ namespace Bybit.Net.Objects.Models.V5
         /// Average entry price
         /// </summary>
         [JsonProperty("avgPrice")]
-        public decimal AveragePrice { get; set; }
+        public decimal? AveragePrice { get; set; }
 
         [JsonProperty("entryPrice")]
-        private decimal EntryPrice
+        private decimal? EntryPrice
         {
             get => AveragePrice;
             set => AveragePrice = value;

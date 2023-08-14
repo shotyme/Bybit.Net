@@ -27,6 +27,20 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 3.0.5 - 05 Aug 2023
+    * Fixed default values V5 PlaceOrder parameters
+
+* Version 3.0.4 - 02 Aug 2023
+    * Removed incorrect checks for order id parameters in V5 trading endpoints
+    * Added Start/Endtime to V5 order history
+    * Added SL/TP parameters to V5 PlaceOrder endpoint
+    * Added SL/TP parameters to contract PlaceOrder endpoint
+    * Fixed nullability of position models
+
+* Version 3.0.3 - 25 Jul 2023
+    * Added missing MarginMode enum value
+    * Fix for position V5 deserialization
+
 * Version 3.0.2 - 23 Jul 2023
     * Fixed AveragePrice not set on V5 position update
     * Fixed multiple decimal field nullability
