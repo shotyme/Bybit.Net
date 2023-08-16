@@ -81,6 +81,11 @@ namespace Bybit.Net.Objects.Models.V5
         /// Leverage
         /// </summary>
         public BybitLinearInverseLeveragefilter? LeverageFilter { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     /// <summary>
