@@ -173,7 +173,7 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async Task<WebCallResult<BybitResponse<BybitLinearInverseSymbol>>> GetLinearInverseSymbolsAsync(Category category, string? symbol = null, string? baseAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default)
         {
-            if (category != Category.Linear && category != Category.Inverse)
+            if (category != Category.Linear && category != Category.Inverse && category != Category.Spot)
                 throw new ArgumentException("Invalid category; should be Linear or Inverse");
 
             var parameters = new Dictionary<string, object>()
