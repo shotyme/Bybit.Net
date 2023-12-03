@@ -209,9 +209,39 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="closeOnTrigger">Close on trigger</param>
         /// <param name="marketMakerProtection">Market maker protection</param>
         /// <param name="stopLossTakeProfitMode">StopLoss / TakeProfit mode</param>
+        /// <param name="selfMatchPreventionType">Self match prevention type</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitOrderId>> PlaceOrderAsync(Category category, string symbol, OrderSide side, NewOrderType type, decimal quantity, decimal? price = null, bool? isLeverage = null, TriggerDirection? triggerDirection = null, OrderFilter? orderFilter = null, decimal? triggerPrice = null, TriggerType? triggerBy = null, decimal? orderIv = null, TimeInForce? timeInForce = null, PositionIdx? positionIdx = null, string? clientOrderId = null, OrderType? takeProfitOrderType = null, decimal? takeProfit = null, decimal? takeProfitLimitPrice = null, OrderType? stopLossOrderType = null, decimal? stopLoss = null, decimal? stopLossLimitPrice = null, TriggerType? takeProfitTriggerBy = null, TriggerType? stopLossTriggerBy = null, bool? reduceOnly = null, bool? closeOnTrigger = null, bool? marketMakerProtection = null, StopLossTakeProfitMode? stopLossTakeProfitMode = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitOrderId>> PlaceOrderAsync(
+            Category category, 
+            string symbol, 
+            OrderSide side,
+            NewOrderType type,
+            decimal quantity,
+            decimal? price = null,
+            bool? isLeverage = null,
+            TriggerDirection? triggerDirection = null,
+            OrderFilter? orderFilter = null,
+            decimal? triggerPrice = null,
+            TriggerType? triggerBy = null,
+            decimal? orderIv = null,
+            TimeInForce? timeInForce = null,
+            PositionIdx? positionIdx = null,
+            string? clientOrderId = null,
+            OrderType? takeProfitOrderType = null,
+            decimal? takeProfit = null,
+            decimal? takeProfitLimitPrice = null,
+            OrderType? stopLossOrderType = null,
+            decimal? stopLoss = null,
+            decimal? stopLossLimitPrice = null,
+            TriggerType? takeProfitTriggerBy = null,
+            TriggerType? stopLossTriggerBy = null,
+            bool? reduceOnly = null,
+            bool? closeOnTrigger = null,
+            bool? marketMakerProtection = null,
+            StopLossTakeProfitMode? stopLossTakeProfitMode = null,
+            SelfMatchPreventionType? selfMatchPreventionType = null,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Set cancel all timeout on websocket disconnect
@@ -278,12 +308,12 @@ namespace Bybit.Net.Interfaces.Clients.V5
         Task<WebCallResult<BybitResponse<BybitClosedPnl>>> GetClosedProfitLossAsync(Category category, string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
-        /// 
-        /// <para><a href="" /></para>
+        /// Place multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-place" /></para>
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="orderRequests"></param>
-        /// <param name="ct"></param>
+        /// <param name="category">The category</param>
+        /// <param name="orderRequests">Request data</param>
+        /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<IEnumerable<BybitBatchResult<BybitBatchOrderId>>>> PlaceMultipleOrdersAsync(
             Category category,
@@ -291,12 +321,12 @@ namespace Bybit.Net.Interfaces.Clients.V5
             CancellationToken ct = default);
 
         /// <summary>
-        /// 
-        /// <para><a href="" /></para>
+        /// Cancel multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-cancel" /></para>
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="orderRequests"></param>
-        /// <param name="ct"></param>
+        /// <param name="category">The category</param>
+        /// <param name="orderRequests">Request data</param>
+        /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<IEnumerable<BybitBatchResult<BybitBatchOrderId>>>> CancelMultipleOrdersAsync(
             Category category,
@@ -304,16 +334,53 @@ namespace Bybit.Net.Interfaces.Clients.V5
             CancellationToken ct = default);
 
         /// <summary>
-        /// 
-        /// <para><a href="" /></para>
+        /// Edit multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-amend" /></para>
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="orderRequests"></param>
-        /// <param name="ct"></param>
+        /// <param name="category">The category</param>
+        /// <param name="orderRequests">Request data</param>
+        /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<IEnumerable<BybitBatchResult<BybitBatchOrderId>>>> EditMultipleOrdersAsync(
             Category category,
             IEnumerable<BybitEditOrderRequest> orderRequests,
             CancellationToken ct = default);
+
+        /// <summary>
+        /// Purchase a leverage token
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/lt/purchase" /></para>
+        /// </summary>
+        /// <param name="token">Token id</param>
+        /// <param name="quantity">Quantity</param>
+        /// <param name="clientOrderId">Custom order id</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BybitLeverageTokenRecord>> PurchaseLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Redeem a leverage token
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/lt/redeem" /></para>
+        /// </summary>
+        /// <param name="token">Token id</param>
+        /// <param name="quantity">Quantity</param>
+        /// <param name="clientOrderId">Custom order id</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BybitLeverageTokenRecord>> RedeemLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get leverage token order history
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/lt/order-record" /></para>
+        /// </summary>
+        /// <param name="token">Filter by token</param>
+        /// <param name="orderId">Filter by order id</param>
+        /// <param name="clientOrderId">Filter by client order id</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="type">Filter by type or record</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BybitLeverageTokenHistory>>> GetLeverageTokenOrderHistoryAsync(string? token = null, string? orderId = null, string? clientOrderId = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, LeverageTokenRecordType? type = null, CancellationToken ct = default);
     }
 }

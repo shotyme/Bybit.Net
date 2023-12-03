@@ -1,5 +1,5 @@
 # Bybit.Net
-[![.NET](https://github.com/JKorf/Bybit.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bybit.Net/actions/workflows/dotnet.yml) []![Nuget version](https://img.shields.io/nuget/v/Bybit.net.svg)(https://www.nuget.org/packages/Bybit.Net)  [![Nuget downloads](https://img.shields.io/nuget/dt/Bybit.Net.svg)](https://www.nuget.org/packages/Bybit.Net)
+[![.NET](https://github.com/JKorf/Bybit.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bybit.Net/actions/workflows/dotnet.yml) [![Nuget version](https://img.shields.io/nuget/v/Bybit.net.svg)](https://www.nuget.org/packages/Bybit.Net)  [![Nuget downloads](https://img.shields.io/nuget/dt/Bybit.Net.svg)](https://www.nuget.org/packages/Bybit.Net)
  
 Bybit.Net is a wrapper around the Bybit API as described on [Bybit](https://bybit-exchange.github.io/docs/spot/#t-introduction), including all features the API provides using clear and readable objects, both for the REST  as the websocket API's.
 
@@ -30,6 +30,40 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 3.2.4 - 02 Dec 2023
+    * Added missing SelfMatchPreventType parameter to V5.Trading.PlaceOrderAsync
+    * Fixed deserialization issue in V5 UserTrade subscription
+
+* Version 3.2.3 - 28 Nov 2023
+    * Added missing FeeAsset property order updates
+    * Fixed UnifiedMarginStatus deserialization AccountInfo
+    * Fixed ClientOrderId deserialization batch order results
+
+* Version 3.2.2 - 30 Oct 2023
+    * Fixed triggerDirection parameter serialization on V5 PlaceOrder endpoint
+    * Fixed typo in BybitAccountTypeInfo model name
+
+* Version 3.2.1 - 24 Oct 2023
+    * Fix order parameter serialization
+    * Updated CryptoExchange.Net
+
+* Version 3.2.0 - 12 Oct 2023
+    * Added V5 SubAccount endpoints
+    * Added V5 ApiKey endpoints
+    * Added LeverageToken endpoints
+    * Added notice of deprecation to old endpoints
+    * Updated Referer header
+
+* Version 3.1.3 - 09 Oct 2023
+    * Updated CryptoExchange.Net version
+    * Fixed ReceiveWindow not respecting client option
+    * Updated BoolConverter to shared CryptoExchange.Net implementation
+
+* Version 3.1.2 - 29 Sep 2023
+    * Added V5 Inverse websocket API
+    * Fix V5 SubscribeToLiquidationUpdatesAsync
+    * Fix V5Api.Account.GetCollateralInfoAsync deserialization
+
 * Version 3.1.1 - 20 Sep 2023
     * Added ISpotClient/CommonSpotClient implementation
     * Added AddOrReduceMarginAsync endpoint
