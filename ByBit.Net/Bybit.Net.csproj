@@ -7,9 +7,9 @@
   <PropertyGroup>
     <PackageId>Bybit.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>3.2.4</PackageVersion>
-    <AssemblyVersion>3.2.4</AssemblyVersion>
-    <FileVersion>3.2.4</FileVersion>
+    <PackageVersion>3.3.0</PackageVersion>
+    <AssemblyVersion>3.3.0</AssemblyVersion>
+    <FileVersion>3.3.0</FileVersion>
     <Description>Bybit.Net is a .Net wrapper for the Bybit API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bybit Bybit.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -21,7 +21,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>3.2.4 - Added missing SelfMatchPreventType parameter to V5.Trading.PlaceOrderAsync, Fixed deserialization issue in V5 UserTrade subscription</PackageReleaseNotes>
+    <PackageReleaseNotes>3.3.0 - Added V5Api.Account.GetBrokerEarningsAsync endpoint, Added V5Api.Account.GetBrokerAccountInfoAsync endpoint, Added V5Api.Account.GetInternalDepositsAsync endpoint, Added V5Api.Account.SetMultipleCollateralAssetsAsync endpoint, Added PricePercentageFilter to V5Api.ExchangeData.GetSpotSymbolsAsync model, Updated various endpoint parameters and models</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bybit.Net.xml</DocumentationFile>
@@ -54,6 +54,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="6.2.1" />
+    <PackageReference Include="CryptoExchange.Net" Version="6.2.3" />
   </ItemGroup>
 </Project>

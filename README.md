@@ -30,6 +30,26 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 3.3.0 - 19 Jan 2024
+    * Added V5Api.Account.GetBrokerEarningsAsync endpoint
+    * Added V5Api.Account.GetBrokerAccountInfoAsync endpoint
+    * Added V5Api.Account.GetInternalDepositsAsync endpoint
+    * Added V5Api.Account.SetMultipleCollateralAssetsAsync endpoint
+    * Added PricePercentageFilter to V5Api.ExchangeData.GetSpotSymbolsAsync model
+    * Updated various endpoint parameters and models
+
+* Version 3.2.7 - 16 Jan 2024
+    * Added V5Api.Account.SetCollateralAssetAsync endpoint
+    * Added marketUnit parameter to V5Api.Trading.PlaceOrderAsync endpoint
+    * Updated BybitAccountInfo model
+
+* Version 3.2.6 - 12 Dec 2023
+    * Fixed V5 BybitOrderId model ClientOrderId deserialization
+    * Added missing feeType parameter to V5 Account.WithdrawAsync endpoint
+
+* Version 3.2.5 - 03 Dec 2023
+    * Updated CryptoExchange.Net
+
 * Version 3.2.4 - 02 Dec 2023
     * Added missing SelfMatchPreventType parameter to V5.Trading.PlaceOrderAsync
     * Fixed deserialization issue in V5 UserTrade subscription
