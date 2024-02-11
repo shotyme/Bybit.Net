@@ -96,6 +96,18 @@ namespace Bybit.Net.Objects.Models.V5
         /// Permissions
         /// </summary>
         public BybitPermissions Permissions { get; set; } = null!;
+        /// <summary>
+        /// The main account uid. Returns "0" when the endpoint is called by main account
+        /// </summary>
+        public string ParentUid { get; set; } = string.Empty;
+        /// <summary>
+        /// Personal account kyc level. LEVEL_DEFAULT, LEVEL_1， LEVEL_2
+        /// </summary>
+        public string KycLevel { get; set; } = string.Empty;
+        /// <summary>
+        /// Personal account kyc region
+        /// </summary>
+        public string KycRegion { get; set; } = string.Empty;
     }
 
     /// <summary>
