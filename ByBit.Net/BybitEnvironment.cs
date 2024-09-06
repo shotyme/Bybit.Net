@@ -43,13 +43,45 @@ namespace Bybit.Net
                                      BybitApiAddresses.TestNet.SocketBaseAddress);
 
         /// <summary>
+        /// Live environment for users from The Netherlands
+        /// </summary>
+        public static BybitEnvironment Netherlands { get; }
+            = new BybitEnvironment(TradeEnvironmentNames.Live,
+                                     BybitApiAddresses.Netherlands.RestBaseAddress,
+                                     BybitApiAddresses.Netherlands.SocketBaseAddress);
+
+        /// <summary>
+        /// Live environment for users from HongKong
+        /// </summary>
+        public static BybitEnvironment HongKong { get; }
+            = new BybitEnvironment(TradeEnvironmentNames.Live,
+                                     BybitApiAddresses.HongKong.RestBaseAddress,
+                                     BybitApiAddresses.HongKong.SocketBaseAddress);
+
+        /// <summary>
+        /// Live environment for users from Turkey
+        /// </summary>
+        public static BybitEnvironment Turkey { get; }
+            = new BybitEnvironment(TradeEnvironmentNames.Live,
+                                     BybitApiAddresses.Turkey.RestBaseAddress,
+                                     BybitApiAddresses.Turkey.SocketBaseAddress);
+
+        /// <summary>
+        /// Demo trading environment, needs seperate API key. See https://bybit-exchange.github.io/docs/v5/demo
+        /// </summary>
+        public static BybitEnvironment DemoTrading { get; }
+            = new BybitEnvironment(TradeEnvironmentNames.Live,
+                                     BybitApiAddresses.DemoTrading.RestBaseAddress,
+                                     BybitApiAddresses.DemoTrading.SocketBaseAddress);
+
+        /// <summary>
         /// Create a custom environment
         /// </summary>
         /// <param name="name"></param>
         /// <param name="restAddress"></param>
         /// <param name="socketAddress"></param>
         /// <returns></returns>
-        public static TradeEnvironment CreateCustom(
+        public static BybitEnvironment CreateCustom(
                         string name,
                         string restAddress,
                         string socketAddress)

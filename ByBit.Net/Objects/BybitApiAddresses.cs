@@ -31,5 +31,41 @@
             RestBaseAddress = "https://api-testnet.bybit.com",
             SocketBaseAddress = "wss://stream-testnet.bybit.com",
         };
+
+        /// <summary>
+        /// The addresses to connect to the main net for users from The Netherlands
+        /// </summary>
+        public static BybitApiAddresses Netherlands = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit.nl",
+            SocketBaseAddress = "wss://stream.bybit.com" // As per Telegram support, normal address should be used for websockets
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from HongKong
+        /// </summary>
+        public static BybitApiAddresses HongKong = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit.com.hk",
+            SocketBaseAddress = "wss://stream.bybit.com" // As per Telegram support, normal address should be used for websockets
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from Turkey
+        /// </summary>
+        public static BybitApiAddresses Turkey = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit-tr.com",
+            SocketBaseAddress = "wss://stream.bybit.com" // As per Telegram support, normal address should be used for websockets
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit demo trading environment
+        /// </summary>
+        public static BybitApiAddresses DemoTrading = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api-demo.bybit.com",
+            SocketBaseAddress = "wss://stream-demo.bybit.com"
+        };
     }
 }
