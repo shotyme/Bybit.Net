@@ -8,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Broker earnings info
     /// </summary>
-    public class BybitBrokerEarnings
+    public record BybitBrokerEarnings
     {
         /// <summary>
         /// Total earnings info
@@ -30,13 +30,18 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Total earnings info
     /// </summary>
-    public class BybitTotalEarnings
+    public record BybitTotalEarnings
     {
         /// <summary>
         /// Spot earnings
         /// </summary>
         [JsonProperty("spot")]
         public IEnumerable<BybitBrokerEarning> Spot { get; set; } = Array.Empty<BybitBrokerEarning>();
+        /// <summary>
+        /// Convert earnings
+        /// </summary>
+        [JsonProperty("convert")]
+        public IEnumerable<BybitBrokerEarning> Convert { get; set; } = Array.Empty<BybitBrokerEarning>();
         /// <summary>
         /// Derivatives earnings
         /// </summary>
@@ -57,7 +62,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Asset earning info
     /// </summary>
-    public class BybitBrokerEarning
+    public record BybitBrokerEarning
     {
         /// <summary>
         /// The earned asset
@@ -74,7 +79,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Earning details
     /// </summary>
-    public class BybitEarningDetails
+    public record BybitEarningDetails
     {
         /// <summary>
         /// User id

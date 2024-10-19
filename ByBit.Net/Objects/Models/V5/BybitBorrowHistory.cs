@@ -6,7 +6,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Borrow history info
     /// </summary>
-    public class BybitBorrowHistory
+    public record BybitBorrowHistory
     {
         /// <summary>
         /// Asset
@@ -33,6 +33,21 @@ namespace Bybit.Net.Objects.Models.V5
         /// <summary>
         /// Cost exemption
         /// </summary>
-        public decimal CostExcemption { get; set; }
+        public decimal CostExemption { get; set; }
+        /// <summary>
+        /// Total borrow quantity
+        /// </summary>
+        [JsonProperty("borrowAmount")]
+        public decimal BorrowQuantity { get; set; }
+        /// <summary>
+        /// Unrealized loss
+        /// </summary>
+        [JsonProperty("unrealisedLoss")]
+        public decimal UnrealisedLoss { get; set; }
+        /// <summary>
+        /// The borrowed quantity for interest free
+        /// </summary>
+        [JsonProperty("freeBorrowedAmount")]
+        public decimal FreeBorrowedQuantity { get; set; }
     }
 }

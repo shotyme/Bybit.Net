@@ -3,7 +3,9 @@ using Bybit.Net.Objects.Internal;
 using Bybit.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -15,7 +17,7 @@ using System.Threading.Tasks;
 namespace Bybit.Net.Clients.CopyTradingApi
 {
     /// <inheritdoc cref="IBybitRestClientCopyTradingApi" />
-    public class BybitRestClientCopyTradingApi : RestApiClient, IBybitRestClientCopyTradingApi
+    internal class BybitRestClientCopyTradingApi : RestApiClient, IBybitRestClientCopyTradingApi
     {
         internal static TimeSyncState _timeSyncState = new TimeSyncState("CopyTrade Api");
 
@@ -51,10 +53,13 @@ namespace Bybit.Net.Clients.CopyTradingApi
             ExchangeData = new BybitRestClientCopyTradingApiExchangeData(this);
             Trading = new BybitRestClientCopyTradingApiTrading(this);
 
-            requestBodyFormat = RequestBodyFormat.FormData;
+            RequestBodyFormat = RequestBodyFormat.FormData;
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InUri;
         }
         #endregion
+
+        /// <inheritdoc />
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant();
 
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
@@ -75,10 +80,9 @@ namespace Bybit.Net.Clients.CopyTradingApi
              HttpMethod method,
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
-             bool signed = false,
-             JsonSerializer? deserializer = null) where T : class
+             bool signed = false) where T : class
         {
-            var result = await base.SendRequestAsync<BybitResult<T>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitResult<T>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<BybitResult<T>>(default);
 
@@ -93,11 +97,9 @@ namespace Bybit.Net.Clients.CopyTradingApi
              HttpMethod method,
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
-             bool signed = false,
-             JsonSerializer? deserializer = null,
-             bool ignoreRatelimit = false)
+             bool signed = false)
         {
-            var result = await base.SendRequestAsync<BybitCopyTradingResult<BybitList<T>>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer, ignoreRatelimit: ignoreRatelimit).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitCopyTradingResult<BybitList<T>>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<T>>(default);
 
@@ -112,11 +114,9 @@ namespace Bybit.Net.Clients.CopyTradingApi
              HttpMethod method,
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
-             bool signed = false,
-             JsonSerializer? deserializer = null,
-             bool ignoreRatelimit = false)
+             bool signed = false)
         {
-            var result = await base.SendRequestAsync<BybitCopyTradingResult<T>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer, ignoreRatelimit: ignoreRatelimit).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitCopyTradingResult<T>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<T>(default);
 

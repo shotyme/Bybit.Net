@@ -7,12 +7,13 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Leveraged token nav info
     /// </summary>
-    public class BybitLeveragedTokenNav
+    public record BybitLeveragedTokenNav
     {
         /// <summary>
         /// Timestamp
         /// </summary>
-        [JsonConverter(typeof(EnumConverter))]
+        [JsonConverter(typeof(DateTimeConverter))]
+        [JsonProperty("time")]
         public DateTime Timestamp { get; set; }
         /// <summary>
         /// Symbol

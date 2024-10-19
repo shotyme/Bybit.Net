@@ -1,13 +1,16 @@
-﻿namespace Bybit.Net.Objects.Models.V5
+﻿using Newtonsoft.Json;
+
+namespace Bybit.Net.Objects.Models.V5
 {
     /// <summary>
     /// Greeks
     /// </summary>
-    public class BybitGreeks
+    public record BybitGreeks
     {
         /// <summary>
         /// Asset
         /// </summary>
+        [JsonProperty("baseCoin")]
         public string BaseAsset { get; set; } = string.Empty;
         /// <summary>
         /// Delta

@@ -8,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Announcmeent
     /// </summary>
-    public class BybitAnnouncement
+    public record BybitAnnouncement
     {
         /// <summary>
         /// Title
@@ -28,6 +28,12 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonProperty("dateTimestamp")]
         public DateTime Timestamp { get; set; }
+        /// <summary>
+        /// Publish time
+        /// </summary>
+        [JsonConverter(typeof(DateTimeConverter))]
+        [JsonProperty("publishTime")]
+        public DateTime? PublishTime { get; set; }
         /// <summary>
         /// Start time of the announcement
         /// </summary>

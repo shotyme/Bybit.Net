@@ -7,17 +7,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bybit.Net.Enums;
 using Bybit.Net.Interfaces.Clients.SpotApi.v3;
-using Bybit.Net.Objects;
 using Bybit.Net.Objects.Options;
 using CryptoExchange.Net.CommonObjects;
 using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 
 namespace Bybit.Net.Clients.SpotApi.v3
 {
     /// <inheritdoc cref="IBybitRestClientSpotApiV3" />
-    public class BybitRestClientSpotApiV3 : BybitRestClientBaseSpotApi, IBybitRestClientSpotApiV3
+    internal class BybitRestClientSpotApiV3 : BybitRestClientBaseSpotApi, IBybitRestClientSpotApiV3
     {
         /// <inheritdoc />
         public IBybitRestClientSpotApiAccountV3 Account { get; }
@@ -43,6 +43,9 @@ namespace Bybit.Net.Clients.SpotApi.v3
             Trading = new BybitRestClientSpotApiTradingV3(this);
         }
         #endregion
+
+        /// <inheritdoc />
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant();
 
         #region Common interface
 

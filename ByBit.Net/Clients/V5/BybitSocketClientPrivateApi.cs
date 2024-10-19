@@ -1,335 +1,342 @@
 ﻿using Bybit.Net.Interfaces.Clients.V5;
-using Bybit.Net.Objects;
-using Bybit.Net.Objects.Internal.Socket;
+using Bybit.Net.Enums;
+using Bybit.Net.Enums.V5;
 using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Options;
+using Bybit.Net.Objects.Sockets.Queries;
+using Bybit.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using CryptoExchange.Net.SharedApis;
 
 namespace Bybit.Net.Clients.V5
 {
     /// <inheritdoc cref="IBybitSocketClientPrivateApi" />
-    public class BybitSocketClientPrivateApi : SocketApiClient, IBybitSocketClientPrivateApi
+    internal partial class BybitSocketClientPrivateApi : SocketApiClient, IBybitSocketClientPrivateApi
     {
+        private static readonly MessagePath _reqIdPath = MessagePath.Get().Property("req_id");
+        private static readonly MessagePath _reqId2Path = MessagePath.Get().Property("reqId");
+        private static readonly MessagePath _topicPath = MessagePath.Get().Property("topic");
+        private static readonly MessagePath _opPath = MessagePath.Get().Property("op");
+        private string _referer;
+
         internal BybitSocketClientPrivateApi(ILogger logger, BybitSocketOptions options)
-            : base(logger, ((BybitEnvironment)options.Environment).SocketBaseAddress, options, options.V5Options)
+            : base(logger, options.Environment.SocketBaseAddress, options, options.V5Options)
         {
-            ContinueOnQueryResponse = true;
             UnhandledMessageExpected = true;
             KeepAliveInterval = TimeSpan.Zero;
 
-            SendPeriodic("Ping", options.V5Options.PingInterval, (connection) =>
+            _referer = !string.IsNullOrEmpty(options.Referer) ? options.Referer! : "Zx000356";
+
+            RegisterPeriodicQuery("Heartbeat", options.V5Options.PingInterval, GetPingQuery, x => { });
+
+            SetDedicatedConnection(BaseAddress.AppendPath("/v5/trade"), true);
+        }
+
+        private Query GetPingQuery(SocketConnection connection)
+        {
+            if (connection.ConnectionUri.AbsolutePath.EndsWith("private"))
             {
-                return new BybitV5RequestMessage("ping", Array.Empty<object>(), ExchangeHelpers.NextId().ToString());
-            });
-            AddGenericHandler("Heartbeat", (evnt) => { }); 
+                return new BybitQuery("ping", null);
+            }
+            else
+            {
+                return new BybitPingQuery();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials) => new BybitAuthenticationProvider(credentials);
+
+        /// <inheritdoc />
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
+        {
+            if (tradingMode == TradingMode.Spot)
+                return baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant();
+
+            if (tradingMode.IsLinear())
+            {
+                if (tradingMode.IsPerpetual())
+                    return baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant();
+
+                return baseAsset.ToUpperInvariant() + "-" + deliverTime!.Value.ToString("ddMMMyy").ToUpperInvariant();
+            }
+
+            return baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant() + (deliverTime == null ? string.Empty : (ExchangeHelpers.GetDeliveryMonthSymbol(deliverTime.Value) + deliverTime.Value.ToString("yy")));
+        }
+
+        public IBybitSocketClientPrivateApiShared SharedClient => this;
+
+        /// <inheritdoc />
+        protected override Query? GetAuthenticationRequest(SocketConnection connection)
+        {
+            if (connection.ConnectionUri.AbsolutePath.EndsWith("private"))
+            {
+                // Auth subscription
+                var expireTime = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddSeconds(30))!;
+                var authProvider = (BybitAuthenticationProvider)AuthenticationProvider!;
+                var key = authProvider.ApiKey;
+                var sign = authProvider.Sign($"GET/realtime{expireTime}");
+
+                return new BybitQuery("auth", new object[]
+                {
+                key,
+                expireTime,
+                sign
+                });
+            }
+            else
+            {
+                // Trading
+                var expireTime = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddSeconds(30))!;
+                var authProvider = (BybitAuthenticationProvider)AuthenticationProvider!;
+                var key = authProvider.ApiKey;
+                var sign = authProvider.Sign($"GET/realtime{expireTime}");
+
+                return new BybitRequestQuery<object>("auth", null, new object[]
+                {
+                key,
+                expireTime,
+                sign
+                });
+            }
+        }
+
+        /// <inheritdoc />
+        public override string? GetListenerIdentifier(IMessageAccessor message)
+        {
+            var reqId = message.GetValue<string>(_reqIdPath);
+            if (reqId != null)
+                return reqId;
+
+            var reqId2 = message.GetValue<string>(_reqId2Path);
+            if (reqId2 != null)
+                return reqId2;
+
+            var op = message.GetValue<string>(_opPath);
+            if (string.Equals(op, "pong"))
+                return op;
+
+            return message.GetValue<string>(_topicPath);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToPositionUpdatesAsync(Action<DataEvent<IEnumerable<BybitPositionUpdate>>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DataEvent<JToken>>(data =>
-            {
-                var internalData = data.Data["data"];
-                if (internalData == null)
-                    return;
-
-                var desResult = Deserialize<IEnumerable<BybitPositionUpdate>>(internalData);
-                if (!desResult)
-                {
-                    _logger.Log(LogLevel.Warning, $"Failed to deserialize {nameof(BybitPositionUpdate)} object: " + desResult.Error);
-                    return;
-                }
-
-                handler(data.As(desResult.Data, data.Data["topic"]!.ToString().Split('.').Last()));
-            });
-
-            return await SubscribeAsync(
-                BaseAddress.AppendPath("/v5/private"),
-                new BybitV5RequestMessage("subscribe", new[] { "position" }, ExchangeHelpers.NextId().ToString()),
-                null, true, internalHandler, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<IEnumerable<BybitPositionUpdate>>(_logger, new[] { "position" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(Action<DataEvent<IEnumerable<BybitUserTradeUpdate>>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DataEvent<JToken>>(data =>
-            {
-                var internalData = data.Data["data"];
-                if (internalData == null)
-                    return;
+            var subscription = new BybitSubscription<IEnumerable<BybitUserTradeUpdate>>(_logger, new[] { "execution" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
+        }
 
-                var desResult = Deserialize<IEnumerable<BybitUserTradeUpdate>>(internalData);
-                if (!desResult)
-                {
-                    _logger.Log(LogLevel.Warning, $"Failed to deserialize {nameof(BybitUserTradeUpdate)} object: " + desResult.Error);
-                    return;
-                }
-
-                handler(data.As(desResult.Data, data.Data["topic"]!.ToString().Split('.').Last()));
-            });
-
-            return await SubscribeAsync(
-                BaseAddress.AppendPath("/v5/private"),
-                new BybitV5RequestMessage("subscribe", new[] { "execution" }, ExchangeHelpers.NextId().ToString()),
-                null, true, internalHandler, ct).ConfigureAwait(false);
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToMinimalUserTradeUpdatesAsync(Action<DataEvent<IEnumerable<BybitMinimalUserTradeUpdate>>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BybitSubscription<IEnumerable<BybitMinimalUserTradeUpdate>>(_logger, new[] { "execution.fast" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToOrderUpdatesAsync(Action<DataEvent<IEnumerable<BybitOrderUpdate>>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DataEvent<JToken>>(data =>
-            {
-                var internalData = data.Data["data"];
-                if (internalData == null)
-                    return;
-
-                var desResult = Deserialize<IEnumerable<BybitOrderUpdate>>(internalData);
-                if (!desResult)
-                {
-                    _logger.Log(LogLevel.Warning, $"Failed to deserialize {nameof(BybitOrderUpdate)} object: " + desResult.Error);
-                    return;
-                }
-
-                handler(data.As(desResult.Data, data.Data["topic"]!.ToString().Split('.').Last()));
-            });
-
-            return await SubscribeAsync(
-                BaseAddress.AppendPath("/v5/private"),
-                new BybitV5RequestMessage("subscribe", new[] { "order" }, ExchangeHelpers.NextId().ToString()),
-                null, true, internalHandler, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<IEnumerable<BybitOrderUpdate>>(_logger, new[] { "order" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<DataEvent<IEnumerable<BybitBalance>>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DataEvent<JToken>>(data =>
-            {
-                var internalData = data.Data["data"];
-                if (internalData == null)
-                    return;
-
-                var desResult = Deserialize<IEnumerable<BybitBalance>>(internalData);
-                if (!desResult)
-                {
-                    _logger.Log(LogLevel.Warning, $"Failed to deserialize {nameof(BybitBalance)} object: " + desResult.Error);
-                    return;
-                }
-
-                handler(data.As(desResult.Data, data.Data["topic"]!.ToString().Split('.').Last()));
-            });
-
-            return await SubscribeAsync(
-                BaseAddress.AppendPath("/v5/private"),
-                new BybitV5RequestMessage("subscribe", new[] { "wallet" }, ExchangeHelpers.NextId().ToString()),
-                null, true, internalHandler, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<IEnumerable<BybitBalance>>(_logger, new[] { "wallet" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToGreekUpdatesAsync(Action<DataEvent<IEnumerable<BybitGreeks>>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DataEvent<JToken>>(data =>
-            {
-                var internalData = data.Data["data"];
-                if (internalData == null)
-                    return;
+            var subscription = new BybitSubscription<IEnumerable<BybitGreeks>>(_logger, new[] { "greeks" }, handler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
+        }
 
-                var desResult = Deserialize<IEnumerable<BybitGreeks>>(internalData);
-                if (!desResult)
+        /// <inheritdoc />
+        public async Task<CallResult<BybitOrderId>> PlaceOrderAsync(Category category,
+            string symbol,
+            OrderSide side,
+            NewOrderType type,
+            decimal quantity,
+            decimal? price = null,
+            bool? isLeverage = null,
+            TriggerDirection? triggerDirection = null,
+            OrderFilter? orderFilter = null,
+            decimal? triggerPrice = null,
+            TriggerType? triggerBy = null,
+            decimal? orderIv = null,
+            TimeInForce? timeInForce = null,
+            PositionIdx? positionIdx = null,
+            string? clientOrderId = null,
+            OrderType? takeProfitOrderType = null,
+            decimal? takeProfit = null,
+            decimal? takeProfitLimitPrice = null,
+            OrderType? stopLossOrderType = null,
+            decimal? stopLoss = null,
+            decimal? stopLossLimitPrice = null,
+            TriggerType? takeProfitTriggerBy = null,
+            TriggerType? stopLossTriggerBy = null,
+            bool? reduceOnly = null,
+            bool? closeOnTrigger = null,
+            bool? marketMakerProtection = null,
+            StopLossTakeProfitMode? stopLossTakeProfitMode = null,
+            SelfMatchPreventionType? selfMatchPreventionType = null,
+            MarketUnit? marketUnit = null,
+            CancellationToken ct = default)
+        {
+            var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
+            var query = new BybitRequestQuery<BybitOrderId>(
+                "order.create",
+                new Dictionary<string, string>
                 {
-                    _logger.Log(LogLevel.Warning, $"Failed to deserialize {nameof(BybitGreeks)} object: " + desResult.Error);
-                    return;
+                    { "X-BAPI-TIMESTAMP", timestamp },
+                    { "Referer", _referer }
+                },
+                new object[] { new BybitSocketPlaceOrderRequest
+                {
+                    Category = category,
+                    ClientOrderId = clientOrderId,
+                    CloseOnTrigger = closeOnTrigger,
+                    MarketMakerProtection = marketMakerProtection,
+                    MarketUnit = marketUnit,
+                    OrderImpliedVolatility = orderIv,
+                    OrderType = type,
+                    PositionIdx = positionIdx,
+                    Price = price,
+                    Quantity = quantity,
+                    ReduceOnly = reduceOnly,
+                    Side = side,
+                    StopLoss = stopLoss,
+                    StopLossLimitPrice = stopLossLimitPrice,
+                    StopLossOrderType = stopLossOrderType,
+                    Symbol = symbol,
+                    TakeProfit = takeProfit,
+                    TakeProfitLimitPrice = takeProfitLimitPrice,
+                    TakeProfitOrderType = takeProfitOrderType,
+                    TakeProfitStopLossMode = stopLossTakeProfitMode,
+                    TimeInForce = timeInForce,
+                    TriggerBy = triggerBy,
+                    TriggerDirection = triggerDirection,
+                    TriggerPrice = triggerPrice,
+                    StopLossTriggerBy = stopLossTriggerBy,
+                    StpType = selfMatchPreventionType,
+                    TakeProfitTriggerBy = takeProfitTriggerBy,
+                    OrderFilter = orderFilter,
+                    IsLeverage = isLeverage.HasValue ? (isLeverage == true ? 1 : 0) : null
                 }
-
-                handler(data.As(desResult.Data, data.Data["topic"]!.ToString().Split('.').Last()));
             });
 
-            return await SubscribeAsync(
-                BaseAddress.AppendPath("/v5/private"),
-                new BybitV5RequestMessage("subscribe", new[] { "greeks" }, ExchangeHelpers.NextId().ToString()),
-                null, true, internalHandler, ct).ConfigureAwait(false);
+            return await QueryAsync(BaseAddress.AppendPath("/v5/trade"), query, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection socketConnection)
+        public async Task<CallResult<BybitOrderId>> EditOrderAsync(Category category,
+            string symbol,
+            string? orderId = null,
+            string? clientOrderId = null,
+            decimal? quantity = null,
+            decimal? price = null,
+            decimal? triggerPrice = null,
+            TriggerType? triggerBy = null,
+            decimal? orderIv = null,
+            decimal? takeProfit = null,
+            decimal? stopLoss = null,
+            TriggerType? takeProfitTriggerBy = null,
+            TriggerType? stopLossTriggerBy = null,
+            StopLossTakeProfitMode? stopLossTakeProfitMode = null,
+            decimal? takeProfitLimitPrice = null,
+            decimal? stopLossLimitPrice = null,
+            CancellationToken ct = default)
         {
-            if (socketConnection.ApiClient.AuthenticationProvider == null)
-                return new CallResult<bool>(new NoApiCredentialsError());
-
-            var expireTime = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddSeconds(30))!;
-            var bybitAuthProvider = (BybitAuthenticationProvider)socketConnection.ApiClient.AuthenticationProvider;
-            var key = bybitAuthProvider.GetApiKey();
-            var sign = bybitAuthProvider.Sign($"GET/realtime{expireTime}");
-
-            var authRequest = new BybitRequestMessage()
-            {
-                Operation = "auth",
-                Parameters = new object[]
+            var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
+            var query = new BybitRequestQuery<BybitOrderId>(
+                "order.amend",
+                new Dictionary<string, string>
                 {
-                    key,
-                    expireTime,
-                    sign
-                }
-            };
-
-            var result = false;
-            var error = "unspecified error";
-            await socketConnection.SendAndWaitAsync(authRequest, ClientOptions.RequestTimeout, null, 1, data =>
-            {
-                if (data.Type != JTokenType.Object)
-                    return false;
-
-                var operation = data["op"]?.ToString();
-                if (operation != "auth")
-                    return false;
-
-                result = data["success"]?.Value<bool>() == true;
-                error = data["ret_msg"]?.ToString();
-                return true;
-
-            }).ConfigureAwait(false);
-            return result ? new CallResult<bool>(result) : new CallResult<bool>(new ServerError(error));
-        }
-
-        /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials) => new BybitAuthenticationProvider(credentials);
-        /// <inheritdoc />
-        protected override bool HandleQueryResponse<T>(SocketConnection socketConnection, object request, JToken data, out CallResult<T> callResult) => throw new NotImplementedException();
-        /// <inheritdoc />
-        protected override bool HandleSubscriptionResponse(SocketConnection socketConnection, SocketSubscription subscription, object request, JToken data, out CallResult<object>? callResult)
-        {
-            callResult = null;
-            if (data.Type != JTokenType.Object)
-                return false;
-
-            var messageRequestId = data["req_id"]?.ToString();
-            if (messageRequestId != null)
-            {
-                // Matched based on request id
-                var id = ((BybitV5RequestMessage)request).RequestId;
-                if (id != messageRequestId)
-                    return false;
-
-                var success1 = data["success"]?.Value<bool>() == true;
-                if (success1)
-                    callResult = new CallResult<object>(true);
-                else
-                    callResult = new CallResult<object>(new ServerError(data["ret_msg"]!.ToString()));
-                return true;
-            }
-
-            // No request id
-            // Check subs
-            var success = data["success"]?.Value<bool>();
-            if (success == null)
-                return false;
-
-            var topics = data["data"]?["successTopics"]?.ToObject<string[]>();
-            if (topics == null)
-                return false;
-
-            var requestTopics = ((BybitV5RequestMessage)request).Parameters;
-            if (!topics.All(requestTopics.Contains))
-                return false;
-
-            callResult = success == true ? new CallResult<object>(true) : new CallResult<object>(new ServerError(data.ToString()));
-            return true;
-        }
-
-        /// <inheritdoc />
-        protected override bool MessageMatchesHandler(SocketConnection socketConnection, JToken message, object request)
-        {
-            if (message.Type != JTokenType.Object)
-                return false;
-
-            var topic = message["topic"]?.ToString();
-            if (topic == null)
-                return false;
-
-            var requestParams = ((BybitV5RequestMessage)request).Parameters;
-            if (requestParams.Any(p => topic == p.ToString()))
-                return true;
-
-            if (topic.Contains('.'))
-            {
-                // Some subscriptions have topics like orderbook.ETHUSDT
-                // Split on `.` to get the topic and symbol
-                var split = topic.Split('.');
-                var symbol = split.Last();
-                if (symbol.Length == 0)
-                    return false;
-
-                var mainTopic = topic.Substring(0, topic.Length - symbol.Length - 1);
-                if (requestParams.Any(p => (string)p == mainTopic + ".*"))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc />
-        protected override bool MessageMatchesHandler(SocketConnection socketConnection, JToken message, string identifier)
-        {
-            if (identifier == "Heartbeat")
-            {
-                if (message.Type != JTokenType.Object)
-                    return false;
-
-                var ret = message["ret_msg"] ?? message["op"];
-                if (ret == null)
-                    return false;
-
-                var isPing = ret.ToString() == "pong";
-                if (!isPing)
-                    return false;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc />
-        protected override async Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription subscriptionToUnsub)
-        {
-            var requestParams = ((BybitV5RequestMessage)subscriptionToUnsub.Request!).Parameters;
-            var message = new BybitV5RequestMessage("unsubscribe", requestParams, ExchangeHelpers.NextId().ToString());
-
-            var result = false;
-            await connection.SendAndWaitAsync(message, ClientOptions.RequestTimeout, null, 1, data =>
-            {
-                if (data.Type != JTokenType.Object)
-                    return false;
-
-                var messageRequestId = data["req_id"]?.ToString();
-                if (messageRequestId != null)
+                    { "X-BAPI-TIMESTAMP", timestamp },
+                    { "Referer", _referer }
+                },
+                new object[] { new BybitSocketEditOrderRequest
                 {
-                    // Matched based on request id
-                    var id = message.RequestId;
-                    if (id != messageRequestId)
-                        return false;
-
-                    return true;
+                    Category = category,
+                    ClientOrderId = clientOrderId,
+                    OrderImpliedVolatility = orderIv,
+                    Price = price,
+                    Quantity = quantity,
+                    StopLoss = stopLoss,
+                    StopLossLimitPrice = stopLossLimitPrice,
+                    Symbol = symbol,
+                    TakeProfit = takeProfit,
+                    TakeProfitLimitPrice = takeProfitLimitPrice,
+                    TakeProfitStopLossMode = stopLossTakeProfitMode,
+                    TriggerBy = triggerBy,
+                    TriggerPrice = triggerPrice,
+                    OrderId = orderId,
+                    StopLossTriggerBy = stopLossTriggerBy,
+                    TakeProfitTriggerBy = takeProfitTriggerBy
                 }
+            });
 
-                // No request id
-                var success = data["success"]?.Value<bool>();
-                if (success == null)
-                    return false;
+            return await QueryAsync(BaseAddress.AppendPath("/v5/trade"), query, ct).ConfigureAwait(false);
+        }
 
-                return true;
-            }).ConfigureAwait(false);
-            return result;
+        /// <inheritdoc />
+        public async Task<CallResult<BybitOrderId>> CancelOrderAsync(Category category,
+            string symbol,
+            string? orderId = null,
+            string? clientOrderId = null,
+            OrderFilter? orderFilter = null,
+            CancellationToken ct = default)
+        {
+            var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
+            var query = new BybitRequestQuery<BybitOrderId>(
+                "order.amend",
+                new Dictionary<string, string>
+                {
+                    { "X-BAPI-TIMESTAMP", timestamp },
+                    { "Referer", _referer }
+                },
+                new object[] { new BybitSocketCancelOrderRequest
+                {
+                    Category = category,
+                    ClientOrderId = clientOrderId,
+                    OrderId = orderId,
+                    OrderFilter = orderFilter,
+                    Symbol = symbol
+                }
+            });
+
+            return await QueryAsync(BaseAddress.AppendPath("/v5/trade"), query, ct).ConfigureAwait(false);
+		}
+		
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToDisconnectCancelAllTopicAsync(ProductType productType, CancellationToken ct = default)
+        {
+            var product = productType == ProductType.Spot ? "spot" : productType == ProductType.Options ? "option" : "future";
+            var subscription = new BybitSubscription<object>(_logger, new[] { "dcp." + product }, x => { }, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
     }
 }

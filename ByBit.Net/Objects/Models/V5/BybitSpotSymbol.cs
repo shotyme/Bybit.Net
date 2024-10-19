@@ -1,5 +1,4 @@
-﻿using Bybit.Net.Converters;
-using Bybit.Net.Enums;
+﻿using Bybit.Net.Enums;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
@@ -8,7 +7,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Spot symbol
     /// </summary>
-    public class BybitSpotSymbol
+    public record BybitSpotSymbol
     {
         /// <summary>
         /// Symbol name
@@ -58,7 +57,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Price limits
     /// </summary>
-    public class BybitPriceLimit
+    public record BybitPriceLimit
     {
         /// <summary>
         /// Price limit on Limit order. For example, "0.05" means 5%, so the order price of your buy order cannot exceed 105% of the Last Traded Price, while the order price of your sell order cannot be lower than 95% of the Last Traded Price
@@ -75,7 +74,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Lot size filter info
     /// </summary>
-    public class BybitSpotLotSizeFilter
+    public record BybitSpotLotSizeFilter
     {
         /// <summary>
         /// Base precision
@@ -110,7 +109,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Price filter info
     /// </summary>
-    public class BybitSpotPriceFilter
+    public record BybitSpotPriceFilter
     {
         /// <summary>
         /// Tick size

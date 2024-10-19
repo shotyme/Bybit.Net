@@ -5,38 +5,52 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Bybit.Net.Clients.CopyTradingApi;
-using CryptoExchange.Net.Converters;
 using System.Globalization;
 using Bybit.Net.Clients.V5;
 using System.Text;
 using Newtonsoft.Json;
 using Bybit.Net.Objects.Options;
+using CryptoExchange.Net.Clients;
 
 namespace Bybit.Net
 {
     internal class BybitAuthenticationProvider : AuthenticationProvider
     {
-        public string GetApiKey() => _credentials.Key!.GetString();
-
         public BybitAuthenticationProvider(ApiCredentials credentials) : base(credentials)
         {
         }
 
-        public override void AuthenticateRequest(RestApiClient apiClient, Uri uri, HttpMethod method, Dictionary<string, object> providedParameters, bool auth, ArrayParametersSerialization arraySerialization, HttpMethodParameterPosition parameterPosition, out SortedDictionary<string, object> uriParameters, out SortedDictionary<string, object> bodyParameters, out Dictionary<string, string> headers)
+        public override void AuthenticateRequest(
+            RestApiClient apiClient,
+            Uri uri,
+            HttpMethod method,
+            ref IDictionary<string, object>? uriParameters,
+            ref IDictionary<string, object>? bodyParameters,
+            ref Dictionary<string, string>? headers,
+            bool auth,
+            ArrayParametersSerialization arraySerialization,
+            HttpMethodParameterPosition parameterPosition,
+            RequestBodyFormat requestBodyFormat)
         {
-            uriParameters = parameterPosition == HttpMethodParameterPosition.InUri ? new SortedDictionary<string, object>(providedParameters, new BybitComparer()) : new SortedDictionary<string, object>();
-            bodyParameters = parameterPosition == HttpMethodParameterPosition.InBody ? new SortedDictionary<string, object>(providedParameters, new BybitComparer()) : new SortedDictionary<string, object>();
-            headers = new Dictionary<string, string>();
-
             if (!auth)
                 return;
 
-            var parameters = parameterPosition == HttpMethodParameterPosition.InUri ? uriParameters : bodyParameters;
+            IDictionary<string, object> parameters;
+            if (parameterPosition == HttpMethodParameterPosition.InUri)
+            {
+                uriParameters ??= new Dictionary<string, object>();
+                parameters = uriParameters;
+            }
+            else
+            {
+                bodyParameters ??= new Dictionary<string, object>();
+                parameters = bodyParameters;
+            }
             var timestamp = DateTimeConverter.ConvertToMilliseconds(GetTimestamp(apiClient).AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
             if (apiClient is BybitRestClientCopyTradingApi || apiClient is BybitRestClientApi)
             {
-                var signPayload = parameterPosition == HttpMethodParameterPosition.InUri ? uri.SetParameters(parameters, arraySerialization).Query.Replace("?", "") : apiClient.requestBodyFormat == RequestBodyFormat.FormData ? parameters.ToFormData() : JsonConvert.SerializeObject(parameters);
-                var key = _credentials.Key!.GetString();
+                var signPayload = parameterPosition == HttpMethodParameterPosition.InUri ? uri.SetParameters(parameters, arraySerialization).Query.Replace("?", "") : requestBodyFormat == RequestBodyFormat.FormData ? parameters.ToFormData() : JsonConvert.SerializeObject(parameters);
+                var key = _credentials.Key!;
                 var recvWindow = ((BybitRestOptions)apiClient.ClientOptions).ReceiveWindow.TotalMilliseconds;
                 var payload = timestamp + key + recvWindow + signPayload;
 
@@ -46,6 +60,7 @@ namespace Bybit.Net
                 else
                     sign = SignRSASHA256(Encoding.UTF8.GetBytes(payload), SignOutputType.Base64);
 
+                headers ??= new Dictionary<string, string>();
                 headers.Add("X-BAPI-API-KEY", key);
                 headers.Add("X-BAPI-SIGN", sign);
                 headers.Add("X-BAPI-SIGN-TYPE", "2");
@@ -54,7 +69,7 @@ namespace Bybit.Net
             }
             else
             {
-                parameters.Add("api_key", _credentials.Key!.GetString());
+                parameters.Add("api_key", _credentials.Key);
                 parameters.Add("timestamp", timestamp);
                 var signData = parameterPosition == HttpMethodParameterPosition.InUri ? uri.SetParameters(parameters, arraySerialization).Query.Replace("?", "") : parameters.ToFormData();
 
@@ -74,9 +89,9 @@ namespace Bybit.Net
     {
         public int Compare(string x, string y)
         {
-            if (x == "sign")
+            if (string.Equals(x, "sign", StringComparison.Ordinal))
                 return 1;
-            if (y == "sign")
+            if (string.Equals(y, "sign", StringComparison.Ordinal))
                 return -1;
 
             return x.CompareTo(y);

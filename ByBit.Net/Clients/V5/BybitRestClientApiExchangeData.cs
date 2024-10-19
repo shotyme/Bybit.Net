@@ -1,5 +1,6 @@
 ﻿using Bybit.Net.Enums;
 using Bybit.Net.Interfaces.Clients.V5;
+using Bybit.Net.Objects.Internal;
 using Bybit.Net.Objects.Models.V5;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Converters;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace Bybit.Net.Clients.V5
 {
     /// <inheritdoc />
-    public class BybitRestClientApiExchangeData : IBybitRestClientApiExchangeData
+    internal class BybitRestClientApiExchangeData : IBybitRestClientApiExchangeData
     {
         private BybitRestClientApi _baseClient;
 
@@ -47,8 +48,7 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async Task<WebCallResult<BybitTime>> GetServerTimeAsync(CancellationToken ct = default)
         {
-            // V5 doesn't have it's own server time endpoint (yet)
-            return await _baseClient.SendRequestAsync<BybitTime>(_baseClient.GetUrl("v3/public/time"), HttpMethod.Get, ct, null).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BybitTime>(_baseClient.GetUrl("v5/market/time"), HttpMethod.Get, ct, null).ConfigureAwait(false);
         }
 
         #endregion
@@ -168,18 +168,26 @@ namespace Bybit.Net.Clients.V5
 
         #endregion
 
-        #region Get Option symbols
+        #region Get Linear Inverse symbols
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BybitResponse<BybitLinearInverseSymbol>>> GetLinearInverseSymbolsAsync(Category category, string? symbol = null, string? baseAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BybitResponse<BybitLinearInverseSymbol>>> GetLinearInverseSymbolsAsync(
+            Category category,
+            string? symbol = null,
+            string? baseAsset = null,
+            SymbolStatus? status = null,
+            int? limit = null,
+            string? cursor = null,
+            CancellationToken ct = default)
         {
             if (category != Category.Linear && category != Category.Inverse && category != Category.Spot)
                 throw new ArgumentException("Invalid category; should be Linear or Inverse");
 
-            var parameters = new Dictionary<string, object>()
+            var parameters = new ParameterCollection()
             {
                 { "category", EnumConverter.GetString(category) }
             };
+            parameters.AddOptionalEnum("status", status);
             parameters.AddOptionalParameter("symbol", symbol);
             parameters.AddOptionalParameter("baseCoin", baseAsset);
             parameters.AddOptionalParameter("limit", limit);
@@ -330,17 +338,14 @@ namespace Bybit.Net.Clients.V5
 
         #endregion
 
-        #region Get Historic Volatility
+        #region Get Historical Volatility
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BybitHistoricalVolatility>>> GetHistoricalVolatilityAsync(Category category, string? baseAsset = null, int? period = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BybitHistoricalVolatility>>> GetHistoricalVolatilityAsync(string? baseAsset = null, int? period = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default)
         {
-            if (category != Category.Option)
-                throw new ArgumentException("Invalid category; should be Option");
-
             var parameters = new Dictionary<string, object>()
             {
-                { "category", EnumConverter.GetString(category) },
+                { "category", EnumConverter.GetString(Category.Option) },
             };
             parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
@@ -368,7 +373,7 @@ namespace Bybit.Net.Clients.V5
         #region Get Risk Limit
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BybitResponse<BybitRiskLimit>>> GetRiskLimitAsync(Category category, string? symbol = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BybitResponse<BybitRiskLimit>>> GetRiskLimitAsync(Category category, string? symbol = null, string? cursor = null, CancellationToken ct = default)
         {
             if (category != Category.Linear && category != Category.Inverse)
                 throw new ArgumentException("Invalid category; should be Linear or Inverse");
@@ -378,6 +383,7 @@ namespace Bybit.Net.Clients.V5
                 { "category", EnumConverter.GetString(category) }
             };
             parameters.AddOptionalParameter("symbol", symbol);
+            parameters.AddOptionalParameter("cursor", cursor);
 
             return await _baseClient.SendRequestAsync<BybitResponse<BybitRiskLimit>>(_baseClient.GetUrl("v5/market/risk-limit"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
@@ -437,5 +443,32 @@ namespace Bybit.Net.Clients.V5
         }
 
         #endregion
+
+        #region Get Long Short Ratio
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BybitLongShortRatio>>> GetLongShortRatioAsync(Category category, string symbol, DataPeriod period, int? limit = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection()
+            {
+                { "symbol", symbol }
+            };
+            parameters.AddEnum("category", category);
+            parameters.AddEnum("period", period);
+            parameters.AddOptional("limit", limit);
+
+            var result = await _baseClient.SendRequestAsync<BybitList<BybitLongShortRatio>>(_baseClient.GetUrl("v5/market/account-ratio"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            if (!result || result.Data == null)
+                return result.As<IEnumerable<BybitLongShortRatio>>(default);
+
+            if (result.Data.List == null)
+                return result.As<IEnumerable<BybitLongShortRatio>>(Array.Empty<BybitLongShortRatio>());
+
+            return result.As(result.Data.List);
+        }
+
+
+        #endregion
+
     }
 }

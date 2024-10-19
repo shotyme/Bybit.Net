@@ -1,16 +1,13 @@
 ﻿using Bybit.Net.Enums;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bybit.Net.Objects.Models.V5
 {
     /// <summary>
     /// Set risk limit info
     /// </summary>
-    public class BybitSetRiskLimit
+    public record BybitSetRiskLimit
     {
         /// <summary>
         /// The risk id

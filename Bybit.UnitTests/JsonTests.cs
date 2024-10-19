@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CryptoExchange.Net.Interfaces;
 using Bybit.Net.UnitTests;
-using Bybit.Net.Testing;
 using Bybit.Net.Objects;
 using Bybit.Net.Clients;
+using Bybit.UnitTests;
 
 namespace Bybit.Net.UnitTests
 {
@@ -15,207 +15,12 @@ namespace Bybit.Net.UnitTests
         private JsonToObjectComparer<BybitRestClient> _comparer = new JsonToObjectComparer<BybitRestClient>((json) => TestHelpers.CreateResponseClient(json, x =>
         {
             x.ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "123");
-            x.SpotOptions.RateLimiters = new List<IRateLimiter>();
+            x.RateLimiterEnabled = false;
             x.SpotOptions.OutputOriginalData = true;
-            x.InverseFuturesOptions.RateLimiters = new List<IRateLimiter>();
-            x.InverseFuturesOptions.OutputOriginalData = true;
-            x.InversePerpetualOptions.RateLimiters = new List<IRateLimiter>();
-            x.InversePerpetualOptions.OutputOriginalData = true;
-            x.UsdPerpetualOptions.RateLimiters = new List<IRateLimiter>();
-            x.UsdPerpetualOptions.OutputOriginalData = true;
-            x.DerivativesOptions.RateLimiters = new List<IRateLimiter>();
             x.DerivativesOptions.OutputOriginalData = true;
-            x.V5Options.RateLimiters = new List<IRateLimiter>();
             x.V5Options.OutputOriginalData = true;
         },
             System.Net.HttpStatusCode.OK));
-
-        [Test]
-        public async Task ValidateFuturesAccountCalls()
-        {
-            await _comparer.ProcessSubject("InversePerpetual/Account", c => c.InversePerpetualApi.Account,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetWalletFundHistoryAsync", "data" },
-                    { "GetWithdrawalHistoryAsync", "data" }
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "GetWithdrawalHistoryAsync", new List<string> { "current_page", "last_page" } },
-                    { "GetPositionAsync", new List<string> { "oc_calc_data" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { }
-                );
-        }
-
-        [Test]
-        public async Task ValidateFuturesExchangeDataCalls()
-        {
-            await _comparer.ProcessSubject("InversePerpetual/ExchangeData", c => c.InversePerpetualApi.ExchangeData,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { }
-                );
-        }
-
-        [Test]
-        public async Task ValidateFuturesTradingCalls()
-        {
-            await _comparer.ProcessSubject("InversePerpetual/Trading", c => c.InversePerpetualApi.Trading,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetUserTradesAsync", "trade_list" }
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "GetOpenOrderRealTimeAsync", new List<string> { "ext_fields" } },
-                    { "GetOpenOrdersRealTimeAsync", new List<string> { "ext_fields" } },
-                    { "GetOpenConditionalOrderRealTimeAsync", new List<string> { "ext_fields" } },
-                    { "GetOpenConditionalOrdersRealTimeAsync", new List<string> { "ext_fields" } },
-                    { "SetTradingStopAsync", new List<string> { "oc_calc_data", "ext_fields" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { "clientOrderId" }
-                );
-        }
-
-        [Test]
-        public async Task ValidateSpotAccountCalls()
-        {
-            await _comparer.ProcessSubject("Spot/Account", c => c.SpotApiV1.Account,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetBalancesAsync", "balances" }
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { }
-                );
-        }
-
-        [Test]
-        public async Task ValidateSpotTradingCalls()
-        {
-            await _comparer.ProcessSubject("Spot/Trading", c => c.SpotApiV1.Trading,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "PlaceOrderAsync", new List<string>{ "executedQty" } },
-                    { "CancelOrderAsync", new List<string>{ "executedQty" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { "clientOrderId" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateSpotExchangeDataCalls()
-        {
-            await _comparer.ProcessSubject("Spot/ExchangeData", c => c.SpotApiV1.ExchangeData,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "GetKlinesAsync", new List<string>() { "CloseTime" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateGeneralTransferCalls()
-        {
-            await _comparer.ProcessSubject("General/Transfer", c => c.GeneralApi.Transfer,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateGeneralDepositWithdrawalCalls()
-        {
-            await _comparer.ProcessSubject("General/DepositWithdraw", c => c.GeneralApi.WithdrawDeposit,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetSupportedDepositMethodsAsync", "config_list" },
-                    { "GetAssetInfoAsync", "rows" },
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateUsdPerpetualAccountCalls()
-        {
-            await _comparer.ProcessSubject("UsdPerpetual/Account", c => c.UsdPerpetualApi.Account,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateUsdPerpetualExchangeDataCalls()
-        {
-            await _comparer.ProcessSubject("UsdPerpetual/ExchangeData", c => c.UsdPerpetualApi.ExchangeData,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "GetKlinesAsync", new List<string>{ "id", "period", "start_at" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-
-                );
-        }
-
-        [Test]
-        public async Task ValidateUsdPerpetualTradingCalls()
-        {
-            await _comparer.ProcessSubject("UsdPerpetual/Trading", c => c.UsdPerpetualApi.Trading,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "GetUserTradesAsync", new List<string> { "trade_time" } },
-                    { "GetOpenConditionalOrdersRealTimeAsync", new List<string> { "ext_fields" } },
-                    { "GetOpenConditionalOrderRealTimeAsync", new List<string> { "ext_fields" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" },
-                parametersToSetNull: new string[] { "clientOrderId" }
-                );
-        }
 
         [Test]
         public async Task ValidateCopyTradingAccountCalls()
@@ -350,58 +155,5 @@ namespace Bybit.Net.UnitTests
                 );
         }
 
-        [Test]
-        public async Task ValidateV5TradingCalls()
-        {
-            await _comparer.ProcessSubject("V5/Trading", c => c.V5Api.Trading,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetLeverageTokenOrderHistoryAsync", "list" }
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-                );
-        }
-
-        [Test]
-        public async Task ValidateV5AccountCalls()
-        {
-            await _comparer.ProcessSubject("V5/Account", c => c.V5Api.Account,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetAccountTypesAsync", "accounts" }
-                },
-                ignoreProperties: new Dictionary<string, List<string>>
-                {
-                    { "AddOrReduceMarginAsync", new List<string>{ "category" } }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-                );
-        }
-
-        [Test]
-        public async Task ValidateV5SubAccountCalls()
-        {
-            await _comparer.ProcessSubject("V5/SubAccount", c => c.V5Api.SubAccount,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string>
-                {
-                    { "GetSubAccountsAsync", "subMembers" }
-                },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-                );
-        }
-
-        [Test]
-        public async Task ValidateV5ExchangeDataCalls()
-        {
-            await _comparer.ProcessSubject("V5/ExchangeData", c => c.V5Api.ExchangeData,
-                useNestedJsonPropertyForCompare: new Dictionary<string, string> {
-                },
-                ignoreProperties: new Dictionary<string, List<string>> { },
-                useNestedJsonPropertyForAllCompare: new List<string> { "result" }
-                );
-        }
     }
 }

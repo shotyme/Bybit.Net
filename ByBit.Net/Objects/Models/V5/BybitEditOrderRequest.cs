@@ -8,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Request info
     /// </summary>
-    public class BybitEditOrderRequest
+    public record BybitEditOrderRequest
     {
         /// <summary>
         /// Edit by order id
@@ -26,10 +26,10 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonProperty("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Order quantity
+        /// New order quantity
         /// </summary>
-        [JsonProperty("qty"), JsonConverter(typeof(DecimalToStringConverter))]
-        public decimal Quantity { get; set; }
+        [JsonProperty("qty", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(DecimalToStringConverter))]
+        public decimal? Quantity { get; set; }
         /// <summary>
         /// Price if order type is not market
         /// </summary>
@@ -70,5 +70,26 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonProperty("orderIv", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(DecimalToStringConverter))]
         public decimal? OrderImpliedVolatility { get; set; }
+        /// <summary>
+        /// Take profit/Stop loss mode
+        /// </summary>
+        [JsonProperty("tpslMode", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(EnumConverter))]
+        public StopLossTakeProfitMode? TakeProfitStopLossMode { get; set; }
+        /// <summary>
+        /// Stop Loss Trigger price type
+        /// </summary>
+        [JsonProperty("slTriggerBy", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(EnumConverter))]
+        public TriggerType? StopLossTriggerBy { get; set; }
+        /// <summary>
+        /// Take Profit Trigger price type
+        /// </summary>
+        [JsonProperty("tpTriggerBy", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(EnumConverter))]
+        public TriggerType? TakeProfitTriggerBy { get; set; }
+    }
+
+    internal record BybitSocketEditOrderRequest : BybitEditOrderRequest
+    {
+        [JsonProperty("category"), JsonConverter(typeof(EnumConverter))]
+        public Category Category { get; set; }
     }
 }

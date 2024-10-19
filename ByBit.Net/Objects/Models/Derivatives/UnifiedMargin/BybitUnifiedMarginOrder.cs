@@ -1,13 +1,11 @@
-﻿using Bybit.Net.Converters;
-using Bybit.Net.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Bybit.Net.Objects.Models.Derivatives.UnifiedMargin
 {
     /// <summary>
     /// Order
     /// </summary>
-    public class BybitUnifiedMarginOrder : BybitDerivativesOrder
+    public record BybitUnifiedMarginOrder : BybitDerivativesOrder
     {
         /// <summary>
         /// Implied volatility

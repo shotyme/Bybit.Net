@@ -19,8 +19,8 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/cancel-all" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
-        /// <param name="baseAsset">Filter by base asset</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="baseAsset">Filter by base asset, for example `ETH`</param>
         /// <param name="settleAsset">Filter by settle asset</param>
         /// <param name="orderFilter">Order filter</param>
         /// <param name="stopOrderType">Stop order type</param>
@@ -33,7 +33,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/cancel-order" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="orderId">Cancel by order id</param>
         /// <param name="clientOrderId">Cancel by client order id</param>
         /// <param name="orderFilter">Order filter</param>
@@ -46,7 +46,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/amend-order" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="orderId">Order id of the order to edit</param>
         /// <param name="clientOrderId">Client order id of the order to edit</param>
         /// <param name="quantity">New quantity</param>
@@ -98,34 +98,35 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Get spot borrow quota
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/spot-borrow-quota" /></para>
         /// </summary>
-        /// <param name="category">Category</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="side">Side</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitBorrowQuota>> GetBorrowQuotaAsync(Category category, string symbol, OrderSide side, CancellationToken ct = default);
+        Task<WebCallResult<BybitBorrowQuota>> GetBorrowQuotaAsync(string symbol, OrderSide side, CancellationToken ct = default);
 
         /// <summary>
         /// Get delivery history
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/asset/delivery" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
         /// <param name="expiryDate">Filter by expiry date</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
         /// <param name="limit">Number of results per page</param>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitResponse<BybitDeliveryRecord>>> GetDeliveryHistoryAsync(Category category, string? symbol = null, DateTime? expiryDate = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitResponse<BybitDeliveryRecord>>> GetDeliveryHistoryAsync(Category category, string? symbol = null, DateTime? expiryDate = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get real-time open orders
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/open-order" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
-        /// <param name="baseAsset">Filter by base asset</param>
-        /// <param name="settleAsset">Filter by settle asset</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="baseAsset">Filter by base asset, for example `ETH`</param>
+        /// <param name="settleAsset">Filter by settle asset, for example `USDT`</param>
         /// <param name="orderId">Filter by order id</param>
         /// <param name="clientOrderId">Filter by client order id</param>
         /// <param name="openOnly">Open only</param>
@@ -141,8 +142,8 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/order-list" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
-        /// <param name="baseAsset">Filter by base asset</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="baseAsset">Filter by base asset, for example `ETH`</param>
         /// <param name="orderId">Filter by order id</param>
         /// <param name="clientOrderId">Filter by client order id</param>
         /// <param name="status">Filter by status</param>
@@ -160,9 +161,9 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/position" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
-        /// <param name="baseAsset">Filter by base asset</param>
-        /// <param name="settleAsset">Filter by settle asset</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="baseAsset">Filter by base asset, for example `ETH`</param>
+        /// <param name="settleAsset">Filter by settle asset, for example `USDT`</param>
         /// <param name="limit">Number of results per page</param>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
@@ -170,24 +171,36 @@ namespace Bybit.Net.Interfaces.Clients.V5
         Task<WebCallResult<BybitResponse<BybitPosition>>> GetPositionsAsync(Category category, string? symbol = null, string? baseAsset = null, string? settleAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
+        /// Confirm risk limit after being marked as only reducing positions
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/position/confirm-mmr" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult> ConfirmRiskLimitAsync(Category category, string symbol, CancellationToken ct = default);
+
+        /// <summary>
         /// Get settlement history
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/asset/settlement" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
         /// <param name="limit">Number of results per page</param>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitResponse<BybitSettlementRecord>>> GetSettlementHistoryAsync(Category category, string? symbol = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitResponse<BybitSettlementRecord>>> GetSettlementHistoryAsync(Category category, string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get user trade history
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/position/execution" /></para>
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/execution" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
-        /// <param name="baseAsset">Filter by base asset</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
+        /// <param name="baseAsset">Filter by base asset, for example `ETH`</param>
         /// <param name="orderId">Filter by order id</param>
         /// <param name="clientOrderId">Filter by client order id</param>
         /// <param name="startTime">Filter by start time</param>
@@ -204,7 +217,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/create-order" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="side">Order side</param>
         /// <param name="type">Order type</param>
         /// <param name="quantity">Quantity</param>
@@ -271,16 +284,25 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/dcp" /></para>
         /// </summary>
         /// <param name="windowSeconds">Time after which to cancel all orders</param>
+        /// <param name="productType">Type of product, defaults to Options</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitBorrowQuota>> SetDisconnectCancelAllAsync(int windowSeconds, CancellationToken ct = default);
+        Task<WebCallResult> SetDisconnectCancelAllAsync(int windowSeconds, ProductType? productType = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get DiconnectCancelAll/dcp configuration
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/dcp-info" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BybitDcpStatus>>> GetDisconnectCancelAllConfigAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Set trading stop parameters
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/position/trading-stop" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="positionIdx">Position idx</param>
         /// <param name="takeProfit">Take profit price</param>
         /// <param name="stopLoss">Stop loss price</param>
@@ -321,7 +343,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/position/close-pnl" /></para>
         /// </summary>
         /// <param name="category">Category</param>
-        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="limit">Number of results per page</param>
@@ -331,7 +353,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         Task<WebCallResult<BybitResponse<BybitClosedPnl>>> GetClosedProfitLossAsync(Category category, string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Place multiple orders
+        /// Place multiple orders. Note that a successful response doesn't mean all orders were correctly processed; check the order results in the call response.
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-place" /></para>
         /// </summary>
         /// <param name="category">The category</param>
@@ -344,7 +366,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
             CancellationToken ct = default);
 
         /// <summary>
-        /// Cancel multiple orders
+        /// Cancel multiple orders. Note that a successful response doesn't mean all orders were correctly processed; check the order results in the call response.
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-cancel" /></para>
         /// </summary>
         /// <param name="category">The category</param>
@@ -357,7 +379,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
             CancellationToken ct = default);
 
         /// <summary>
-        /// Edit multiple orders
+        /// Edit multiple orders. Note that a successful response doesn't mean all orders were correctly processed; check the order results in the call response.
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/order/batch-amend" /></para>
         /// </summary>
         /// <param name="category">The category</param>
@@ -378,7 +400,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="clientOrderId">Custom order id</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitLeverageTokenRecord>> PurchaseLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitLeverageTokenPurchase>> PurchaseLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
 
         /// <summary>
         /// Redeem a leverage token
@@ -389,7 +411,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="clientOrderId">Custom order id</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitLeverageTokenRecord>> RedeemLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitLeverageTokenRedemption>> RedeemLeverageTokenAsync(string token, decimal quantity, string? clientOrderId = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get leverage token order history

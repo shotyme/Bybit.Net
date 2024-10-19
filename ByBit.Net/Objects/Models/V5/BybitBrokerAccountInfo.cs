@@ -7,7 +7,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Broker account info
     /// </summary>
-    public class BybitBrokerAccountInfo
+    public record BybitBrokerAccountInfo
     {
         /// <summary>
         /// Current sub account quantity
@@ -40,7 +40,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Rebate rate info
     /// </summary>
-    public class BybitBrokerRebateRate
+    public record BybitBrokerRebateRate
     {
         /// <summary>
         /// Spot rebate rate
@@ -52,5 +52,10 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonProperty("derivatives")]
         public string Derivatives { get; set; } = string.Empty;
+        /// <summary>
+        /// Convert rebate rate
+        /// </summary>
+        [JsonProperty("convert")]
+        public string? Convert { get; set; }
     }
 }

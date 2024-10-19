@@ -1,5 +1,4 @@
-﻿using Bybit.Net.Converters;
-using CryptoExchange.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -7,7 +6,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Marging status
     /// </summary>
-    public class BybitSpotMarginStatus
+    public record BybitSpotMarginStatus
     {
         /// <summary>
         /// Is spot margin mode activated

@@ -7,7 +7,7 @@ namespace Bybit.Net.Objects.Models.Spot.v3
     /// <summary>
     /// Ticker info
     /// </summary>
-    public class BybitSpotTickerV3
+    public record BybitSpotTickerV3
     {
         /// <summary>
         /// Timestamp of the data
@@ -24,12 +24,12 @@ namespace Bybit.Net.Objects.Models.Spot.v3
         /// Current best bid price
         /// </summary>
         [JsonProperty("bp")]
-        public decimal BestBidPrice { get; set; }
+        public decimal? BestBidPrice { get; set; }
         /// <summary>
         /// Current best ask price
         /// </summary>
         [JsonProperty("ap")]
-        public decimal BestAskPrice { get; set; }
+        public decimal? BestAskPrice { get; set; }
         /// <summary>
         /// Volume
         /// </summary>

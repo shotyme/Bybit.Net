@@ -1,4 +1,4 @@
-﻿using Bybit.Net.Converters;
+﻿using Bybit.Net.Enums;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 using System;
@@ -9,7 +9,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Api key info
     /// </summary>
-    public class BybitApiKeyInfo
+    public record BybitApiKeyInfo
     {
         /// <summary>
         /// Id
@@ -92,6 +92,30 @@ namespace Bybit.Net.Objects.Models.V5
         /// Is master
         /// </summary>
         public bool IsMaster { get; set; }
+
+        /// <summary>
+        /// Parent Uid, 0 if main account
+        /// </summary>
+        [JsonProperty("parentUid")]
+        public string? ParentUid { get; set; }
+
+        /// <summary>
+        /// Parent Uid, 0 if main account
+        /// </summary>
+        [JsonProperty("kycLevel"), JsonConverter(typeof(EnumConverter))]
+        public KycLevel? KycLevel { get; set; }
+
+        /// <summary>
+        /// Parent Uid, 0 if main account
+        /// </summary>
+        [JsonProperty("kycRegion")]
+        public string? KycRegion { get; set; }
+
+        /// <summary>
+        /// The type of api key. 1：personal, 2：connected to the third-party app
+        /// </summary>
+        [JsonProperty("type")]
+        public int ApiKeyType { get; set; }
         /// <summary>
         /// Permissions
         /// </summary>
@@ -113,7 +137,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Permission info
     /// </summary>
-    public class BybitPermissions
+    public record BybitPermissions
     {
         /// <summary>
         /// Contract trade permissions
@@ -151,5 +175,9 @@ namespace Bybit.Net.Objects.Models.V5
         /// NFT permissions
         /// </summary>
         public IEnumerable<string> NFT { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// Affiliate permissions
+        /// </summary>
+        public IEnumerable<string> Affiliate { get; set; } = Array.Empty<string>();
     }
 }

@@ -1,14 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Bybit.Net.Objects.Models.V5
 {
     /// <summary>
     /// Set Margin Mode result
     /// </summary>
-    public class BybitSetMarginModeResult
+    public record BybitSetMarginModeResult
     {
         /// <summary>
         /// Failure reasons. If empty it was successful
@@ -19,7 +18,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Reason
     /// </summary>
-    public class BybitReason
+    public record BybitReason
     {
         /// <summary>
         /// Reason code

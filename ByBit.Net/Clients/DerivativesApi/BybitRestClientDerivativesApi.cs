@@ -3,12 +3,13 @@ using Bybit.Net.Clients.DerivativesApi.UnifiedMarginApi;
 using Bybit.Net.Interfaces.Clients.DerivativesApi;
 using Bybit.Net.Interfaces.Clients.DerivativesApi.ContractApi;
 using Bybit.Net.Interfaces.Clients.DerivativesApi.UnifiedMarginApi;
-using Bybit.Net.Objects;
 using Bybit.Net.Objects.Internal;
 using Bybit.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 namespace Bybit.Net.Clients.DerivativesApi
 {
     /// <inheritdoc cref="IBybitRestClientDerivativesApi" />
-    public class BybitRestClientDerivativesApi : RestApiClient, IBybitRestClientDerivativesApi
+    internal class BybitRestClientDerivativesApi : RestApiClient, IBybitRestClientDerivativesApi
     {
         internal static TimeSyncState _timeSyncState = new TimeSyncState("Derivatives Api");
         /// <summary>
@@ -59,7 +60,7 @@ namespace Bybit.Net.Clients.DerivativesApi
             ContractApi = new BybitRestClientContractApi(this);
             UnifiedMarginApi = new BybitRestClientUnifiedMarginApi(this);
 
-            requestBodyFormat = RequestBodyFormat.FormData;
+            RequestBodyFormat = RequestBodyFormat.FormData;
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InUri;
         }
         #endregion
@@ -67,6 +68,9 @@ namespace Bybit.Net.Clients.DerivativesApi
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
             => new BybitAuthenticationProvider(credentials);
+
+        /// <inheritdoc />
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => baseAsset.ToUpperInvariant() + quoteAsset.ToUpperInvariant();
 
         /// <summary>
         /// Get url for an endpoint
@@ -83,11 +87,9 @@ namespace Bybit.Net.Clients.DerivativesApi
              HttpMethod method,
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
-             bool signed = false,
-             JsonSerializer? deserializer = null,
-             bool ignoreRatelimit = false) where T : class
+             bool signed = false) where T : class
         {
-            var result = await base.SendRequestAsync<BybitResult<T>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer, ignoreRatelimit: ignoreRatelimit).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitResult<T>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<BybitResult<T>>(default);
 
@@ -103,10 +105,9 @@ namespace Bybit.Net.Clients.DerivativesApi
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
              bool signed = false,
-             JsonSerializer? deserializer = null,
              bool ignoreRatelimit = false)
         {
-            var result = await base.SendRequestAsync<BybitCopyTradingResult<BybitList<T>>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer, ignoreRatelimit: ignoreRatelimit).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitCopyTradingResult<BybitList<T>>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<T>>(default);
 
@@ -122,10 +123,9 @@ namespace Bybit.Net.Clients.DerivativesApi
              CancellationToken cancellationToken,
              Dictionary<string, object>? parameters = null,
              bool signed = false,
-             JsonSerializer? deserializer = null,
              bool ignoreRatelimit = false)
         {
-            var result = await base.SendRequestAsync<BybitCopyTradingResult<T>>(uri, method, cancellationToken, parameters, signed, deserializer: deserializer, ignoreRatelimit: ignoreRatelimit).ConfigureAwait(false);
+            var result = await base.SendRequestAsync<BybitCopyTradingResult<T>>(uri, method, cancellationToken, parameters, signed, requestWeight: 0).ConfigureAwait(false);
             if (!result)
                 return result.As<T>(default);
 

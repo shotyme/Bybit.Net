@@ -1,10 +1,11 @@
-﻿using Bybit.Net.Testing;
-using Bybit.UnitTests;
+﻿using Bybit.UnitTests;
 using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.JsonNet;
 using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,49 +62,53 @@ namespace Bybit.Net.UnitTests
                     continue;
                 }
 
-                FileStream file = null;
-                try
+                for (var i = 0; i < 5; i++)
                 {
-                    var filePath = Path.Combine(path, $"{method.Name}.txt");
-                    file = File.OpenRead(filePath);
-                    unusedJsonFiles.Remove(filePath);
+                    FileStream file = null;
+                    try
+                    {
+                        var filePath = Path.Combine(path, $"{method.Name}{(i == 0 ? "" : i.ToString())}.txt");
+                        file = File.OpenRead(filePath);
+                        unusedJsonFiles.Remove(filePath);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        if (i == 0)
+                            skippedMethods.Add(method.Name);
+                        continue;
+                    }
+
+                    var buffer = new byte[file.Length];
+                    await file.ReadAsync(buffer, 0, buffer.Length);
+                    file.Close();
+
+                    var json = Encoding.UTF8.GetString(buffer);
+                    var client = _clientFunc(json);
+
+                    var parameters = method.GetParameters();
+                    var input = new List<object>();
+                    foreach (var parameter in parameters)
+                    {
+                        if (parametersToSetNull?.Contains(parameter.Name) == true && parameter.ParameterType != typeof(int))
+                            input.Add(null);
+                        else
+                            input.Add(TestHelpers.GetTestValue(parameter.ParameterType, 1));
+                    }
+
+                    // act
+                    var result = (CallResult)await TestHelpers.InvokeAsync(method, getSubject(client), input.ToArray());
+
+                    // asset
+                    ClassicAssert.Null(result.Error, method.Name);
+
+                    var resultProp = result.GetType().GetProperty("Data", BindingFlags.Public | BindingFlags.Instance);
+                    if (resultProp == null)
+                        // No result
+                        continue;
+
+                    var resultData = resultProp.GetValue(result);
+                    ProcessData(method.Name, resultData, json, useNestedJsonPropertyForCompare, useNestedJsonPropertyForAllCompare, ignoreProperties, takeFirstItemForCompare);
                 }
-                catch (FileNotFoundException)
-                {
-                    skippedMethods.Add(method.Name);
-                    continue;
-                }
-
-                var buffer = new byte[file.Length];
-                await file.ReadAsync(buffer, 0, buffer.Length);
-                file.Close();
-
-                var json = Encoding.UTF8.GetString(buffer);
-                var client = _clientFunc(json);
-
-                var parameters = method.GetParameters();
-                var input = new List<object>();
-                foreach (var parameter in parameters)
-                {
-                    if (parametersToSetNull?.Contains(parameter.Name) == true && parameter.ParameterType != typeof(int))
-                        input.Add(null);
-                    else
-                        input.Add(TestHelpers.GetTestValue(parameter.ParameterType, 1));
-                }
-
-                // act
-                var result = (CallResult)await TestHelpers.InvokeAsync(method, getSubject(client), input.ToArray());
-
-                // asset
-                Assert.Null(result.Error, method.Name);
-
-                var resultProp = result.GetType().GetProperty("Data", BindingFlags.Public | BindingFlags.Instance);
-                if (resultProp == null)
-                    // No result
-                    continue;
-
-                var resultData = resultProp.GetValue(result);
-                ProcessData(method.Name, resultData, json, useNestedJsonPropertyForCompare, useNestedJsonPropertyForAllCompare, ignoreProperties, takeFirstItemForCompare);
             }
 
             if (unusedJsonFiles.Any())
@@ -246,10 +251,8 @@ namespace Bybit.Net.UnitTests
 
             // Property has a value
             var property = resultProperties.SingleOrDefault(p => p.Item2?.PropertyName == prop.Name).p;
-            if (property is null)
-                property = resultProperties.SingleOrDefault(p => p.p.Name == prop.Name).p;
-            if (property is null)
-                property = resultProperties.SingleOrDefault(p => p.p.Name.ToUpperInvariant() == prop.Name.ToUpperInvariant()).p;
+            property ??= resultProperties.SingleOrDefault(p => p.p.Name == prop.Name).p;
+            property ??= resultProperties.SingleOrDefault(p => p.p.Name.ToUpperInvariant() == prop.Name.ToUpperInvariant()).p;
 
             if (property is null)
             {
@@ -364,7 +367,9 @@ namespace Bybit.Net.UnitTests
                 {
                     if (info.GetCustomAttribute<JsonConverterAttribute>(true) == null
                         && info.GetCustomAttribute<JsonPropertyAttribute>(true)?.ItemConverterType == null)
+                    {
                         CheckValues(method, propertyName, (JValue)propValue, propertyValue);
+                    }
                 }
             }
         }
@@ -409,7 +414,9 @@ namespace Bybit.Net.UnitTests
                         // timestamp, hard to check..
                     }
                     else if (jsonValue.Value<string>().ToLowerInvariant() != objectValue.ToString().ToLowerInvariant())
+                    {
                         throw new Exception($"{method}: {property} not equal: {jsonValue.Value<string>()} vs {objectValue.ToString()}");
+                    }
                 }
                 else if (jsonValue.Type == JTokenType.Integer)
                 {
@@ -425,6 +432,20 @@ namespace Bybit.Net.UnitTests
             catch (Exception)
             {
                 throw;
+            }
+        }
+        internal class EnumValueTraceListener : TraceListener
+        {
+            public override void Write(string message)
+            {
+                if (message.Contains("Cannot map"))
+                    throw new Exception("Enum value error: " + message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                if (message.Contains("Cannot map"))
+                    throw new Exception("Enum value error: " + message);
             }
         }
     }

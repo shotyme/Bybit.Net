@@ -1,15 +1,13 @@
 ﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bybit.Net.Objects.Models.V5
 {
     /// <summary>
     /// Volatility info
     /// </summary>
-    public class BybitHistoricalVolatility
+    public record BybitHistoricalVolatility
     {
         /// <summary>
         /// Period

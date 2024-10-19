@@ -1,5 +1,4 @@
-﻿using Bybit.Net.Converters;
-using CryptoExchange.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -7,7 +6,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Risk limit info
     /// </summary>
-    public class BybitRiskLimit
+    public record BybitRiskLimit
     {
         /// <summary>
         /// Risk limit id

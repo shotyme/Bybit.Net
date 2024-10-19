@@ -23,6 +23,11 @@ namespace Bybit.Net.Enums
         [Map("TrailingStop")]
         TrailingStop,
         /// <summary>
+        /// Trailing profit
+        /// </summary>
+        [Map("TrailingProfit")]
+        TrailingProfit,
+        /// <summary>
         /// Stop
         /// </summary>
         [Map("Stop")]
@@ -42,6 +47,11 @@ namespace Bybit.Net.Enums
         /// </summary>
         [Map("tpslOrder")]
         TpSlOrder,
+        /// <summary>
+        /// Oco Order
+        /// </summary>
+        [Map("OcoOrder")]
+        OcoOrder,
         /// <summary>
         /// MmRateClose (only from web)
         /// </summary>

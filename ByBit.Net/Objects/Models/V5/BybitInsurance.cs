@@ -5,13 +5,18 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Insurance pool info
     /// </summary>
-    public class BybitInsurance
+    public record BybitInsurance
     {
         /// <summary>
         /// The asset
         /// </summary>
         [JsonProperty("coin")]
         public string Asset { get; set; } = string.Empty;
+        /// <summary>
+        /// Symbols
+        /// </summary>
+        [JsonProperty("symbols")]
+        public string Symbols { get; set; } = string.Empty;
         /// <summary>
         /// Balance
         /// </summary>

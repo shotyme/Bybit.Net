@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using Bybit.Net.Clients;
 using Bybit.Net.Clients.SpotApi;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Objects.Sockets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Bybit.UnitTests
 {
@@ -20,7 +21,7 @@ namespace Bybit.UnitTests
         {
             var assembly = Assembly.GetAssembly(typeof(BybitRestClient));
             var ignore = new string[] { "IBybitClient" };
-            var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBybitClient") && !ignore.Contains(t.Name));
+            var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBybitClient") && !t.Name.EndsWith("Shared") && !ignore.Contains(t.Name));
 
             foreach (var clientInterface in clientInterfaces)
             {
@@ -29,7 +30,7 @@ namespace Bybit.UnitTests
                 foreach (var method in implementation.GetMethods().Where(m => m.ReturnType.IsAssignableTo(typeof(Task)) && m.GetBaseDefinition().DeclaringType != typeof(BybitRestClientBaseSpotApi)))
                 {
                     var interfaceMethod = clientInterface.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
-                    Assert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
+                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
                     methods++;
                 }
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
@@ -42,7 +43,7 @@ namespace Bybit.UnitTests
             var assembly = Assembly.GetAssembly(typeof(BybitSocketClient));
             var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBybitSocketClient"));
 
-            foreach (var clientInterface in clientInterfaces.Where(t => t.Name != "IBybitSocketClientBaseApi"))
+            foreach (var clientInterface in clientInterfaces.Where(t => t.Name != "IBybitSocketClientBaseApi" && !t.Name.EndsWith("Shared")))
             {
                 var implementation = assembly.GetTypes().First(t => t.IsAssignableTo(clientInterface) && t != clientInterface);
                 int methods = 0;
@@ -63,7 +64,7 @@ namespace Bybit.UnitTests
                     if (method.Name == "SubscribeToLiquidationUpdatesAsync")
                         continue;
                     
-                    Assert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
+                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
                     methods++;
                 }
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");

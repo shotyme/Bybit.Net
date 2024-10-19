@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace Bybit.Net.Clients.DerivativesApi.ContractApi
 {
     /// <inheritdoc />
-    public class BybitClientUnifiedMarginApiAccount : IBybitRestClientContractApiAccount
+    internal class BybitClientUnifiedMarginApiAccount : IBybitRestClientContractApiAccount
     {
         private readonly BybitRestClientDerivativesApi _baseClient;
 
@@ -278,7 +278,7 @@ namespace Bybit.Net.Clients.DerivativesApi.ContractApi
         #region SetTradeModeAsync
 
         /// <inheritdoc />
-        public async Task<WebCallResult> SetTradeModeAsync(string symbol, TradeMode tradeMode, decimal buyLeverage, decimal sellLeverage, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult> SetTradeModeAsync(string symbol, Bybit.Net.Enums.TradeMode tradeMode, decimal buyLeverage, decimal sellLeverage, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>()
             {

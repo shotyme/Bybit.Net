@@ -8,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Delivery record
     /// </summary>
-    public class BybitDeliveryRecord
+    public record BybitDeliveryRecord
     {
         /// <summary>
         /// Delivery time
@@ -43,6 +43,7 @@ namespace Bybit.Net.Objects.Models.V5
         /// <summary>
         /// Realized profit and loss
         /// </summary>
+        [JsonProperty("deliveryRpl")]
         public decimal RealizedPnl { get; set; }
     }
 }

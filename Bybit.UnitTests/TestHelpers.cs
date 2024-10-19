@@ -14,61 +14,16 @@ using System.Collections;
 using Bybit.Net.Clients;
 using Bybit.Net.Objects.Options;
 
-namespace Bybit.Net.Testing
+namespace Bybit.UnitTests
 {
     public class TestHelpers
     {
-        [ExcludeFromCodeCoverage]
-        public static bool PublicInstancePropertiesEqual<T>(T self, T to, params string[] ignore) where T : class
-        {
-            if (self != null && to != null)
-            {
-                var type = self.GetType();
-                var ignoreList = new List<string>(ignore);
-                foreach (var pi in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    if (ignoreList.Contains(pi.Name))
-                    {
-                        continue;
-                    }
-
-                    var selfValue = type.GetProperty(pi.Name).GetValue(self, null);
-                    var toValue = type.GetProperty(pi.Name).GetValue(to, null);
-
-                    if (pi.PropertyType.IsClass && !pi.PropertyType.Module.ScopeName.Equals("System.Private.CoreLib.dll"))
-                    {
-                        // Check of "CommonLanguageRuntimeLibrary" is needed because string is also a class
-                        if (PublicInstancePropertiesEqual(selfValue, toValue, ignore))
-                        {
-                            continue;
-                        }
-
-                        return false;
-                    }
-
-                    if (selfValue != toValue && (selfValue == null || !selfValue.Equals(toValue)))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return self == to;
-        }
-
         public static BybitRestClient CreateClient(Action<BybitRestOptions> options = null)
         {
             BybitRestClient client;
             client = options != null ? new BybitRestClient(options) : new BybitRestClient();
-            client.SpotApiV1.RequestFactory = Mock.Of<IRequestFactory>();
             client.SpotApiV3.RequestFactory = Mock.Of<IRequestFactory>();
             client.CopyTradingApi.RequestFactory = Mock.Of<IRequestFactory>();
-            client.GeneralApi.RequestFactory = Mock.Of<IRequestFactory>();
-            client.InverseFuturesApi.RequestFactory = Mock.Of<IRequestFactory>();
-            client.InversePerpetualApi.RequestFactory = Mock.Of<IRequestFactory>();
-            client.UsdPerpetualApi.RequestFactory = Mock.Of<IRequestFactory>();
             client.DerivativesApi.RequestFactory = Mock.Of<IRequestFactory>();
             client.V5Api.RequestFactory = Mock.Of<IRequestFactory>();
             return client;
@@ -76,7 +31,7 @@ namespace Bybit.Net.Testing
 
         public static BybitRestClient CreateResponseClient(string response, Action<BybitRestOptions> options = null, HttpStatusCode code = HttpStatusCode.OK)
         {
-            var client = (BybitRestClient)CreateClient(options);
+            var client = CreateClient(options);
             SetResponse(client, response, code);
             return client;
         }
@@ -98,25 +53,10 @@ namespace Bybit.Net.Testing
             request.Setup(c => c.GetResponseAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
             request.Setup(c => c.GetHeaders()).Returns(new Dictionary<string, IEnumerable<string>>());
 
-            var factory = Mock.Get(client.SpotApiV1.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
-                .Returns(request.Object);
-             factory = Mock.Get(client.SpotApiV3.RequestFactory);
+            var factory = Mock.Get(client.SpotApiV3.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
                 .Returns(request.Object);
             factory = Mock.Get(client.CopyTradingApi.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
-                .Returns(request.Object);
-            factory = Mock.Get(client.GeneralApi.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
-                .Returns(request.Object);
-            factory = Mock.Get(client.InverseFuturesApi.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
-                .Returns(request.Object);
-            factory = Mock.Get(client.InversePerpetualApi.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
-                .Returns(request.Object);
-            factory = Mock.Get(client.UsdPerpetualApi.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
                 .Returns(request.Object);
             factory = Mock.Get(client.DerivativesApi.RequestFactory);
@@ -143,7 +83,7 @@ namespace Bybit.Net.Testing
                 return (decimal?)(i / 100m);
 
             if (type == typeof(int))
-                return i+1;
+                return i + 1;
 
             if (type == typeof(int?))
                 return (int?)i;
@@ -180,7 +120,7 @@ namespace Bybit.Net.Testing
                 return result;
             }
 
-            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
             {
                 var result = (IList)Activator.CreateInstance(type)!;
                 result.Add(GetTestValue(type.GetGenericArguments()[0], 0));

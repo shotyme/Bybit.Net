@@ -7,8 +7,14 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// User trade info
     /// </summary>
-    public class BybitUserTradeUpdate : BybitUserTrade
+    public record BybitUserTradeUpdate : BybitUserTrade
     {
+        /// <summary>
+        /// Profit and Loss for a position execution
+        /// </summary>
+        [JsonProperty("execPnl")]
+        public decimal? Pnl { get; set; }
+
         /// <summary>
         /// Category
         /// </summary>

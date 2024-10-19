@@ -1,5 +1,4 @@
-﻿using Bybit.Net.Converters;
-using Bybit.Net.Enums;
+﻿using Bybit.Net.Enums;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 using System;
@@ -9,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Linear/Inverse ticker
     /// </summary>
-    public class BybitLinearInverseTicker
+    public record BybitLinearInverseTicker
     {
         /// <summary>
         /// Symbol
@@ -19,22 +18,22 @@ namespace Bybit.Net.Objects.Models.V5
         /// Best bid price
         /// </summary>
         [JsonProperty("bid1Price")]
-        public decimal BestBidPrice { get; set; }
+        public decimal? BestBidPrice { get; set; }
         /// <summary>
         /// Best bid quantity
         /// </summary>
         [JsonProperty("bid1Size")]
-        public decimal BestBidQuantity { get; set; }
+        public decimal? BestBidQuantity { get; set; }
         /// <summary>
         /// Best ask price
         /// </summary>
         [JsonProperty("ask1Price")]
-        public decimal BestAskPrice { get; set; }
+        public decimal? BestAskPrice { get; set; }
         /// <summary>
         /// Best ask quantity
         /// </summary>
         [JsonProperty("ask1Size")]
-        public decimal BestAskQuantity { get; set; }
+        public decimal? BestAskQuantity { get; set; }
         /// <summary>
         /// Last trade price
         /// </summary>
@@ -120,5 +119,20 @@ namespace Bybit.Net.Objects.Models.V5
         /// Predicted delivery price
         /// </summary>
         public decimal? PredictedDeliveryPrice { get; set; }
+        /// <summary>
+        /// Estimated pre-market contract open price
+        /// </summary>
+        [JsonProperty("preOpenPrice")]
+        public decimal? PreOpenPrice { get; set; }
+        /// <summary>
+        /// Estimated pre-market contract open qty
+        /// </summary>
+        [JsonProperty("preQty")]
+        public decimal? PreOpenQuantity { get; set; }
+        /// <summary>
+        /// The current pre-market contract phase
+        /// </summary>
+        [JsonProperty("curPreListingPhase")]
+        public AuctionPhase? PreListingPhase { get; set; }
     }
 }

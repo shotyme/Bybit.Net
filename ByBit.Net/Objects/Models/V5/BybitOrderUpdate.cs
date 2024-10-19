@@ -7,8 +7,14 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// User order update
     /// </summary>
-    public class BybitOrderUpdate : BybitOrder
+    public record BybitOrderUpdate : BybitOrder
     {
+        /// <summary>
+        /// Closed profit and loss for a close position order.
+        /// </summary>
+        [JsonProperty("closedPnl")]
+        public decimal? ClosedPnl { get; set; }
+
         /// <summary>
         /// Category
         /// </summary>

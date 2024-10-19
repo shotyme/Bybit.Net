@@ -38,6 +38,11 @@ namespace Bybit.Net.Enums
         [Map("LIQUIDATION")]
         Liquidation,
         /// <summary>
+        /// Auto deleveraging
+        /// </summary>
+        [Map("ADL")]
+        Adl,
+        /// <summary>
         /// Airdrop
         /// </summary>
         [Map("AIRDROP")]
@@ -67,6 +72,11 @@ namespace Bybit.Net.Enums
         /// </summary>
         [Map("CURRENCY_BUY")]
         CurrencyBuy,
+        /// <summary>
+        /// Currency sell
+        /// </summary>
+        [Map("CURRENCY_SELL")]
+        CurrencySell,
         /// <summary>
         /// </summary>
         [Map("BORROWED_AMOUNT_INS_LOAN")]
@@ -134,6 +144,62 @@ namespace Bybit.Net.Enums
         /// <summary>
         /// </summary>
         [Map("FIXED_STAKING_SUBSCRIPTION")]
-        FixedStakingSubscription
+        FixedStakingSubscription,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_TRANSFER_OUT")]
+        PreMarketTransferOut,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_DELIVERY_SELL_NEW_COIN")]
+        PreMarketDeliverySellNewAsset,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_DELIVERY_BUY_NEW_COIN")]
+        PreMarketDeliveryBuyNewAsset,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_DELIVERY_PLEDGE_PAY_SELLER")]
+        PreMarketDeliveryPledgePaySeller,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_DELIVERY_PLEDGE_BACK")]
+        PreMarketDeliveryPledgeBack,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_ROLLBACK_PLEDGE_BACK")]
+        PreMarketRollbackPledgeBack,
+        /// <summary>
+        /// </summary>
+        [Map("PREMARKET_ROLLBACK_PLEDGE_PENALTY_TO_BUYER")]
+        PreMarketRollbackPledgePenaltyToBuyer,
+        /// <summary>
+        /// </summary>
+        [Map("CUSTODY_NETWORK_FEE")]
+        CustodyNetworkFee,
+        /// <summary>
+        /// </summary>
+        [Map("CUSTODY_SETTLE_FEE")]
+        CustodySettleFee,
+        /// <summary>
+        /// </summary>
+        [Map("CUSTODY_LOCK")]
+        CustodyLock,
+        /// <summary>
+        /// </summary>
+        [Map("CUSTODY_UNLOCK")]
+        CustodyUnlock,
+        /// <summary>
+        /// </summary>
+        [Map("CUSTODY_UNLOCK_REFUND")]
+        CustodyUnlockRefund,
+        /// <summary>
+        /// </summary>
+        [Map("LOANS_BORROW_FUNDS")]
+        LoansBorrowFunds,
+        /// <summary>
+        /// </summary>
+        [Map("LOANS_ASSET_REDEMPTION")]
+        LoansAssetRedemption,
     }
 }

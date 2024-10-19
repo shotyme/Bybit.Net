@@ -3,14 +3,13 @@ using CryptoExchange.Net.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Bybit.Net.Objects.Models.V5
 {
     /// <summary>
     /// Order book info
     /// </summary>
-    public class BybitOrderbook
+    public record BybitOrderbook
     {
         /// <summary>
         /// Symbol
@@ -37,14 +36,19 @@ namespace Bybit.Net.Objects.Models.V5
         /// Update id
         /// </summary>
         [JsonProperty("u")]
-        public int UpdateId { get; set; }
+        public long UpdateId { get; set; }
+        /// <summary>
+        /// Cross sequence
+        /// </summary>
+        [JsonProperty("seq")]
+        public long? Sequence { get; set; }
     }
 
     /// <summary>
     /// Order book entry
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BybitOrderbookEntry : ISymbolOrderBookEntry
+    public record BybitOrderbookEntry : ISymbolOrderBookEntry
     {
         /// <summary>
         /// Price of the entry

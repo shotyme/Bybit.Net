@@ -8,7 +8,7 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// User trade info
     /// </summary>
-    public class BybitUserTrade
+    public record BybitUserTrade
     {
         /// <summary>
         /// Symbol
@@ -93,6 +93,10 @@ namespace Bybit.Net.Objects.Models.V5
         /// Is maker
         /// </summary>
         public bool IsMaker { get; set; }
+        /// <summary>
+        /// Whether to borrow. Unified spot only
+        /// </summary>
+        public bool? IsLeverage { get; set; }
         /// <summary>
         /// Spot trading fee asset
         /// </summary>

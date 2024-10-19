@@ -9,8 +9,14 @@ namespace Bybit.Net.Objects.Models.V5
     /// <summary>
     /// Position info
     /// </summary>
-    public class BybitPosition
+    public record BybitPosition
     {
+        /// <summary>
+        /// Category
+        /// </summary>
+        [JsonProperty("category")]
+        [JsonConverter(typeof(EnumConverter))]
+        public Category Category { get; set; }
         /// <summary>
         /// Position mode
         /// </summary>
@@ -58,7 +64,7 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonProperty("positionValue")]
         public decimal? PositionValue { get; set; }
         /// <summary>
-        /// Trade mode
+        /// Trade mode. Only valid for Classic and UTA (inverse)
         /// </summary>
         [JsonConverter(typeof(EnumConverter))]
         public TradeMode TradeMode { get; set; }
@@ -66,7 +72,7 @@ namespace Bybit.Net.Objects.Models.V5
         /// Position status
         /// </summary>
         [JsonConverter(typeof(EnumConverter))]
-        public PositionStatus PositionStatus { get; set; }
+        public PositionStatus? PositionStatus { get; set; }
         /// <summary>
         /// Leverage
         /// </summary>
@@ -99,7 +105,7 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonConverter(typeof(EnumConverter))]
         [JsonProperty("tpslMode")]
-        public StopLossTakeProfitMode TakeProfitStopLossMode { get; set; }
+        public StopLossTakeProfitMode? TakeProfitStopLossMode { get; set; }
         /// <summary>
         /// Take profit price
         /// </summary>
@@ -123,6 +129,11 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonProperty("cumRealisedPnl")]
         public decimal? RealizedPnl { get; set; }
         /// <summary>
+        /// The realised PnL for the current holding position
+        /// </summary>
+        [JsonProperty("curRealisedPnl")]
+        public decimal? CurrentRealizedPnl { get; set; }
+        /// <summary>
         /// Auto deleverage rank indicator
         /// </summary>
         [JsonProperty("adlRankIndicator")]
@@ -132,13 +143,13 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonProperty("createdTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
         /// <summary>
         /// Updated timestamp
         /// </summary>
         [JsonProperty("updatedTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
         /// <summary>
         /// Whether to add margin automatically
         /// </summary>
@@ -149,5 +160,53 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonProperty("positionBalance")]
         public decimal? PositionBalance { get; set; }
+        /// <summary>
+        /// Is reduce only position
+        /// </summary>
+        [JsonProperty("isReduceOnly")]
+        public bool? IsReduceOnly { get; set; }
+        /// <summary>
+        /// When IsReduceOnly = true: the timestamp when the MMR will be forcibly adjusted by the system. When IsReduceOnly = false: the timestamp when the MMR had been adjusted by system
+        /// </summary>
+        [JsonProperty("mmrSysUpdatedTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime? MaintenanceMarginUpdateTime { get; set; }
+        /// <summary>
+        /// When IsReduceOnly = true: the timestamp when the leverage will be forcibly adjusted by the system. When IsReduceOnly = false: the timestamp when the leverage had been adjusted by system
+        /// </summary>
+        [JsonProperty("leverageSysUpdatedTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime? LeverageUpdateTime { get; set; }
+        /// <summary>
+        /// Cross sequence, used to associate each fill and each position update
+        /// </summary>
+        [JsonProperty("seq")]
+        public long Sequence { get; set; }
+
+        /// <summary>
+        /// USDC contract session average price, it is the same figure as avg entry price shown in the web UI
+        /// </summary>
+        [JsonProperty("sessionAvgPrice")]
+        public decimal? SessionAveragePrice { get; set; }
+        /// <summary>
+        /// Delta, unique field for option
+        /// </summary>
+        [JsonProperty("delta")]
+        public decimal? Delta { get; set; }
+        /// <summary>
+        /// Gamma, unique field for option
+        /// </summary>
+        [JsonProperty("gamma")]
+        public decimal? Gamma { get; set; }
+        /// <summary>
+        /// Vega, unique field for option
+        /// </summary>
+        [JsonProperty("vega")]
+        public decimal? Vega { get; set; }
+        /// <summary>
+        /// Theta, unique field for option
+        /// </summary>
+        [JsonProperty("theta")]
+        public decimal? Theta { get; set; }
     }
 }
