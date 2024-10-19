@@ -6,3 +6,7 @@
 4.) Optional: Rewrite your main branch so that any commits of yours that aren't already in upstream/main are replayed on top of that other branch: `git rebase upstream/main`  
 5.) Merge upstream/main into your main branch: `git merge upstream/main`
 6.) Push your updated main branch to origin: `git push origin main`
+
+## Broker
+
+BybitRestOptions -> Referer
