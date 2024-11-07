@@ -52,7 +52,7 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public string ExchangeName => "Bybit";
 
-        internal string _referer = "Zx000356";
+        internal string _referer = "tvhub";
 
         #region ctor
         internal BybitRestClientApi(ILogger logger, HttpClient? httpClient, BybitRestOptions options) :
