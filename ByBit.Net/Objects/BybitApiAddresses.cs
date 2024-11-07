@@ -56,7 +56,16 @@
         public static BybitApiAddresses Turkey = new BybitApiAddresses
         {
             RestBaseAddress = "https://api.bybit-tr.com",
-            SocketBaseAddress = "wss://stream.bybit.com" // As per Telegram support, normal address should be used for websockets
+            SocketBaseAddress = "wss://stream.bybit-tr.com"
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from Kazakhstan
+        /// </summary>
+        public static BybitApiAddresses Kazakhstan = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit.kz",
+            SocketBaseAddress = "wss://stream.bybit.kz"
         };
 
         /// <summary>
