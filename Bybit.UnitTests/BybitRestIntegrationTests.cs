@@ -3,6 +3,7 @@ using Bybit.Net.Objects;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,11 @@ namespace Bybit.Net.UnitTests
             var sec = Environment.GetEnvironmentVariable("APISECRET");
 
             Authenticated = key != null && sec != null;
-            return new BybitRestClient(null, loggerFactory, opts =>
+            return new BybitRestClient(null, loggerFactory, Options.Create(new Objects.Options.BybitRestOptions
             {
-                opts.OutputOriginalData = true;
-                opts.ApiCredentials = Authenticated ? new ApiCredentials(key, sec) : null;
-            });
+                OutputOriginalData = true,
+                ApiCredentials = Authenticated ? new ApiCredentials(key, sec) : null
+            }));
         }
 
         [Test]
@@ -96,7 +97,7 @@ namespace Bybit.Net.UnitTests
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetDeliveryPriceAsync(Enums.Category.Linear, default, default, default, default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLeverageTokensAsync(default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLeverageTokenMarketAsync("BTC3L", default), false);
-            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLongShortRatioAsync(Enums.Category.Linear, "ETHUSDT", Enums.DataPeriod.OneDay, default, default), false);
+            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLongShortRatioAsync(Enums.Category.Linear, "ETHUSDT", Enums.DataPeriod.OneDay, default, default, default, default), false);
         }
 
         [Test]
