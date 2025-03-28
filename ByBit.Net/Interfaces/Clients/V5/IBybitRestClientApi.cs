@@ -25,6 +25,14 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Endpoint for managing sub accounts
         /// </summary>
         IBybitRestClientApiSubAccounts SubAccount { get; }
+        /// <summary>
+        /// Endpoint for crypto loans
+        /// </summary>
+        IBybitRestClientApiCryptoLoan CryptoLoan { get; }
+        /// <summary>
+        /// Endpoints for Bybit Earn
+        /// </summary>
+        IBybitRestClientApiEarn Earn { get; }
 
         /// <summary>
         /// DEPRECATED; use <see cref="CryptoExchange.Net.SharedApis.ISharedClient" /> instead for common/shared functionality. See <see href="https://jkorf.github.io/CryptoExchange.Net/docs/index.html#shared" /> for more info.

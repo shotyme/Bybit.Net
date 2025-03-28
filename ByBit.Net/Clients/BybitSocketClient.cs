@@ -1,34 +1,19 @@
 ﻿using System;
 using Bybit.Net.Interfaces.Clients;
-using Bybit.Net.Interfaces.Clients.SpotApi.v3;
-using Bybit.Net.Interfaces.Clients.DerivativesApi.UnifiedMarginApi;
-using Bybit.Net.Interfaces.Clients.DerivativesApi.ContractApi;
-using Bybit.Net.Interfaces.Clients.DerivativesApi;
 using CryptoExchange.Net.Authentication;
 using Bybit.Net.Clients.V5;
 using Bybit.Net.Interfaces.Clients.V5;
 using Microsoft.Extensions.Logging;
 using Bybit.Net.Objects.Options;
-using Bybit.Net.Clients.DerivativesApi;
-using Bybit.Net.Clients.DerivativesApi.ContractApi;
-using Bybit.Net.Clients.DerivativesApi.UnifiedMarginApi;
-using Bybit.Net.Clients.SpotApi.v3;
 using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Options;
+using CryptoExchange.Net.Objects.Options;
 
 namespace Bybit.Net.Clients
 {
     /// <inheritdoc cref="IBybitSocketClient" />
     public class BybitSocketClient : BaseSocketClient, IBybitSocketClient
     {
-        /// <inheritdoc />
-        public IBybitSocketClientSpotApiV3 SpotV3Api { get; }
-        /// <inheritdoc />
-        public IBybitSocketClientDerivativesPublicApi DerivativesApi { get; }
-        /// <inheritdoc />
-        public IBybitSocketClientUnifiedMarginApi UnifiedMarginApi { get; }
-        /// <inheritdoc />
-        public IBybitSocketClientContractApi ContractApi { get; }
         /// <inheritdoc />
         public IBybitSocketClientSpotApi V5SpotApi { get; }
         /// <inheritdoc />
@@ -58,17 +43,21 @@ namespace Bybit.Net.Clients
         {
             Initialize(options.Value);
 
-            SpotV3Api = AddApiClient(new BybitSocketClientSpotApiV3(_logger, options.Value));
-
-            DerivativesApi = AddApiClient(new BybitSocketClientDerivativesPublicApi(_logger, options.Value));
-            UnifiedMarginApi = AddApiClient(new BybitSocketClientUnifiedMarginApi(_logger, options.Value));
-            ContractApi = AddApiClient(new BybitSocketClientContractApi(_logger, options.Value));
-
             V5SpotApi = AddApiClient(new BybitSocketClientSpotApi(_logger, options.Value));
             V5InverseApi = AddApiClient(new BybitSocketClientInverseApi(_logger, options.Value));
             V5LinearApi = AddApiClient(new BybitSocketClientLinearApi(_logger, options.Value));
             V5OptionsApi = AddApiClient(new BybitSocketClientOptionApi(_logger, options.Value));
             V5PrivateApi = AddApiClient(new BybitSocketClientPrivateApi(_logger, options.Value));
+        }
+
+        /// <inheritdoc />
+        public void SetOptions(UpdateOptions options)
+        {
+            V5SpotApi.SetOptions(options);
+            V5InverseApi.SetOptions(options);
+            V5LinearApi.SetOptions(options);
+            V5OptionsApi.SetOptions(options);
+            V5PrivateApi.SetOptions(options);
         }
 
         /// <summary>
@@ -83,12 +72,9 @@ namespace Bybit.Net.Clients
         /// <inheritdoc />
         public void SetApiCredentials(ApiCredentials credentials)
         {
-            SpotV3Api.SetApiCredentials(credentials);
-            DerivativesApi.SetApiCredentials(credentials);
-            UnifiedMarginApi.SetApiCredentials(credentials);
-            ContractApi.SetApiCredentials(credentials);
             V5LinearApi.SetApiCredentials(credentials);
             V5OptionsApi.SetApiCredentials(credentials);
+            V5InverseApi.SetApiCredentials(credentials);
             V5PrivateApi.SetApiCredentials(credentials);
             V5SpotApi.SetApiCredentials(credentials);
         }

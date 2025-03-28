@@ -86,11 +86,24 @@ namespace Bybit.Net.Clients.V5
         #endregion
 
         #region Kline client
-        SubscribeKlineOptions IKlineSocketClient.SubscribeKlineOptions { get; } = new SubscribeKlineOptions(false);
+        SubscribeKlineOptions IKlineSocketClient.SubscribeKlineOptions { get; } = new SubscribeKlineOptions(false,
+            SharedKlineInterval.OneMinute,
+            SharedKlineInterval.ThreeMinutes,
+            SharedKlineInterval.FiveMinutes,
+            SharedKlineInterval.FifteenMinutes,
+            SharedKlineInterval.ThirtyMinutes,
+            SharedKlineInterval.OneHour,
+            SharedKlineInterval.TwoHours,
+            SharedKlineInterval.FourHours,
+            SharedKlineInterval.SixHours,
+            SharedKlineInterval.TwelveHours,
+            SharedKlineInterval.OneDay,
+            SharedKlineInterval.OneWeek,
+            SharedKlineInterval.OneMonth);
         async Task<ExchangeResult<UpdateSubscription>> IKlineSocketClient.SubscribeToKlineUpdatesAsync(SubscribeKlineRequest request, Action<ExchangeEvent<SharedKline>> handler, CancellationToken ct)
         {
-            var interval = (Enums.KlineInterval)request.Interval;
-            if (!Enum.IsDefined(typeof(Enums.KlineInterval), interval))
+            var interval = (KlineInterval)request.Interval;
+            if (!Enum.IsDefined(typeof(KlineInterval), interval))
                 return new ExchangeResult<UpdateSubscription>(Exchange, new ArgumentError("Interval not supported"));
 
             var validationError = ((IKlineSocketClient)this).SubscribeKlineOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);

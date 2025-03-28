@@ -1,6 +1,4 @@
-﻿using Bybit.Net.Interfaces.Clients.V5;
-using Bybit.Net.Enums;
-using Bybit.Net.Enums.V5;
+﻿using Bybit.Net.Enums;
 using Bybit.Net.Objects.Models.V5;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
@@ -198,6 +196,45 @@ namespace Bybit.Net.Interfaces.Clients.V5
             string? orderId = null,
             string? clientOrderId = null,
             OrderFilter? orderFilter = null,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Place multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/trade/guideline#request-parameters-2" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="orderRequests">Order requests</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<CallResult<BybitBatchResult<BybitBatchOrderId>[]>> PlaceMultipleOrdersAsync(
+            Category category,
+            IEnumerable<BybitPlaceOrderRequest> orderRequests,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Edit multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/trade/guideline#request-parameters-2" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="orderRequests">Order requests</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<CallResult<BybitBatchResult<BybitBatchOrderId>[]>> EditMultipleOrdersAsync(
+            Category category,
+            IEnumerable<BybitEditOrderRequest> orderRequests,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel multiple orders
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/trade/guideline#request-parameters-2" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="orderRequests">Order requests</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<CallResult<BybitBatchResult<BybitBatchOrderId>[]>> CancelMultipleOrdersAsync(
+            Category category,
+            IEnumerable<BybitCancelOrderRequest> orderRequests,
             CancellationToken ct = default);
 
         /// <summary>

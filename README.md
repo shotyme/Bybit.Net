@@ -74,17 +74,21 @@ CryptoExchange.Net also allows for [easy access to different exchange API's](htt
 |Bitfinex|[JKorf/Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net)|[![Nuget version](https://img.shields.io/nuget/v/Bitfinex.net.svg?style=flat-square)](https://www.nuget.org/packages/Bitfinex.Net)|
 |Bitget|[JKorf/Bitget.Net](https://github.com/JKorf/Bitget.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.Bitget.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.Bitget.Net)|
 |BitMart|[JKorf/BitMart.Net](https://github.com/JKorf/BitMart.Net)|[![Nuget version](https://img.shields.io/nuget/v/BitMart.net.svg?style=flat-square)](https://www.nuget.org/packages/BitMart.Net)|
+|BitMEX|[JKorf/BitMEX.Net](https://github.com/JKorf/BitMEX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.BitMEX.net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.BitMEX.Net)|
 |Coinbase|[JKorf/Coinbase.Net](https://github.com/JKorf/Coinbase.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.Coinbase.Net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.Coinbase.Net)|
 |CoinEx|[JKorf/CoinEx.Net](https://github.com/JKorf/CoinEx.Net)|[![Nuget version](https://img.shields.io/nuget/v/CoinEx.net.svg?style=flat-square)](https://www.nuget.org/packages/CoinEx.Net)|
 |CoinGecko|[JKorf/CoinGecko.Net](https://github.com/JKorf/CoinGecko.Net)|[![Nuget version](https://img.shields.io/nuget/v/CoinGecko.net.svg?style=flat-square)](https://www.nuget.org/packages/CoinGecko.Net)|
 |Crypto.com|[JKorf/CryptoCom.Net](https://github.com/JKorf/CryptoCom.Net)|[![Nuget version](https://img.shields.io/nuget/v/CryptoCom.net.svg?style=flat-square)](https://www.nuget.org/packages/CryptoCom.Net)|
+|DeepCoin|[JKorf/DeepCoin.Net](https://github.com/JKorf/DeepCoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/DeepCoin.net.svg?style=flat-square)](https://www.nuget.org/packages/DeepCoin.Net)|
 |Gate.io|[JKorf/GateIo.Net](https://github.com/JKorf/GateIo.Net)|[![Nuget version](https://img.shields.io/nuget/v/GateIo.net.svg?style=flat-square)](https://www.nuget.org/packages/GateIo.Net)|
 |HTX|[JKorf/HTX.Net](https://github.com/JKorf/HTX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.HTX.Net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.HTX.Net)|
+|HyperLiquid|[JKorf/HyperLiquid.Net](https://github.com/JKorf/HyperLiquid.Net)|[![Nuget version](https://img.shields.io/nuget/v/HyperLiquid.Net.svg?style=flat-square)](https://www.nuget.org/packages/HyperLiquid.Net)|
 |Kraken|[JKorf/Kraken.Net](https://github.com/JKorf/Kraken.Net)|[![Nuget version](https://img.shields.io/nuget/v/KrakenExchange.net.svg?style=flat-square)](https://www.nuget.org/packages/KrakenExchange.Net)|
 |Kucoin|[JKorf/Kucoin.Net](https://github.com/JKorf/Kucoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/Kucoin.net.svg?style=flat-square)](https://www.nuget.org/packages/Kucoin.Net)|
 |Mexc|[JKorf/Mexc.Net](https://github.com/JKorf/Mexc.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.Mexc.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.Mexc.Net)|
 |OKX|[JKorf/OKX.Net](https://github.com/JKorf/OKX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.OKX.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.OKX.Net)|
 |WhiteBit|[JKorf/WhiteBit.Net](https://github.com/JKorf/WhiteBit.Net)|[![Nuget version](https://img.shields.io/nuget/v/WhiteBit.net.svg?style=flat-square)](https://www.nuget.org/packages/WhiteBit.Net)|
+|XT|[JKorf/XT.Net](https://github.com/JKorf/XT.Net)|[![Nuget version](https://img.shields.io/nuget/v/XT.net.svg?style=flat-square)](https://www.nuget.org/packages/XT.Net)|
 
 ## Discord
 [![Nuget version](https://img.shields.io/discord/847020490588422145?style=for-the-badge)](https://discord.gg/MSpeEtSY8t)  
@@ -141,6 +145,10 @@ A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free t
 ## Support the project
 Any support is greatly appreciated.
 
+### Referal
+If you do not yet have an account please consider using this referal link to sign up:  
+[Link](https://partner.bybit.com/b/jkorf)
+
 ### Donate
 Make a one time donation in a crypto currency of your choice. If you prefer to donate a currency not listed here please contact me.
 
@@ -152,6 +160,70 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 4.4.0 - 24 Mar 2025
+    * Added socketClient.V5PrivateApi.PlaceMultipleOrdersAsync, EditMultipleOrdersAsync and CancelMultipleOrdersAsync requests
+    * Added SlippageTolerance support for orders
+
+* Version 4.3.2 - 03 Mar 2025
+    * Fix for restClient.V5Api.CryptoLoan.GetOpenLoansAsync deserialization
+
+* Version 4.3.1 - 25 Feb 2025
+    * Fixed restClient.V5Api.CryptoLoan.BorrowAsync parameter serialization
+
+* Version 4.3.0 - 20 Feb 2025
+    * Added Bybit Earn endpoints to restClient.V5Api.Earn
+    * Added socket SubscribeToAllLiquidationUpdatesAsync subscription
+    * Marked SubscribeToLiquidationUpdatesAsync as deprecated
+
+* Version 4.2.0 - 19 Feb 2025
+    * Added restClient.V5Api.ExchangeData.GetSpotMarginTieredCollateralRatioAsync endpoint
+    * Added restClient.V5Api.Account.GetTransferableAsync multi-asset overload and updated response model
+    * Added quoteAsset parameter to restClient.V5Api.ExchangeData.GetHistoricalVolatilityAsync endpoint
+    * Added support for RPI (RetailPriceImprovement) orders and data
+    * Fix for pagination in restClient.V5Api.SharedClient.GetKlinesAsync
+
+* Version 4.1.0 - 11 Feb 2025
+    * Updated CryptoExchange.Net to version 8.8.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added support for more SharedKlineInterval values
+    * Added setting of DataTime value on websocket DataEvent updates
+    * Fix Mono runtime exception on rest client construction using DI
+
+* Version 4.0.2 - 18 Jan 2025
+    * Added DepositLimit, DepositType and FromAddress to restClient.V5Api.Account.GetDepositsAsync response model
+    * Added DepositLimit and ContractAddress to restClient.V5Api.Account.GetDepositAddressAsync response model
+    * Added ContractAddress to restClient.V5Api.Account.GetAssetInfoAsync response model
+    * Added TradeId property to restClient.V5Api.Account.GetBrokerEarningsAsync response model
+    * Updated restClient.V5Api.ExchangeData.GetSpotSymbolsAsync PricePercentageFilter response model to new x/y limit value properties
+    * Fixed shared interfaces futures symbols request not returning full data set
+
+* Version 4.0.1 - 09 Jan 2025
+    * Fixed AveragePrice being null in BybitPosition and BybitPositionUpdate models
+
+* Version 4.0.0 - 07 Jan 2025
+    * Updated from Newtonsoft.Json to System.Text.Json
+    * Added CryptoLoan endpoints
+    * Added client side ratelimiting
+    * Added Type property to XTExchange class
+    * Updated CryptoExchange.Net version
+    * Updated some namespaces
+    * Removed deprecated V1/V2/V3 endpoints, models and enums
+
+* Version 3.19.2 - 03 Jan 2025
+    * Added RiskParameters properties to restClient.V5Api.ExchangeData.GetLinearInverseSymbolsAsync response model
+
+* Version 3.19.1 - 23 Dec 2024
+    * Fixed restClient.V5Api.SubAccount.EditSubAccountApiKeyAsync parameters not getting send
+
+* Version 3.19.0 - 23 Dec 2024
+    * Updated CryptoExchange.Net to version 8.5.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added SetOptions methods on Rest and Socket clients
+    * Added setting of DefaultProxyCredentials to CredentialCache.DefaultCredentials on the DI http client
+    * Improved websocket disconnect detection
+
+* Version 3.18.2 - 12 Dec 2024
+    * Added restClient.V5Api.Account.GetTransferableAsync endpoint
+    * Fixed socketClient.V5PrivateApi.CancelOrderAsync incorrect topic
+
 * Version 3.18.1 - 03 Dec 2024
     * Updated CryptoExchange.Net to version 8.4.3, see https://github.com/JKorf/CryptoExchange.Net/releases/
     * Fixed orderbook creation via BybitOrderBookFactory

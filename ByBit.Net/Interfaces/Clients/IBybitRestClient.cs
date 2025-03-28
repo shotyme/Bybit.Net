@@ -1,8 +1,6 @@
-﻿using Bybit.Net.Interfaces.Clients.CopyTradingApi;
-using Bybit.Net.Interfaces.Clients.DerivativesApi;
-using Bybit.Net.Interfaces.Clients.SpotApi.v3;
-using CryptoExchange.Net.Authentication;
+﻿using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects.Options;
 
 namespace Bybit.Net.Interfaces.Clients
 {
@@ -12,23 +10,15 @@ namespace Bybit.Net.Interfaces.Clients
     public interface IBybitRestClient: IRestClient
     {
         /// <summary>
-        /// Spot API endpoints (v3)
-        /// </summary>
-        IBybitRestClientSpotApiV3 SpotApiV3 { get; }
-        /// <summary>
-        /// Copy trading API endpoints
-        /// </summary>
-        IBybitRestClientCopyTradingApi CopyTradingApi { get; }
-
-        /// <summary>
-        /// Derivatives API endpoints
-        /// </summary>
-        IBybitRestClientDerivativesApi DerivativesApi { get; }
-
-        /// <summary>
         /// V5 API endpoints
         /// </summary>
         V5.IBybitRestClientApi V5Api { get; }
+
+        /// <summary>
+        /// Update specific options
+        /// </summary>
+        /// <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+        void SetOptions(UpdateOptions options);
 
         /// <summary>
         /// Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.

@@ -1,5 +1,4 @@
 ﻿using Bybit.Net.Enums;
-using Bybit.Net.Enums.V5;
 using Bybit.Net.Objects.Models.V5;
 using CryptoExchange.Net.Objects;
 using System;
@@ -65,7 +64,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// </summary>
         /// <param name="accountType">Account type</param>
         /// <param name="memberId">Member id</param>
-        /// <param name="asset">Asset, for example `ETH`</param>
+        /// <param name="asset">Asset, for example `ETH`. Can be specify multiple comma separated assets. Required for Unified account.</param>
         /// <param name="withBonus">Include bonus</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -484,7 +483,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="sellLeverage">Sell leverage</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult> SwitchCrossIsolatedMarginAsync(Category category, string symbol, Enums.TradeMode tradeMode, decimal buyLeverage, decimal sellLeverage, CancellationToken ct = default);
+        Task<WebCallResult> SwitchCrossIsolatedMarginAsync(Category category, string symbol, TradeMode tradeMode, decimal buyLeverage, decimal sellLeverage, CancellationToken ct = default);
 
         /// <summary>
         /// Switch position mode
@@ -496,7 +495,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="asset">Asset</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult> SwitchPositionModeAsync(Category category, Enums.V5.PositionMode mode, string? symbol = null, string? asset = null, CancellationToken ct = default);
+        Task<WebCallResult> SwitchPositionModeAsync(Category category, PositionMode mode, string? symbol = null, string? asset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Withdraw funds
@@ -682,5 +681,23 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<IEnumerable<BybitConvertTransaction>>> GetConvertHistoryAsync(ConvertAccountType? accountType = null, int? page = null, int? pageSize = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get quantity available for withdrawal/transfer from unified wallet
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/unified-trans-amnt" /></para>
+        /// </summary>
+        /// <param name="asset">Asset name</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BybitTransferable>> GetTransferableAsync(string asset, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get quantity available for withdrawal/transfer from unified wallet
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/unified-trans-amnt" /></para>
+        /// </summary>
+        /// <param name="assets">Asset names, can request up to 20 assets</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BybitTransferable>> GetTransferableAsync(IEnumerable<string> assets, CancellationToken ct = default);
     }
 }

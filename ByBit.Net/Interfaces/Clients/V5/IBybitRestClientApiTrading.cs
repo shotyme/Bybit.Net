@@ -1,5 +1,4 @@
 ﻿using Bybit.Net.Enums;
-using Bybit.Net.Enums.V5;
 using Bybit.Net.Objects.Models.V5;
 using CryptoExchange.Net.Objects;
 using System;
@@ -154,7 +153,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitResponse<BybitOrder>>> GetOrderHistoryAsync(Category category, string? symbol = null, string? baseAsset = null, string? orderId = null, string? clientOrderId = null, Enums.V5.OrderStatus? status = null, OrderFilter? orderFilter = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitResponse<BybitOrder>>> GetOrderHistoryAsync(Category category, string? symbol = null, string? baseAsset = null, string? orderId = null, string? clientOrderId = null, OrderStatus? status = null, OrderFilter? orderFilter = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get positions
@@ -245,6 +244,8 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="stopLossTakeProfitMode">StopLoss / TakeProfit mode</param>
         /// <param name="selfMatchPreventionType">Self match prevention type</param>
         /// <param name="marketUnit">The unit for qty when creating spot market orders for unified trading account</param>
+        /// <param name="slippageToleranceType">Slippage tolerance Type for market orders</param>
+        /// <param name="slippageTolerance">Slippage tolerance value</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BybitOrderId>> PlaceOrderAsync(
@@ -277,6 +278,8 @@ namespace Bybit.Net.Interfaces.Clients.V5
             StopLossTakeProfitMode? stopLossTakeProfitMode = null,
             SelfMatchPreventionType? selfMatchPreventionType = null,
             MarketUnit? marketUnit = null,
+            SlippageToleranceType? slippageToleranceType = null,
+            decimal? slippageTolerance = null,
             CancellationToken ct = default);
 
         /// <summary>
