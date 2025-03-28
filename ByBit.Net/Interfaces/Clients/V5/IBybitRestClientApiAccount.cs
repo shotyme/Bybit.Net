@@ -134,14 +134,6 @@ namespace Bybit.Net.Interfaces.Clients.V5
         Task<WebCallResult> DeleteApiKeyAsync(CancellationToken ct = default);
 
         /// <summary>
-        /// Delete the current API Key
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/user/rm-master-apikey" /></para>
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BybitAvailableBalance>> GetTransferableAmount(string coin, CancellationToken ct = default);
-
-        /// <summary>
         /// Get account types
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/user/wallet-type" /></para>
         /// </summary>

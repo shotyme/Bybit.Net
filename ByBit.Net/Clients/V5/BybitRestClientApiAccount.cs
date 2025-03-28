@@ -935,15 +935,6 @@ namespace Bybit.Net.Clients.V5
             return await _baseClient.SendAsync(request, null, ct).ConfigureAwait(false);
         }
 
-        public async Task<WebCallResult<BybitAvailableBalance>> GetTransferableAmount(string coin, CancellationToken ct = default)
-        {
-            var parameters = new Dictionary<string, object>()
-            {
-                { "coinName", coin }
-            };
-            return await _baseClient.SendRequestAsync<BybitAvailableBalance>(_baseClient.GetUrl("/v5/account/withdrawal"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
-        }
-
         #endregion
 
         #region Get Account Types
