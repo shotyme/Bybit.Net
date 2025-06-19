@@ -65,7 +65,7 @@ namespace Bybit.Net.Clients.V5
         /// </summary>
         /// <param name="ct">Cancelation token</param>
         /// <returns></returns>
-        Task<WebCallResult<List<BybitSubAccount>>> GetSubAccountsAsync(CancellationToken ct = default);
+        Task<WebCallResult<BybitSubAccount[]>> GetSubAccountsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Edit API key. Note that permissions starting with the same topic (for example `permissionContractTradeOrder` and `permissionContractTradePosition` or `permissionWalletTransfer` and `permissionWalletSubAccountTransfer`) can not be adjusted separately and should both be set when changing one of the values.
@@ -106,5 +106,16 @@ namespace Bybit.Net.Clients.V5
         /// <param name="ct">Cancelation token</param>
         /// <returns></returns>
         Task<WebCallResult> DeleteSubAccountApiKeyAsync(string? apiKey = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get deposit address for a sub account, only available for master account
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/asset/deposit/sub-deposit-addr" /></para>
+        /// </summary>
+        /// <param name="subAccountId"></param>
+        /// <param name="asset"></param>
+        /// <param name="network"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        Task<WebCallResult<BybitDepositAddress>> GetSubAccountDepositAddressAsync(string subAccountId, string asset, string network, CancellationToken ct = default);
     }
 }

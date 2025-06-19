@@ -8,12 +8,14 @@ Bybit.Net is a strongly typed client library for accessing the [Bybit REST and W
 * Input parameters and response values are mapped to discriptive enum values where possible
 * Automatic websocket (re)connection management 
 * Client side order book implementation
+* Support for managing different accounts
 * Extensive logging
 * Support for different environments (production, testnet, Hongkong, The Netherlands, Turkey, ..)
 * Easy integration with other exchange client based on the CryptoExchange.Net base library
+* Native AOT support
 
 ## Supported Frameworks
-The library is targeting both `.NET Standard 2.0` and `.NET Standard 2.1` for optimal compatibility
+The library is targeting both `.NET Standard 2.0` and `.NET Standard 2.1` for optimal compatibility, as well as dotnet 8.0 and 9.0 to use the latest framework features.
 
 |.NET implementation|Version Support|
 |--|--|
@@ -60,12 +62,12 @@ var tickerSubscriptionResult = socketClient.V5SpotApi.SubscribeToTickerUpdatesAs
 });
 ```
 
-For information on the clients, dependency injection, response processing and more see the [Bybit.Net documentation](https://jkorf.github.io/Bybit.Net), [CryptoExchange.Net documentation](https://jkorf.github.io/CryptoExchange.Net), or have a look at the examples [here](https://github.com/JKorf/Bybit.Net/tree/main/Examples) or [here](https://github.com/JKorf/CryptoExchange.Net/tree/master/Examples).
+For information on the clients, dependency injection, response processing and more see the [Bybit.Net documentation](https://cryptoexchange.jkorf.dev?library=Bybit.Net), [CryptoExchange.Net documentation](https://jkorf.github.io/CryptoExchange.Net), or have a look at the examples [here](https://github.com/JKorf/Bybit.Net/tree/main/Examples) or [here](https://github.com/JKorf/CryptoExchange.Net/tree/master/Examples).
 
 ## CryptoExchange.Net
 Bybit.Net is based on the [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net) base library. Other exchange API implementations based on the CryptoExchange.Net base library are available and follow the same logic.
 
-CryptoExchange.Net also allows for [easy access to different exchange API's](https://jkorf.github.io/CryptoExchange.Net#idocs_shared).
+CryptoExchange.Net also allows for [easy access to different exchange API's](https://cryptoexchange.jkorf.dev/client-libs/shared).
 
 |Exchange|Repository|Nuget|
 |--|--|--|
@@ -87,6 +89,7 @@ CryptoExchange.Net also allows for [easy access to different exchange API's](htt
 |Kucoin|[JKorf/Kucoin.Net](https://github.com/JKorf/Kucoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/Kucoin.net.svg?style=flat-square)](https://www.nuget.org/packages/Kucoin.Net)|
 |Mexc|[JKorf/Mexc.Net](https://github.com/JKorf/Mexc.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.Mexc.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.Mexc.Net)|
 |OKX|[JKorf/OKX.Net](https://github.com/JKorf/OKX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.OKX.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.OKX.Net)|
+|Toobit|[JKorf/Toobit.Net](https://github.com/JKorf/Toobit.Net)|[![Nuget version](https://img.shields.io/nuget/v/Toobit.net.svg?style=flat-square)](https://www.nuget.org/packages/Toobit.Net)|
 |WhiteBit|[JKorf/WhiteBit.Net](https://github.com/JKorf/WhiteBit.Net)|[![Nuget version](https://img.shields.io/nuget/v/WhiteBit.net.svg?style=flat-square)](https://www.nuget.org/packages/WhiteBit.Net)|
 |XT|[JKorf/XT.Net](https://github.com/JKorf/XT.Net)|[![Nuget version](https://img.shields.io/nuget/v/XT.net.svg?style=flat-square)](https://www.nuget.org/packages/XT.Net)|
 
@@ -160,6 +163,89 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 5.1.0 - 02 Jun 2025
+    * Updated CryptoExchange.Net to version 9.1.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added (I)BybitUserClientProvider allowing for easy client management when handling multiple users
+    * Added socketClient.V5LinearApi.SubscribeToInsurancePoolUpdatesAsync subscription
+    * Added socketClient.V5InverseApi.SubscribeToInsurancePoolUpdatesAsync subscription
+    * Added settleAsset parameter to restClient.V5Api.ExchangeData.GetDeliveryPriceAsync endpoint
+    * Added restClient.V5Api.SubAccount.GetSubAccountDepositAddressAsync endpoint
+    * Fixed serialization issues for Spread trading endpoints
+
+* Version 5.0.0 - 13 May 2025
+    * Updated CryptoExchange.Net to version 9.0.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added support for Native AOT compilation
+    * Added RateLimitUpdated event
+    * Added SharedSymbol response property to all Shared interfaces response models returning a symbol name
+    * Added GenerateClientOrderId method to V5 Shared client
+    * Added OptionalExchangeParameters and Supported properties to EndpointOptions
+    * Added support for Spread trading
+    * Added IBookTickerRestClient implementation to V5Api Shared client
+    * Added ISpotOrderClientIdClient implementation to V5Api Shared client
+    * Added IFuturesOrderClientIdClient implementation to V5Api Shared client
+    * Added ISpotTriggerOrderRestClient implementation to V5Api Shared client
+    * Added IFuturesTriggerOrderRestClient implementation to V5Api Shared client
+    * Added IFuturesTpSlRestClient implementation to V5Api Shared client
+    * Added TriggerPrice, IsTriggerOrder to SharedSpotOrder model
+    * Added TriggerPrice, IsTriggerOrder, StopLossPrice, TakeProfitPrice to SharedFuturesOrder model
+    * Added MaxLongLeverage, MaxShortLeverage to SharedFuturesSymbol model
+    * Added QuoteVolume property mapping to SharedSpotTicker model
+    * Added OnChain value to EarnCategory Enum
+    * Added All property to retrieve all available environment on BybitEnvironment
+    * Added missing Unknown value to OrderType Enum
+    * Added MaintenanceMarginDeduction property to BybitRiskLimit model
+    * Added DisplayName to BybitLinearInverseSymbol and BybitOptionSymbol models
+    * Refactored Shared clients quantity parameters and responses to use SharedQuantity
+    * Updated all IEnumerable response and model types to array response types
+    * Updated restClient.V5Api.Trading.PlaceMultipleOrdersAsync and socketClient.V5PrivateApi.PlaceMultipleOrdersAsync to return a list of CallResult models and an error if all orders fail to place
+    * Removed Newtonsoft.Json dependency
+    * Removed legacy ISpotClient implementation
+    * Removed legacy AddBybit(restOptions, socketOptions) DI overload
+    * Fixed incorrect DataTradeMode on certain Shared interface responses
+    * Fixed OrderPrice returned as 0 instead of null in socket order updates
+    * Fixed some list results being empty while there is data
+    * Fixed error in V5 Shared SubscribeToBookTickerUpdatesAsync subscription
+    * Fixed some typos
+
+* Version 5.0.0-beta3 - 01 May 2025
+    * Updated CryptoExchange.Net version to 9.0.0-beta5
+    * Added property to retrieve all available API environments
+
+* Version 5.0.0-beta2 - 23 Apr 2025
+    * Updated CryptoExchange.Net to version 9.0.0-beta2
+    * Added Shared spot ticker QuoteVolume mapping
+    * Fixed incorrect DataTradeMode on responses
+
+* Version 5.0.0-beta1 - 22 Apr 2025
+    * Updated CryptoExchange.Net to version 9.0.0-beta1, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added support for Native AOT compilation
+    * Added RateLimitUpdated event
+    * Added SharedSymbol response property to all Shared interfaces response models returning a symbol name
+    * Added GenerateClientOrderId method to V5 Shared client
+    * Added OptionalExchangeParameters and Supported properties to EndpointOptions
+    * Added support for Spread trading
+    * Added IBookTickerRestClient implementation to V5Api Shared client
+    * Added ISpotOrderClientIdClient implementation to V5Api Shared client
+    * Added IFuturesOrderClientIdClient implementation to V5Api Shared client
+    * Added ISpotTriggerOrderRestClient implementation to V5Api Shared client
+    * Added IFuturesTriggerOrderRestClient implementation to V5Api Shared client
+    * Added IFuturesTpSlRestClient implementation to V5Api Shared client
+    * Added TriggerPrice, IsTriggerOrder to SharedSpotOrder model
+    * Added TriggerPrice, IsTriggerOrder, StopLossPrice, TakeProfitPrice to SharedFuturesOrder model
+    * Added MaxLongLeverage, MaxShortLeverage to SharedFuturesSymbol model
+    * Added OnChain value to EarnCategory enum
+    * Refactored Shared clients quantity parameters and responses to use SharedQuantity
+    * Updated all IEnumerable response and model types to array response types
+    * Updated restClient.V5Api.Trading.PlaceMultipleOrdersAsync and socketClient.V5PrivateApi.PlaceMultipleOrdersAsync to return a list of CallResult models and an error if all orders fail to place
+    * Removed Newtonsoft.Json dependency
+    * Removed legacy ISpotClient implementation
+    * Removed legacy AddBybit(restOptions, socketOptions) DI overload
+    * Fixed error in V5 Shared SubscribeToBookTickerUpdatesAsync subscription
+    * Fixed some typos
+
+* Version 4.4.1 - 28 Mar 2025
+    * Removed incorrect id parameters checks from some endpoints
+
 * Version 4.4.0 - 24 Mar 2025
     * Added socketClient.V5PrivateApi.PlaceMultipleOrdersAsync, EditMultipleOrdersAsync and CancelMultipleOrdersAsync requests
     * Added SlippageTolerance support for orders
