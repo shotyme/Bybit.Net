@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
 {
     public class BybitAvailableBalance
     {
-        [JsonProperty("availableWithdrawal")]
+        [JsonPropertyName("availableWithdrawal")]
         public decimal? Available { get; set; }
     }
 }
