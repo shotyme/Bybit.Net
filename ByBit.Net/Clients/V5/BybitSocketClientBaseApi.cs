@@ -14,6 +14,9 @@ using Bybit.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Interfaces;
+using System.Net.WebSockets;
+using CryptoExchange.Net;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bybit.Net.Clients.V5
 {
@@ -28,10 +31,20 @@ namespace Bybit.Net.Clients.V5
         /// </summary>
         protected readonly string _baseEndpoint;
 
+        /// <summary>
+        /// Address to connect to for public data
+        /// </summary>
+        protected readonly string _wsPublicAddress;
+
+        protected override ErrorMapping ErrorMapping => BybitErrors.WebsocketErrors;
+
         internal BybitSocketClientBaseApi(ILogger log, BybitSocketOptions options, string baseEndpoint)
             : base(log, options.Environment.SocketBaseAddress, options, options.V5Options)
         {
             _baseEndpoint = baseEndpoint;
+            // For demo trading the live environment should be used for market data
+            _wsPublicAddress = options.Environment.Name == BybitEnvironment.DemoTrading.Name ? BybitEnvironment.Live.SocketBaseAddress : options.Environment.SocketBaseAddress;
+
 
             UnhandledMessageExpected = true;
             KeepAliveInterval = TimeSpan.Zero;
@@ -39,7 +52,7 @@ namespace Bybit.Net.Clients.V5
             MessageSendSizeLimit = 21000;
         }
 
-        protected override IByteMessageAccessor CreateAccessor() => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
+        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BybitExchange._serializerContext));
 
         /// <inheritdoc />
@@ -53,8 +66,8 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async virtual Task<CallResult<UpdateSubscription>> SubscribeToOrderbookUpdatesAsync(IEnumerable<string> symbols, int depth, Action<DataEvent<BybitOrderbook>> updateHandler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitOrderbook>(_logger, symbols.Select(s => $"orderbook.{depth}.{s}").ToArray(), updateHandler);
-            return await SubscribeAsync(BaseAddress + _baseEndpoint, subscription, ct).ConfigureAwait(false);
+            var subscription = new BybitOrderBookSubscription(_logger, this, symbols.Select(s => $"orderbook.{depth}.{s}").ToArray(), updateHandler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -64,8 +77,8 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async virtual Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(IEnumerable<string> symbols, KlineInterval interval, Action<DataEvent<BybitKlineUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitKlineUpdate[]>(_logger, symbols.Select(x => $"kline.{EnumConverter.GetString(interval)}.{x}").ToArray(), handler);
-            return await SubscribeAsync(BaseAddress + _baseEndpoint, subscription, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<BybitKlineUpdate[]>(_logger, this, symbols.Select(x => $"kline.{EnumConverter.GetString(interval)}.{x}").ToArray(), handler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -75,8 +88,8 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async virtual Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLiquidation>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitLiquidation>(_logger, symbols.Select(x => $"liquidation.{x}").ToArray(), handler);
-            return await SubscribeAsync(BaseAddress + _baseEndpoint, subscription, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<BybitLiquidation>(_logger, this, symbols.Select(x => $"liquidation.{x}").ToArray(), handler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -86,8 +99,42 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async virtual Task<CallResult<UpdateSubscription>> SubscribeToAllLiquidationUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLiquidationUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitLiquidationUpdate[]>(_logger, symbols.Select(x => $"allLiquidation.{x}").ToArray(), handler);
-            return await SubscribeAsync(BaseAddress + _baseEndpoint, subscription, ct).ConfigureAwait(false);
+            var subscription = new BybitSubscription<BybitLiquidationUpdate[]>(_logger, this, symbols.Select(x => $"allLiquidation.{x}").ToArray(), handler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public virtual Task<CallResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(string symbol, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default)
+            => SubscribeToPriceLimitUpdatesAsync(new string[] { symbol }, handler, ct);
+
+        /// <inheritdoc />
+        public async virtual Task<CallResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BybitSubscription<BybitOrderPriceLimit>(_logger, this, symbols.Select(x => $"priceLimit.{x}").ToArray(), 
+                x => 
+                { 
+                    x.Data.Timestamp = x.DataTime ?? x.ReceiveTime; 
+                    handler(x);
+                });
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async virtual Task<CallResult<UpdateSubscription>> SubscribeToSystemStatusUpdatesAsync(Action<DataEvent<BybitSystemStatus[]>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BybitSubscription<BybitSystemStatus[]>(_logger, this, ["system.status"], handler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath("/v5/public/misc/status"), subscription, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public virtual Task<CallResult<UpdateSubscription>> SubscribeToRpiOrderbookUpdatesAsync(string symbol, Action<DataEvent<BybitRpiOrderbook>> updateHandler, CancellationToken ct = default)
+            => SubscribeToRpiOrderbookUpdatesAsync(new string[] { symbol }, updateHandler, ct);
+
+        /// <inheritdoc />
+        public async virtual Task<CallResult<UpdateSubscription>> SubscribeToRpiOrderbookUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitRpiOrderbook>> updateHandler, CancellationToken ct = default)
+        {
+            var subscription = new BybitSubscription<BybitRpiOrderbook>(_logger, this, symbols.Select(s => $"orderbook.rpi.{s}").ToArray(), updateHandler);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
     }
 }

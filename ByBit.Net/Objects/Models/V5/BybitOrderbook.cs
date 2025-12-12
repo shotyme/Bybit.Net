@@ -36,6 +36,12 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime Timestamp { get; set; }
         /// <summary>
+        /// Timestamp the matching engine produced the data
+        /// </summary>
+        [JsonPropertyName("cts")]
+        [JsonConverter(typeof(DateTimeConverter))]
+        public DateTime MatchingEngineTimestamp { get; set; }
+        /// <summary>
         /// Update id
         /// </summary>
         [JsonPropertyName("u")]
@@ -57,7 +63,7 @@ namespace Bybit.Net.Objects.Models.V5
         /// <summary>
         /// Price of the entry
         /// </summary>
-        [ArrayProperty(0)]
+        [ArrayProperty(0), JsonConverter(typeof(DecimalConverter))]
         public decimal Price { get; set; }
         /// <summary>
         /// Quantity of the entry

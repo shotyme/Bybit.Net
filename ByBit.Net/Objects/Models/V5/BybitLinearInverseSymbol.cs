@@ -25,6 +25,12 @@ namespace Bybit.Net.Objects.Models.V5
         public string? DisplayName { get; set; }
 
         /// <summary>
+        /// Whether to prohibit unrealised profit withdrawal
+        /// </summary>
+        [JsonPropertyName("forbidUplWithdrawal")]
+        public bool? ForbidUnrealizedPnlWithdrawal { get; set; }
+
+        /// <summary>
         /// Contract type
         /// </summary>
         [JsonPropertyName("contractType")]
@@ -103,6 +109,11 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonPropertyName("isPreListing")]
         public bool IsPrelisting { get; set; }
+        /// <summary>
+        /// Symbol type
+        /// </summary>
+        [JsonPropertyName("symbolType")]
+        public SymbolType? SymbolType { get; set; }
 
         /// <summary>
         /// Prelisting information

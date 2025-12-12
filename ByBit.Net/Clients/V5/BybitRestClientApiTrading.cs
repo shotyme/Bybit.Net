@@ -13,6 +13,7 @@ using Bybit.Net.Objects.Internal;
 using System.Linq;
 using CryptoExchange.Net.RateLimiting.Guards;
 using System.Drawing;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bybit.Net.Clients.V5
 {
@@ -62,6 +63,8 @@ namespace Bybit.Net.Clients.V5
             MarketUnit? marketUnit = null,
             SlippageToleranceType? slippageToleranceType = null,
             decimal? slippageTolerance = null,
+            BboSideType? bboSideType = null,
+            int? bboLevel = null,
             CancellationToken ct = default
         )
         {
@@ -102,6 +105,8 @@ namespace Bybit.Net.Clients.V5
             parameters.AddOptionalParameter("marketUnit", EnumConverter.GetString(marketUnit));
             parameters.AddOptionalEnum("slippageToleranceType", slippageToleranceType);
             parameters.AddOptionalString("slippageTolerance", slippageTolerance);
+            parameters.AddOptionalEnum("bboSideType", bboSideType);
+            parameters.AddOptional("bboLevel", bboLevel);
 
             var limits = BybitExchange.RateLimiter.GetOrderLimits();
             var limit = category == Category.Spot ? limits.limitSpot : limits.limitOther;
@@ -109,6 +114,86 @@ namespace Bybit.Net.Clients.V5
             var request = _definitions.GetOrCreate("PlaceOrder" + categoryIdentifier, HttpMethod.Post, "v5/order/create", BybitExchange.RateLimiter.BybitRest, 1, true,
                 new SingleLimitGuard(limit, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BybitOrderId>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Pre Check Order
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitPreCheckResult>> PreCheckOrderAsync(Category category,
+            string symbol,
+            OrderSide side,
+            NewOrderType type,
+            decimal quantity,
+            decimal? price = null,
+            bool? isLeverage = null,
+            TriggerDirection? triggerDirection = null,
+            OrderFilter? orderFilter = null,
+            decimal? triggerPrice = null,
+            TriggerType? triggerBy = null,
+            decimal? orderIv = null,
+            TimeInForce? timeInForce = null,
+            PositionIdx? positionIdx = null,
+            string? clientOrderId = null,
+            OrderType? takeProfitOrderType = null,
+            decimal? takeProfit = null,
+            decimal? takeProfitLimitPrice = null,
+            OrderType? stopLossOrderType = null,
+            decimal? stopLoss = null,
+            decimal? stopLossLimitPrice = null,
+            TriggerType? takeProfitTriggerBy = null,
+            TriggerType? stopLossTriggerBy = null,
+            bool? reduceOnly = null,
+            bool? closeOnTrigger = null,
+            bool? marketMakerProtection = null,
+            StopLossTakeProfitMode? stopLossTakeProfitMode = null,
+            SelfMatchPreventionType? selfMatchPreventionType = null,
+            MarketUnit? marketUnit = null,
+            SlippageToleranceType? slippageToleranceType = null,
+            decimal? slippageTolerance = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection()
+            {
+                { "category", EnumConverter.GetString(category) },
+                { "symbol", symbol },
+                { "side", EnumConverter.GetString(side) },
+                { "orderType", EnumConverter.GetString(type) },
+                { "qty", quantity.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            if (isLeverage != null)
+                parameters.AddOptionalParameter("isLeverage", isLeverage.Value ? 1 : 0);
+            parameters.AddOptionalParameter("price", price?.ToString(CultureInfo.InvariantCulture));
+            if (triggerDirection != null)
+                parameters.AddOptionalParameter("triggerDirection", (int)triggerDirection);
+            parameters.AddOptionalParameter("orderFilter", EnumConverter.GetString(orderFilter));
+            parameters.AddOptionalParameter("triggerPrice", triggerPrice?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("triggerBy", EnumConverter.GetString(triggerBy));
+            parameters.AddOptionalParameter("orderIv", orderIv?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("timeInForce", EnumConverter.GetString(timeInForce));
+            parameters.AddOptionalParameter("positionIdx", positionIdx == null ? null : (int)positionIdx);
+            parameters.AddOptionalParameter("orderLinkId", clientOrderId);
+            parameters.AddOptionalParameter("takeProfit", takeProfit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("stopLoss", stopLoss?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("tpTriggerBy", EnumConverter.GetString(takeProfitTriggerBy));
+            parameters.AddOptionalParameter("slTriggerBy", EnumConverter.GetString(stopLossTriggerBy));
+            parameters.AddOptionalParameter("reduceOnly", reduceOnly);
+            parameters.AddOptionalParameter("closeOnTrigger", closeOnTrigger);
+            parameters.AddOptionalParameter("mmp", marketMakerProtection);
+            parameters.AddOptionalParameter("tpslMode", EnumConverter.GetString(stopLossTakeProfitMode));
+            parameters.AddOptionalParameter("tpOrderType", EnumConverter.GetString(takeProfitOrderType));
+            parameters.AddOptionalParameter("slOrderType", EnumConverter.GetString(stopLossOrderType));
+            parameters.AddOptionalParameter("tpLimitPrice", takeProfitLimitPrice?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("slLimitPrice", stopLossLimitPrice?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("smpType", EnumConverter.GetString(selfMatchPreventionType));
+            parameters.AddOptionalParameter("marketUnit", EnumConverter.GetString(marketUnit));
+            parameters.AddOptionalEnum("slippageToleranceType", slippageToleranceType);
+            parameters.AddOptionalString("slippageTolerance", slippageTolerance);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v5/order/pre-check", BybitExchange.RateLimiter.BybitRest, 1, true);
+            var result = await _baseClient.SendAsync<BybitPreCheckResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
@@ -134,16 +219,9 @@ namespace Bybit.Net.Clients.V5
             var request = _definitions.GetOrCreate("PlaceOrderBatch" + categoryIdentifier, HttpMethod.Post, "v5/order/create-batch", BybitExchange.RateLimiter.BybitRest, 1, true,
                 new SingleLimitGuard(limit, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendRawAsync<BybitList<BybitBatchOrderId>, BybitList<BybitBatchResult>>(request, parameters, ct, singleLimiterWeight: orderRequests.Count()).ConfigureAwait(false);
-            if (!result || result.Data == null)
-            {
-                if (result.Error?.Code == 404)
-                    return result.AsError<CallResult<BybitBatchOrderId>[]>(new ServerError(404, "Received 404 response; make sure your account is UTA PRO"));
-
-                return result.As<CallResult<BybitBatchOrderId>[]>(default);
-            }
 
             if (result.Data.ReturnCode != 0)
-                return result.AsError<CallResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, result.Data.ReturnMessage));
+                return result.AsError<CallResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, _baseClient.GetErrorInfo(result.Data.ReturnCode, result.Data.ReturnMessage)));
 
             var resultList = new List<CallResult<BybitBatchOrderId>>(); 
             var resultItems = result.Data.Result.List.ToArray();
@@ -152,10 +230,13 @@ namespace Bybit.Net.Clients.V5
             {                
                 var resultItem = resultItems[index++];
                 if (item.Code != 0)
-                    resultList.Add(new CallResult<BybitBatchOrderId>(new ServerError(item.Code, item.Message!)));
+                    resultList.Add(new CallResult<BybitBatchOrderId>(new ServerError(item.Code, _baseClient.GetErrorInfo(item.Code, item.Message!))));
                 else
                     resultList.Add(new CallResult<BybitBatchOrderId>(resultItem));
             }
+
+            if (resultList.All(x => !x.Success))
+                return result.AsErrorWithData<CallResult<BybitBatchOrderId>[]>(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All order failed")), resultList.ToArray());
 
             return result.As<CallResult<BybitBatchOrderId>[]>(resultList.ToArray());
         }
@@ -237,7 +318,7 @@ namespace Bybit.Net.Clients.V5
                 return result.As<BybitBatchResult<BybitBatchOrderId>[]>(default);
 
             if (result.Data.ReturnCode != 0)
-                return result.AsError<BybitBatchResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, result.Data.ReturnMessage));
+                return result.AsError<BybitBatchResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, _baseClient.GetErrorInfo(result.Data.ReturnCode, result.Data.ReturnMessage)));
 
             var resultList = new List<BybitBatchResult<BybitBatchOrderId>>();
             var resultItems = result.Data.Result.List.ToArray();
@@ -316,7 +397,7 @@ namespace Bybit.Net.Clients.V5
                 return result.As<BybitBatchResult<BybitBatchOrderId>[]>(default);
 
             if (result.Data.ReturnCode != 0)
-                return result.AsError<BybitBatchResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, result.Data.ReturnMessage));
+                return result.AsError<BybitBatchResult<BybitBatchOrderId>[]>(new ServerError(result.Data.ReturnCode, _baseClient.GetErrorInfo(result.Data.ReturnCode, result.Data.ReturnMessage)));
 
             var resultList = new List<BybitBatchResult<BybitBatchOrderId>>();
             var resultItems = result.Data.Result.List.ToArray(); 

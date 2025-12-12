@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using System.Collections.Generic;
@@ -9,19 +10,17 @@ namespace Bybit.Net.Objects.Sockets.Queries
 {
     internal class BybitOptionsQuery : Query<BybitOptionsQueryResponse>
     {
-        public override HashSet<string> ListenerIdentifiers { get; set; }
-
         public BybitOptionsQuery(string op, params object[] args) : base(new BybitRequestMessage { RequestId = ExchangeHelpers.NextId().ToString(), Operation = op, Args = args?.ToArray() }, false, 1)
         {
-            ListenerIdentifiers = new HashSet<string>() { "resp" + string.Join("-", args!.OrderBy(a => a)) };
+            MessageMatcher = MessageMatcher.Create<BybitOptionsQueryResponse>("resp" + string.Join("-", args!.OrderBy(a => a)), HandleMessage);
         }
 
-        public override CallResult<BybitOptionsQueryResponse> HandleMessage(SocketConnection connection, DataEvent<BybitOptionsQueryResponse> message)
+        public CallResult<BybitOptionsQueryResponse> HandleMessage(SocketConnection connection, DataEvent<BybitOptionsQueryResponse> message)
         {
             if (!message.Data.Success)
-                return new CallResult<BybitOptionsQueryResponse>(new ServerError(message.Data.Message));
+                return new CallResult<BybitOptionsQueryResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.Message }), message.OriginalData);
 
-            return new CallResult<BybitOptionsQueryResponse>(message.Data);
+            return message.ToCallResult();
         }
     }
 }

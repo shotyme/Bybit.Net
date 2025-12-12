@@ -28,21 +28,18 @@ namespace Bybit.Net.Objects.Models.V5
         /// <summary>
         /// Symbol status
         /// </summary>
-
         [JsonPropertyName("status")]
         public SymbolStatus Status { get; set; }
         /// <summary>
         /// Margin trade status
         /// </summary>
-
         [JsonPropertyName("marginTrading")]
         public MarginTrading MarginTrading { get; set; }
         /// <summary>
-        /// Is innovation
+        /// Symbol type
         /// </summary>
-        [JsonConverter(typeof(BoolConverter))]
-        [JsonPropertyName("innovation")]
-        public bool Innovation { get; set; }
+        [JsonPropertyName("symbolType")]
+        public SymbolType? SymbolType { get; set; }
         /// <summary>
         /// Lot size order filter
         /// </summary>
@@ -119,6 +116,21 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonPropertyName("maxOrderAmt")]
         public decimal MaxOrderValue { get; set; }
+        /// <summary>
+        ///	Maximum Market order quantity
+        /// </summary>
+        [JsonPropertyName("maxMarketOrderQty")]
+        public decimal MaxMarketOrderQuantity { get; set; }
+        /// <summary>
+        /// Maximum Limit order quantity
+        /// </summary>
+        [JsonPropertyName("maxLimitOrderQty")]
+        public decimal MaxLimitOrderQuantity { get; set; }
+        /// <summary>
+        /// Maximum order quantity for post-only limit orders
+        /// </summary>
+        [JsonPropertyName("postOnlyMaxLimitOrderSize")]
+        public decimal PostOnlyMaxLimitOrderQuantity { get; set; }
     }
 
     /// <summary>

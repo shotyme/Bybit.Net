@@ -44,7 +44,7 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.Account.GetAssetInfoAsync(), "GetAssetInfo", ignoreProperties: new List<string> { "chainDeposit", "chainWithdraw" });
             await tester.ValidateAsync(client => client.V5Api.Account.GetWithdrawalsAsync(), "GetWithdrawals", skipResponseValidation: true);
             await tester.ValidateAsync(client => client.V5Api.Account.GetDelayedWithdrawQuantityAsync("ETH"), "GetDelayedWithdrawQuantity");
-            await tester.ValidateAsync(client => client.V5Api.Account.WithdrawAsync("ETH", "ERC20", "123", 1), "Withdraw");
+            await tester.ValidateAsync(client => client.V5Api.Account.WithdrawAsync("ETH", "ERC20", "123", 1, WithdrawAccountType.Fund), "Withdraw");
             await tester.ValidateAsync(client => client.V5Api.Account.CancelWithdrawalAsync("123"), "CancelWithdrawal");
             await tester.ValidateAsync(client => client.V5Api.Account.GetApiKeyInfoAsync(), "GetApiKeyInfo");
             await tester.ValidateAsync(client => client.V5Api.Account.EditApiKeyAsync(), "EditApiKey");
@@ -65,6 +65,8 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.Account.ConvertConfirmQuoteAsync("123"), "ConvertConfirmQuote", "result");
             await tester.ValidateAsync(client => client.V5Api.Account.GetConvertStatusAsync(Enums.ConvertAccountType.ConvertFunding, "123"), "GetConvertStatus", "result.result", ignoreProperties: new List<string> { "extInfo" });
             await tester.ValidateAsync(client => client.V5Api.Account.GetConvertHistoryAsync(Enums.ConvertAccountType.ConvertFunding), "GetConvertHistory", "result.list", ignoreProperties: new List<string> { "extInfo" });
+            await tester.ValidateAsync(client => client.V5Api.Account.SetPriceLimitBehaviorAsync(Category.Spot, false), "SetPriceLimitBehavior");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetWithdrawAddressListAsync(), "GetWithdrawAddressList");
         }
 
         [Test]
@@ -103,6 +105,8 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetSpreadOrderBookAsync("123"), "GetSpreadOrderBook", nestedJsonProperty: "result", ignoreProperties: ["cts"]);
             await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetSpreadTickersAsync("123"), "GetSpreadTickers", nestedJsonProperty: "result.list", useSingleArrayItem: true);
             await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetSpreadRecentTradesAsync("123"), "GetSpreadRecentTrades", nestedJsonProperty: "result.list");
+            await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetOrderPriceLimitAsync("123"), "GetOrderPriceLimit", nestedJsonProperty: "result");
+            await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetSystemStatusAsync(), "GetSystemStatus", nestedJsonProperty: "result.list");
         }
 
         [Test]
@@ -142,6 +146,7 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.Trading.GetOpenSpreadOrdersAsync(), "GetOpenSpreadOrders", nestedJsonProperty: "result");
             await tester.ValidateAsync(client => client.V5Api.Trading.GetClosedSpreadOrdersAsync(), "GetClosedSpreadOrders", nestedJsonProperty: "result");
             await tester.ValidateAsync(client => client.V5Api.Trading.GetSpreadUserTradesAsync(), "GetSpreadUserTrades", nestedJsonProperty: "result");
+            await tester.ValidateAsync(client => client.V5Api.Trading.PreCheckOrderAsync(Category.Inverse, "ETHUSDT", OrderSide.Buy, NewOrderType.Market, 1), "PreCheckOrder", nestedJsonProperty: "result");
         }
 
         [Test]

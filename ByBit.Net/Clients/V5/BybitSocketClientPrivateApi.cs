@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using CryptoExchange.Net.SharedApis;
 using System.Drawing;
 using System.Linq;
+using System.Net.WebSockets;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bybit.Net.Clients.V5
 {
@@ -31,7 +33,10 @@ namespace Bybit.Net.Clients.V5
         private static readonly MessagePath _reqId2Path = MessagePath.Get().Property("reqId");
         private static readonly MessagePath _topicPath = MessagePath.Get().Property("topic");
         private static readonly MessagePath _opPath = MessagePath.Get().Property("op");
-        private string _referer;
+
+        protected override ErrorMapping ErrorMapping => BybitErrors.WebsocketErrors;
+
+        public new BybitSocketOptions ClientOptions => (BybitSocketOptions)base.ClientOptions;
 
         internal BybitSocketClientPrivateApi(ILogger logger, BybitSocketOptions options)
             : base(logger, options.Environment.SocketBaseAddress, options, options.V5Options)
@@ -39,15 +44,13 @@ namespace Bybit.Net.Clients.V5
             UnhandledMessageExpected = true;
             KeepAliveInterval = TimeSpan.Zero;
 
-            _referer = !string.IsNullOrEmpty(options.Referer) ? options.Referer! : "Zx000356";
-
             RegisterPeriodicQuery(
                 "Heartbeat",
                 options.V5Options.PingInterval,
                 GetPingQuery,
                 (connection, result) =>
                 {
-                    if (result.Error?.Message.Equals("Query timeout") == true)
+                    if (result.Error?.ErrorType == ErrorType.Timeout)
                     {
                         // Ping timeout, reconnect
                         _logger.LogWarning("[Sckt {SocketId}] Ping response timeout, reconnecting", connection.SocketId);
@@ -58,14 +61,14 @@ namespace Bybit.Net.Clients.V5
             SetDedicatedConnection(BaseAddress.AppendPath("/v5/trade"), true);
         }
 
-        protected override IByteMessageAccessor CreateAccessor() => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
+        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BybitExchange._serializerContext));
 
         private Query GetPingQuery(SocketConnection connection)
         {
             if (connection.ConnectionUri.AbsolutePath.EndsWith("private"))
             {
-                return new BybitQuery("ping", null) { RequestTimeout = TimeSpan.FromSeconds(5) };
+                return new BybitQuery(this, "ping", null) { RequestTimeout = TimeSpan.FromSeconds(5) };
             }
             else
             {
@@ -106,7 +109,7 @@ namespace Bybit.Net.Clients.V5
                 var key = authProvider.ApiKey;
                 var sign = authProvider.Sign($"GET/realtime{expireTime}");
 
-                return Task.FromResult<Query?>(new BybitQuery("auth", new object[]
+                return Task.FromResult<Query?>(new BybitQuery(this, "auth", new object[]
                 {
                 key,
                 expireTime,
@@ -121,7 +124,7 @@ namespace Bybit.Net.Clients.V5
                 var key = authProvider.ApiKey;
                 var sign = authProvider.Sign($"GET/realtime{expireTime}");
 
-                return Task.FromResult<Query?>(new BybitRequestQuery<object>("auth", null, new object[]
+                return Task.FromResult<Query?>(new BybitRequestQuery<object>(this, "auth", null, new object[]
                 {
                 key,
                 expireTime,
@@ -151,56 +154,56 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToPositionUpdatesAsync(Action<DataEvent<BybitPositionUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitPositionUpdate[]>(_logger, new[] { "position" }, handler, true);
+            var subscription = new BybitSubscription<BybitPositionUpdate[]>(_logger, this, new[] { "position" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(Action<DataEvent<BybitUserTradeUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitUserTradeUpdate[]>(_logger, new[] { "execution" }, handler, true);
+            var subscription = new BybitSubscription<BybitUserTradeUpdate[]>(_logger, this, new[] { "execution" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToSpreadUserTradeUpdatesAsync(Action<DataEvent<BybitUserTradeUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToSpreadUserTradeUpdatesAsync(Action<DataEvent<BybitSpreadUserTradeUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitUserTradeUpdate[]>(_logger, new[] { "spread.execution" }, handler, true);
+            var subscription = new BybitSubscription<BybitSpreadUserTradeUpdate[]>(_logger, this, new[] { "spread.execution" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToMinimalUserTradeUpdatesAsync(Action<DataEvent<BybitMinimalUserTradeUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitMinimalUserTradeUpdate[]>(_logger, new[] { "execution.fast" }, handler, true);
+            var subscription = new BybitSubscription<BybitMinimalUserTradeUpdate[]>(_logger, this, new[] { "execution.fast" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, new[] { "order" }, handler, true);
+            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "order" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToSpreadOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, new[] { "spread.order" }, handler, true);
+            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "spread.order" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<DataEvent<BybitBalance[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitBalance[]>(_logger, new[] { "wallet" }, handler, true);
+            var subscription = new BybitSubscription<BybitBalance[]>(_logger, this, new[] { "wallet" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToGreekUpdatesAsync(Action<DataEvent<BybitGreeks[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitGreeks[]>(_logger, new[] { "greeks" }, handler, true);
+            var subscription = new BybitSubscription<BybitGreeks[]>(_logger, this, new[] { "greeks" }, handler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -208,7 +211,7 @@ namespace Bybit.Net.Clients.V5
         public async Task<CallResult<UpdateSubscription>> SubscribeToDisconnectCancelAllTopicAsync(ProductType productType, CancellationToken ct = default)
         {
             var product = productType == ProductType.Spot ? "spot" : productType == ProductType.Options ? "option" : "future";
-            var subscription = new BybitSubscription<object>(_logger, new[] { "dcp." + product }, x => { }, true);
+            var subscription = new BybitSubscription<object>(_logger, this, new[] { "dcp." + product }, x => { }, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -246,11 +249,12 @@ namespace Bybit.Net.Clients.V5
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
             var query = new BybitRequestQuery<BybitOrderId>(
+                this, 
                 "order.create",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 new object[] { new BybitSocketPlaceOrderRequest
                 {
@@ -310,11 +314,12 @@ namespace Bybit.Net.Clients.V5
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
             var query = new BybitRequestQuery<BybitOrderId>(
+                this, 
                 "order.amend",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 new object[] { new BybitSocketEditOrderRequest
                 {
@@ -350,11 +355,12 @@ namespace Bybit.Net.Clients.V5
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
             var query = new BybitRequestQuery<BybitOrderId>(
+                this, 
                 "order.cancel",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 new object[] { new BybitSocketCancelOrderRequest
                 {
@@ -384,11 +390,12 @@ namespace Bybit.Net.Clients.V5
             };
 
             var query = new BybitBatchOrderRequestQuery(
+                this, 
                 "order.create-batch",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 parameters
             );
@@ -401,13 +408,13 @@ namespace Bybit.Net.Clients.V5
             foreach (var item in resultData.Data!)
             {
                 if (item.Code != 0)
-                    result.Add(new CallResult<BybitBatchOrderId>(new ServerError(item.Code, item.Message!)));
+                    result.Add(new CallResult<BybitBatchOrderId>(new ServerError(item.Code, GetErrorInfo(item.Code, item.Message!))));
                 else
                     result.Add(new CallResult<BybitBatchOrderId>(item.Data!));
             }
 
             if (result.All(x => !x.Success))
-                return resultData.AsErrorWithData(new ServerError("All orders failed"), result.ToArray());
+                return resultData.AsErrorWithData(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), result.ToArray());
 
             return resultData.As(result.ToArray());
         }
@@ -427,11 +434,12 @@ namespace Bybit.Net.Clients.V5
             };
 
             var query = new BybitBatchOrderRequestQuery(
+                this, 
                 "order.amend-batch",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 parameters
             );
@@ -454,11 +462,12 @@ namespace Bybit.Net.Clients.V5
             };
 
             var query = new BybitBatchOrderRequestQuery(
+                this, 
                 "order.cancel-batch",
                 new Dictionary<string, string>
                 {
                     { "X-BAPI-TIMESTAMP", timestamp },
-                    { "Referer", _referer }
+                    { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
                 },
                 parameters
             );

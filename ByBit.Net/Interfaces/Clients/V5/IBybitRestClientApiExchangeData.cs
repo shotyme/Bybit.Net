@@ -121,6 +121,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
         /// <param name="baseAsset">Base asset, for example `ETH`</param>
         /// <param name="status">Filter by status</param>
+        /// <param name="symbolType">Filter by symbol type</param>
         /// <param name="limit">Number of results per page</param>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
@@ -130,6 +131,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
             string? symbol = null,
             string? baseAsset = null,
             SymbolStatus? status = null,
+            SymbolType? symbolType = null,
             int? limit = null,
             string? cursor = null,
             CancellationToken ct = default);
@@ -208,6 +210,16 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BybitOrderbook>> GetOrderbookAsync(Category category, string symbol, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get RPI order book
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/market/rpi-orderbook" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="symbol">Symbol, for example `ETHUSDT`</param>
+        /// <param name="limit">Limit of results, max 50</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitOrderbook>> GetRpiOrderbookAsync(Category category, string symbol, int limit, CancellationToken ct = default);
 
         /// <summary>
         /// Get premium index klines
@@ -309,7 +321,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Get spread trading symbols
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/spread/market/instrument" /></para>
         /// </summary>
-        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="symbol">Filter by symbol, for example `ETHUSDT`</param>
         /// <param name="baseAsset">Filter by base asset</param>
         /// <param name="limit">Max number of results, max 500</param>
         /// <param name="cursor">Pagination cursor</param>
@@ -320,7 +332,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Get spread trading order book
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/spread/market/orderbook" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol</param>
+        /// <param name="symbol">The symbol, for example `ETHUSDT`</param>
         /// <param name="limit">Max number of results, max 25</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<BybitOrderbook>> GetSpreadOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
@@ -329,7 +341,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Get spread tickers
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/spread/market/tickers" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol</param>
+        /// <param name="symbol">The symbol, for example `ETHUSDT`</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<BybitSpreadTicker>> GetSpreadTickersAsync(string symbol, CancellationToken ct = default);
 
@@ -337,10 +349,43 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// Get spread symbol recent trades
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/spread/market/recent-trade" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol</param>
+        /// <param name="symbol">The symbol, for example `ETHUSDT`</param>
         /// <param name="limit">Max number of results, max 1000</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<BybitSpreadTrade[]>> GetSpreadRecentTradesAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
+        /// <summary>
+        /// Get order price limits
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/market/order-price-limit" /></para>
+        /// </summary>
+        /// <param name="symbol">Symbol name, for example `ETHUSDT`</param>
+        /// <param name="category">Category. Defaults to Linear</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitOrderPriceLimit>> GetOrderPriceLimitAsync(string symbol, Category? category = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get the system status messages
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/system-status" /></para>
+        /// </summary>
+        /// <param name="id">Filter by id</param>
+        /// <param name="status">Filter by status</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitSystemStatus[]>> GetSystemStatusAsync(string? id = null, SystemStatus? status = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get ADL alerts
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/market/adl-alert" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol, for example `ETHUSDT`</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitAdlAlert[]>> GetAdlAlertsAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get components which make up the index price
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/market/index-components" /></para>
+        /// </summary>
+        /// <param name="indexName">Index name</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitIndexComponents>> GetIndexPriceComponentsAsync(string indexName, CancellationToken ct = default);
     }
 }

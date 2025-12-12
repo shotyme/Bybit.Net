@@ -3,17 +3,20 @@ using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Options;
 using Bybit.Net.Objects.Sockets.Queries;
 using Bybit.Net.Objects.Sockets.Subscriptions;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,10 +31,13 @@ namespace Bybit.Net.Clients.V5
         private static readonly MessagePath _topicPath = MessagePath.Get().Property("topic");
         private static readonly MessagePath _opPath = MessagePath.Get().Property("op");
 
+        private readonly string _wsPublicAddress;
+
         internal BybitSocketClientSpreadApi(ILogger log, BybitSocketOptions options)
             : base(log, options.Environment.SocketBaseAddress, options, options.V5Options)
         {
             KeepAliveInterval = TimeSpan.Zero; // Server doesn't respond to ping frames
+            _wsPublicAddress = options.Environment.Name == BybitEnvironment.DemoTrading.Name ? BybitEnvironment.Live.SocketBaseAddress : options.Environment.SocketBaseAddress;
 
             RegisterPeriodicQuery(
                 "Heartbeat",
@@ -39,7 +45,7 @@ namespace Bybit.Net.Clients.V5
                 x => new BybitPingQuery(),
                 (connection, result) =>
                 {
-                    if (result.Error?.Message.Equals("Query timeout") == true)
+                    if (result.Error?.ErrorType == ErrorType.Timeout)
                     {
                         // Ping timeout, reconnect
                         _logger.LogWarning("[Sckt {SocketId}] Ping response timeout, reconnecting", connection.SocketId);
@@ -48,14 +54,12 @@ namespace Bybit.Net.Clients.V5
                 });
         }
 
-        protected override IByteMessageAccessor CreateAccessor() => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
+        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BybitExchange._serializerContext));
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
-        {
-            throw new NotImplementedException();
-        }
+            => BybitExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
         /// <inheritdoc />
         public override string? GetListenerIdentifier(IMessageAccessor message)
@@ -89,7 +93,7 @@ namespace Bybit.Net.Clients.V5
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitSpreadTickerUpdate>> handler, CancellationToken ct = default)
         {
             var subscription = new BybitOptionsSubscription<BybitSpreadTickerUpdate>(_logger, symbols.Select(x => $"tickers.{x}").ToArray(), handler);
-            return await SubscribeAsync(BaseAddress + "/v5/public/spread", subscription, ct).ConfigureAwait(false);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath("/v5/public/spread"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -100,7 +104,7 @@ namespace Bybit.Net.Clients.V5
         public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default)
         {
             var subscription = new BybitOptionsSubscription<BybitTrade[]>(_logger, symbols.Select(s => $"publicTrade.{s}").ToArray(), handler);
-            return await SubscribeAsync(BaseAddress + "/v5/public/spread", subscription, ct).ConfigureAwait(false);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath("/v5/public/spread"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -111,7 +115,7 @@ namespace Bybit.Net.Clients.V5
         public async virtual Task<CallResult<UpdateSubscription>> SubscribeToOrderbookUpdatesAsync(IEnumerable<string> symbols, int depth, Action<DataEvent<BybitOrderbook>> updateHandler, CancellationToken ct = default)
         {
             var subscription = new BybitOptionsSubscription<BybitOrderbook>(_logger, symbols.Select(s => $"orderbook.{depth}.{s}").ToArray(), updateHandler);
-            return await SubscribeAsync(BaseAddress + "/v5/public/spread", subscription, ct).ConfigureAwait(false);
+            return await SubscribeAsync(_wsPublicAddress.AppendPath("/v5/public/spread"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

@@ -672,6 +672,8 @@ namespace Bybit.Net.Clients.V5
         /// <inheritdoc />
         public async Task<WebCallResult<BybitDeposits>> GetDepositsAsync(
             string? asset = null,
+            string? id = null,
+            string? transactionId = null,
             DateTime? startTime = null,
             DateTime? endTime = null,
             int? limit = null,
@@ -680,6 +682,8 @@ namespace Bybit.Net.Clients.V5
         {
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("coin", asset);
+            parameters.AddOptionalParameter("id", id);
+            parameters.AddOptionalParameter("txID", transactionId);
             parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalParameter("limit", limit);
@@ -813,9 +817,9 @@ namespace Bybit.Net.Clients.V5
             string network,
             string toAddress,
             decimal quantity,
+            WithdrawAccountType accountType,
             string? tag = null,
             bool? forceNetwork = null,
-            AccountType? accountType = null,
             bool? feeType = null,
             CancellationToken ct = default)
         {
@@ -984,12 +988,13 @@ namespace Bybit.Net.Clients.V5
         #region Set Spot Margin Leverage
 
         /// <inheritdoc />
-        public async Task<WebCallResult> SetSpotMarginLeverageAsync(decimal leverage, CancellationToken ct = default)
+        public async Task<WebCallResult> SetSpotMarginLeverageAsync(decimal leverage, string? asset = null, CancellationToken ct = default)
         {
             var parameters = new ParameterCollection()
             {
                 { "leverage", leverage.ToString(CultureInfo.InvariantCulture) }
             };
+            parameters.AddOptional("currency", asset);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v5/spot-margin-trade/set-leverage", BybitExchange.RateLimiter.BybitRest, 1, true);
             return await _baseClient.SendAsync(request, parameters, ct).ConfigureAwait(false);
@@ -1135,7 +1140,7 @@ namespace Bybit.Net.Clients.V5
         {
             var parameters = new ParameterCollection();
             parameters.AddOptional("adjustType", addOrReduce == null ? null : addOrReduce == true ? 0 : 1);
-            parameters.AddOptionalParameter("utaDemoApplyMoney", funds.Select(f => new { coin = f.Key, amountStr = f.Value.ToString(CultureInfo.InvariantCulture) }));
+            parameters.AddOptionalParameter("utaDemoApplyMoney", funds.Select(f => new BybitDemoFundsRequest { Asset = f.Key, Quantity = f.Value }).ToArray());
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v5/account/demo-apply-money", BybitExchange.RateLimiter.BybitRest, 1, true);
             return await _baseClient.SendAsync(request, parameters, ct).ConfigureAwait(false);
@@ -1175,7 +1180,7 @@ namespace Bybit.Net.Clients.V5
             parameters.AddString("requestAmount", quantity);
             parameters.AddOptional("requestId", clientOrderId);
             parameters.Add("paramType", "opFrom");
-            parameters.Add("paramValue", _baseClient._referer);
+            parameters.Add("paramValue", LibraryHelpers.GetClientReference(() => _baseClient.ClientOptions.Referer, _baseClient.Exchange));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v5/asset/exchange/quote-apply", BybitExchange.RateLimiter.BybitRest, 1, true);
             return await _baseClient.SendAsync<BybitConvertQuote>(request, parameters, ct).ConfigureAwait(false);
@@ -1245,6 +1250,89 @@ namespace Bybit.Net.Clients.V5
             var request = _definitions.GetOrCreate(HttpMethod.Get, "v5/account/withdrawal", BybitExchange.RateLimiter.BybitRest, 1, true,
                 new SingleLimitGuard(50, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding, null, SingleLimitGuard.PerApiKey));
             return await _baseClient.SendAsync<BybitTransferable>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Set Price Limit Behavior
+
+        /// <inheritdoc />
+        public async Task<WebCallResult> SetPriceLimitBehaviorAsync(Category category, bool allowModifyPrice, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddEnum("category", category);
+            parameters.Add("modifyEnable", allowModifyPrice);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "v5/account/set-limit-px-action", BybitExchange.RateLimiter.BybitRest, 1, true);
+            return await _baseClient.SendAsync(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get Spot symbols
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitResponse<BybitSpotSymbol>>> GetSpotSymbolsAsync(string? symbol = null, int? limit = null, string? cursor = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection()
+            {
+                { "category", EnumConverter.GetString(Category.Spot) }
+            };
+            parameters.AddOptionalParameter("symbol", symbol);
+            parameters.AddOptional("limit", limit);
+            parameters.AddOptional("cursor", cursor);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "v5/account/instruments-info", BybitExchange.RateLimiter.BybitRest, 1, true);
+            return await _baseClient.SendAsync<BybitResponse<BybitSpotSymbol>>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get Linear Inverse symbols
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitResponse<BybitLinearInverseSymbol>>> GetLinearInverseSymbolsAsync(
+            Category category,
+            string? symbol = null,            
+            int? limit = null,
+            string? cursor = null,
+            CancellationToken ct = default)
+        {
+            if (category != Category.Linear && category != Category.Inverse)
+                throw new ArgumentException("Invalid category; should be Linear or Inverse");
+
+            var parameters = new ParameterCollection()
+            {
+                { "category", EnumConverter.GetString(category) }
+            };
+            parameters.AddOptionalParameter("limit", limit);
+            parameters.AddOptionalParameter("cursor", cursor);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "v5/account/instruments-info", BybitExchange.RateLimiter.BybitRest, 1, true);
+            return await _baseClient.SendAsync<BybitResponse<BybitLinearInverseSymbol>>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get Withdraw Address List
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitResponse<BybitWithdrawAddress>>> GetWithdrawAddressListAsync(
+            string? asset = null,
+            string? network = null,
+            AddressType? addressType = null,
+            int? limit = null,
+            string? cursor = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddOptional("coin", asset);
+            parameters.AddOptional("chain", network);
+            parameters.AddOptionalEnum("addressType", addressType);
+            parameters.AddOptionalParameter("limit", limit);
+            parameters.AddOptionalParameter("cursor", cursor);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v5/asset/withdraw/query-address", BybitExchange.RateLimiter.BybitRest, 1, true);
+            return await _baseClient.SendAsync<BybitResponse<BybitWithdrawAddress>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         #endregion

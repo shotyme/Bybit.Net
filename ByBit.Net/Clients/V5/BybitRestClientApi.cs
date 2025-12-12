@@ -16,6 +16,7 @@ using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Interfaces;
 using Bybit.Net.Interfaces.Clients;
 using CryptoExchange.Net.SharedApis;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bybit.Net.Clients.V5
 {
@@ -23,6 +24,8 @@ namespace Bybit.Net.Clients.V5
     internal partial class BybitRestClientApi : RestApiClient, IBybitRestClientApi
     {
         internal TimeSyncState _timeSyncState = new TimeSyncState("Bybit V5 API");
+
+        protected override ErrorMapping ErrorMapping => BybitErrors.RestErrors;
 
         public IBybitRestClientApiShared SharedClient => this;
 
@@ -49,14 +52,14 @@ namespace Bybit.Net.Clients.V5
 
         internal string _referer = "tvhub";
 
+
         #region ctor
         internal BybitRestClientApi(ILogger logger, HttpClient? httpClient, BybitRestOptions options) :
             base(logger, httpClient, options.Environment.RestBaseAddress, options, options.V5Options)
         {
-            _referer = !string.IsNullOrEmpty(options.Referer) ? options.Referer! : _referer;
             StandardRequestHeaders = new Dictionary<string, string>
             {
-                { "Referer", _referer }
+                { "Referer", LibraryHelpers.GetClientReference(() => ClientOptions.Referer, Exchange) }
             };
 
             Account = new BybitRestClientApiAccount(this);
@@ -117,7 +120,7 @@ namespace Bybit.Net.Clients.V5
                 return result.AsDataless();
 
             if (result.Data.ReturnCode != 0)
-                return result.AsDatalessError(new ServerError(result.Data.ReturnCode, result.Data.ReturnMessage));
+                return result.AsDatalessError(new ServerError(result.Data.ReturnCode, GetErrorInfo(result.Data.ReturnCode, result.Data.ReturnMessage)));
 
             return result.AsDataless();
         }
@@ -129,7 +132,7 @@ namespace Bybit.Net.Clients.V5
                 return result.As<T>(default);
 
             if (result.Data.ReturnCode != 0)
-                return result.AsError<T>(new ServerError(result.Data.ReturnCode, result.Data.ReturnMessage));
+                return result.AsError<T>(new ServerError(result.Data.ReturnCode, GetErrorInfo(result.Data.ReturnCode, result.Data.ReturnMessage)));
 
             return result.As(result.Data.Result);
         }
@@ -139,42 +142,53 @@ namespace Bybit.Net.Clients.V5
             return await base.SendAsync<BybitExtResult<T,U>>(BaseAddress, definition, parameters, cancellationToken, null, weight, weightSingleLimiter: singleLimiterWeight).ConfigureAwait(false);
         }
 
-        protected override Error? TryParseError(KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor)
+        protected override Error? TryParseError(RequestDefinition request, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor)
         {
             var code = accessor.GetValue<int?>(MessagePath.Get().Property("retCode"));
-            if (code != 10006)
+            if (code == null || code == 0)
                 return null;
 
-            // Rate limit error
-            var error = new ServerRateLimitError(accessor.GetValue<string>(MessagePath.Get().Property("retMsg"))!);
-            var retryAfterHeader = responseHeaders.SingleOrDefault(r => r.Key.Equals("X-Bapi-Limit-Reset-Timestamp", StringComparison.InvariantCultureIgnoreCase));
-            if (retryAfterHeader.Value?.Any() != true)
-                return error;
+            if (code == 10006)
+            {
+                // Rate limit error
+                var error = new ServerRateLimitError(accessor.GetValue<string>(MessagePath.Get().Property("retMsg"))!);
+                var retryAfterHeader = responseHeaders.SingleOrDefault(r => r.Key.Equals("X-Bapi-Limit-Reset-Timestamp", StringComparison.InvariantCultureIgnoreCase));
+                if (retryAfterHeader.Value?.Any() != true)
+                    return error;
 
-            var value = retryAfterHeader.Value.First();
-            if (!long.TryParse(value, out var timestamp))
-                return error;
+                var value = retryAfterHeader.Value.First();
+                if (!long.TryParse(value, out var timestamp))
+                    return error;
 
-            var time = DateTimeConverter.ConvertFromMilliseconds(timestamp);
-            error.RetryAfter = time;
-            return error;            
+                var time = DateTimeConverter.ConvertFromMilliseconds(timestamp);
+                error.RetryAfter = time;
+                return error;
+            }
+
+            var msg = accessor.GetValue<string>(MessagePath.Get().Property("retMsg"));
+            return new ServerError(code.Value, GetErrorInfo(code.Value, msg));
         }
 
         /// <inheritdoc />
         protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor, Exception? exception)
         {
-            if (!accessor.IsJson)
-                return new ServerError(null, "Unknown request error", exception: exception);
+            if (!accessor.IsValid)
+            {
+                if (httpStatusCode == 401)
+                    return new ServerError(new ErrorInfo(ErrorType.Unauthorized, "Unauthorized"));
+
+                return new ServerError(ErrorInfo.Unknown, exception: exception);
+            }
 
             var code = accessor.GetValue<int?>(MessagePath.Get().Property("retCode"));
             var msg = accessor.GetValue<string>(MessagePath.Get().Property("retMsg"));
             if (msg == null)
-                return new ServerError(null, "Unknown request error", exception: exception);
+                return new ServerError(ErrorInfo.Unknown, exception: exception);
 
             if (code == null)
-                return new ServerError(null, msg, exception);
+                return new ServerError(ErrorInfo.Unknown with { Message = msg }, exception);
 
-            return new ServerError(code.Value, msg, exception);
+            return new ServerError(code.Value, GetErrorInfo(code.Value, msg), exception);
         }
     }
 }

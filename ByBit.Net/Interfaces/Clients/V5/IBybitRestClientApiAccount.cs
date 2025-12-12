@@ -238,13 +238,15 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/asset/deposit/deposit-record" /></para>
         /// </summary>
         /// <param name="asset">Filter by asset, for example `ETH`</param>
+        /// <param name="id">Filter by id</param>
+        /// <param name="transactionId">Filter by transaction id</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="limit">Number of results per page</param>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitDeposits>> GetDepositsAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitDeposits>> GetDepositsAsync(string? asset = null, string? id = null, string? transactionId = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a list of internal deposits
@@ -503,7 +505,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="feeType">Handling fee option</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitId>> WithdrawAsync(string asset, string network, string toAddress, decimal quantity, string? tag = null, bool? forceNetwork = null, AccountType? accountType = null, bool? feeType = null, CancellationToken ct = default);
+        Task<WebCallResult<BybitId>> WithdrawAsync(string asset, string network, string toAddress, decimal quantity, WithdrawAccountType accountType, string? tag = null, bool? forceNetwork = null, bool? feeType = null, CancellationToken ct = default);
 
         /// <summary>
         /// Manually add or reduce margin for isolated margin position
@@ -527,9 +529,10 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/spot-margin-uta/set-leverage" /></para>
         /// </summary>
         /// <param name="leverage">New leverage</param>
+        /// <param name="asset">Asset name</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult> SetSpotMarginLeverageAsync(decimal leverage, CancellationToken ct = default);
+        Task<WebCallResult> SetSpotMarginLeverageAsync(decimal leverage, string? asset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Query the Spot margin status and leverage of Unified account
@@ -691,5 +694,58 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BybitTransferable>> GetTransferableAsync(IEnumerable<string> assets, CancellationToken ct = default);
+
+        /// <summary>
+        /// Set the behavior when placing an order exceeding the price limit
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/set-price-limit" /></para>
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="allowModifyPrice">True: allow the system to adjust the price to nearest allowed, False: fail the order</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult> SetPriceLimitBehaviorAsync(Category category, bool allowModifyPrice, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get spot symbols available to the user
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/instrument" /></para>
+        /// </summary>
+        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="limit">Number of results, max 200</param>
+        /// <param name="cursor">Pagination cursor</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitResponse<BybitSpotSymbol>>> GetSpotSymbolsAsync(string? symbol = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get linear/inverse symbols available to the user
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/account/instrument" /></para>
+        /// </summary>
+        /// <param name="category">Category, either linear or inverse</param>
+        /// <param name="symbol">Filter by symbol</param>
+        /// <param name="limit">Number of results, max 200</param>
+        /// <param name="cursor">Pagination cursor</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitResponse<BybitLinearInverseSymbol>>> GetLinearInverseSymbolsAsync(
+            Category category,
+            string? symbol = null,
+            int? limit = null,
+            string? cursor = null,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Get withdrawal addresses
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/asset/withdraw/withdraw-address" /></para>
+        /// </summary>
+        /// <param name="asset">Filter by asset</param>
+        /// <param name="network">Filter by network</param>
+        /// <param name="addressType">Filter by network type</param>
+        /// <param name="limit">Number of results, max 50</param>
+        /// <param name="cursor">Pagination cursor</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BybitResponse<BybitWithdrawAddress>>> GetWithdrawAddressListAsync(
+            string? asset = null,
+            string? network = null,
+            AddressType? addressType = null,
+            int? limit = null,
+            string? cursor = null,
+            CancellationToken ct = default);
     }
 }

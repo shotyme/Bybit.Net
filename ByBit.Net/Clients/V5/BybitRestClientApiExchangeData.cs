@@ -185,6 +185,7 @@ namespace Bybit.Net.Clients.V5
             string? symbol = null,
             string? baseAsset = null,
             SymbolStatus? status = null,
+            SymbolType? symbolType = null,
             int? limit = null,
             string? cursor = null,
             CancellationToken ct = default)
@@ -197,6 +198,7 @@ namespace Bybit.Net.Clients.V5
                 { "category", EnumConverter.GetString(category) }
             };
             parameters.AddOptionalEnum("status", status);
+            parameters.AddOptionalEnum("symbolType", symbolType);
             parameters.AddOptionalParameter("symbol", symbol);
             parameters.AddOptionalParameter("baseCoin", baseAsset);
             parameters.AddOptionalParameter("limit", limit);
@@ -208,7 +210,7 @@ namespace Bybit.Net.Clients.V5
 
         #endregion
 
-        #region Get order book
+        #region Get Order Book
 
         /// <inheritdoc />
         public async Task<WebCallResult<BybitOrderbook>> GetOrderbookAsync(Category category, string symbol, int? limit = null, CancellationToken ct = default)
@@ -221,6 +223,24 @@ namespace Bybit.Net.Clients.V5
             parameters.AddOptionalParameter("limit", limit);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, "v5/market/orderbook", BybitExchange.RateLimiter.BybitRest, 1, false);
+            return await _baseClient.SendAsync<BybitOrderbook>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get RPI Order Book
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitOrderbook>> GetRpiOrderbookAsync(Category category, string symbol, int limit, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection()
+            {
+                { "category", EnumConverter.GetString(category) },
+                { "symbol", symbol }
+            };
+            parameters.AddParameter("limit", limit);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "v5/market/rpi_orderbook", BybitExchange.RateLimiter.BybitRest, 1, false);
             return await _baseClient.SendAsync<BybitOrderbook>(request, parameters, ct).ConfigureAwait(false);
         }
 
@@ -577,5 +597,60 @@ namespace Bybit.Net.Clients.V5
 
         #endregion
 
+        #region Get Order Price
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitOrderPriceLimit>> GetOrderPriceLimitAsync(string symbol, Category? category = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.Add("symbol", symbol);
+            parameters.AddOptionalEnum("category", category);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v5/market/price-limit", BybitExchange.RateLimiter.BybitRest, 1, false);
+            return await _baseClient.SendAsync<BybitOrderPriceLimit>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Get System Status
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitSystemStatus[]>> GetSystemStatusAsync(string? id = null, SystemStatus? status = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddOptional("id", id);
+            parameters.AddOptionalEnum("state", status);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v5/system/status", BybitExchange.RateLimiter.BybitRest, 1, false);
+            var result = await _baseClient.SendAsync<BybitList<BybitSystemStatus>>(request, parameters, ct).ConfigureAwait(false);
+            return result.As<BybitSystemStatus[]>(result.Data?.List);
+        }
+
+        #endregion
+
+        #region Get ADL Alerts
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitAdlAlert[]>> GetAdlAlertsAsync(string symbol,CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.Add("symbol", symbol);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v5/market/adlAlert", BybitExchange.RateLimiter.BybitRest, 1, false);
+            var result = await _baseClient.SendAsync<BybitList<BybitAdlAlert>>(request, parameters, ct).ConfigureAwait(false);
+            return result.As<BybitAdlAlert[]>(result.Data?.List);
+        }
+
+        #endregion
+
+        #region Get Index Price Components
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BybitIndexComponents>> GetIndexPriceComponentsAsync(string indexName, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.Add("indexName", indexName);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v5/market/index-price-components", BybitExchange.RateLimiter.BybitRest, 1, false);
+            return await _baseClient.SendAsync<BybitIndexComponents>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
     }
 }

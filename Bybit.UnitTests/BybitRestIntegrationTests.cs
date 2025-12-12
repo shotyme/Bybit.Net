@@ -2,6 +2,7 @@
 using Bybit.Net.Objects;
 using Bybit.Net.SymbolOrderBooks;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -45,7 +46,8 @@ namespace Bybit.Net.UnitTests
             var result = await CreateClient().V5Api.ExchangeData.GetSpotTickersAsync("TST_TST", default);
 
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Error.Code, Is.EqualTo(10001));
+            Assert.That(result.Error.ErrorCode, Is.EqualTo("10001"));
+            Assert.That(result.Error.ErrorType, Is.EqualTo(ErrorType.UnknownSymbol));
         }
 
         [Test]
@@ -84,7 +86,7 @@ namespace Bybit.Net.UnitTests
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetPremiumIndexPriceKlinesAsync(Enums.Category.Linear, "ETHUSDT", Enums.KlineInterval.OneDay, default, default, default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetSpotSymbolsAsync(default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetOptionSymbolsAsync(default, default, default, default, default), false);
-            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLinearInverseSymbolsAsync(default, default, default, default, default, default, default), false);
+            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLinearInverseSymbolsAsync(default, default, default, default, default, default, default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetOrderbookAsync(Enums.Category.Spot, "ETHUSDT", default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetSpotTickersAsync(default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetOptionTickersAsync(default, "BTC", default, default), false);
@@ -96,9 +98,8 @@ namespace Bybit.Net.UnitTests
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetInsuranceAsync("ETH", default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetRiskLimitAsync(Enums.Category.Linear, default, default, default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetDeliveryPriceAsync(Enums.Category.Linear, default, default, default, default, default, default), false);
-            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLeverageTokensAsync(default, default), false);
-            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLeverageTokenMarketAsync("BTC3L", default), false);
             await RunAndCheckResult(client => client.V5Api.ExchangeData.GetLongShortRatioAsync(Enums.Category.Linear, "ETHUSDT", Enums.DataPeriod.OneDay, default, default, default, default), false);
+            await RunAndCheckResult(client => client.V5Api.ExchangeData.GetOrderPriceLimitAsync("ETHUSDT", default, default), false);
         }
 
         [Test]
