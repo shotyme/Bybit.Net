@@ -29,7 +29,7 @@ namespace Bybit.Net.Objects.Options
         /// <summary>
         /// A referer, will be sent in the Referer header
         /// </summary>
-        public string? Referer { get; set; }
+        public string? Referer { get; set; } = "tvhub";
 
         /// <summary>
         /// Options for the V5 API
