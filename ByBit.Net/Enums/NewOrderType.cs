@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum NewOrderType
     {
         /// <summary>
-        /// Limit order. An order for a set (or better) price
+        /// ["<c>Limit</c>"] Limit order. An order for a set (or better) price
         /// </summary>
         [Map("Limit")]
         Limit,
         /// <summary>
-        /// Market order. An order for the best price available upon placing
+        /// ["<c>Market</c>"] Market order. An order for the best price available upon placing
         /// </summary>
         [Map("Market")]
         Market

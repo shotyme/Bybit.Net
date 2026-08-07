@@ -22,7 +22,7 @@ namespace Bybit.Net.UnitTests
             var client = new BybitRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BybitCredentials().WithHMAC("123", "456");
             });
             var tester = new RestRequestValidator<BybitRestClient>(client, "Endpoints/V5Api/Account", "https://api.bybit.com", IsAuthenticated, "result");
             await tester.ValidateAsync(client => client.V5Api.Account.SetLeverageAsync(Enums.Category.Option, "ETHUSDT", 1, 1), "SetLeverage");
@@ -67,6 +67,18 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.Account.GetConvertHistoryAsync(Enums.ConvertAccountType.ConvertFunding), "GetConvertHistory", "result.list", ignoreProperties: new List<string> { "extInfo" });
             await tester.ValidateAsync(client => client.V5Api.Account.SetPriceLimitBehaviorAsync(Category.Spot, false), "SetPriceLimitBehavior");
             await tester.ValidateAsync(client => client.V5Api.Account.GetWithdrawAddressListAsync(), "GetWithdrawAddressList");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSmallBalanceAssetsAsync(ConvertAccountType.ConvertUta), "GetSmallBalanceAssets", ignoreProperties: ["toCoin", "toAmount", "exchangeRate", "feeInfo", "taxFeeInfo"]);
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSmallBalancesQuoteAsync(ConvertAccountType.ConvertUta, ["ETH"], "USDT"), "GetSmallBalancesQuote", ignoreProperties: ["taxFeeItems"]);
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSmallBalancesExchangeHistoryAsync(), "GetSmallBalancesExchangeHistory", ignoreProperties: ["taxFeeItems"]);
+            await tester.ValidateAsync(client => client.V5Api.Account.SetSpotMarginAutoRepayModeAsync(true), "SetSpotMarginAutoRepayMode", nestedJsonProperty: "result.data");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSpotMarginAutoRepayModeAsync(), "GetSpotMarginAutoRepayMode", nestedJsonProperty: "result.data");
+            await tester.ValidateAsync(client => client.V5Api.Account.SignAgreementAsync(AgreementCategory.Metals, true), "SignAgreement");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetFundingTransactionHistoryAsync(), "GetFundingTransactionHistory", nestedJsonProperty: "result.list");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetAssetOverviewAsync(), "GetAssetOverview", nestedJsonProperty: "result");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSpotMarginAssetDataAsync(), "GetBorrowAssetData", nestedJsonProperty: "result.list");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetSpreadMaxOrderQuantityAsync("123", OrderSide.Buy, 0.1m), "GetSpreadMaxOrderQuantity", nestedJsonProperty: "result");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetOptionAssetInfoAsync(), "GetOptionAssetInfo", nestedJsonProperty: "result.result");
+            await tester.ValidateAsync(client => client.V5Api.Account.GetAnalysisTradeInfoAsync("123"), "GetAnalysisTradeInfo", nestedJsonProperty: "result");
         }
 
         [Test]
@@ -75,7 +87,7 @@ namespace Bybit.Net.UnitTests
             var client = new BybitRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BybitCredentials().WithHMAC("123", "456");
             });
             var tester = new RestRequestValidator<BybitRestClient>(client, "Endpoints/V5Api/ExchangeData", "https://api.bybit.com", IsAuthenticated, "result");
             await tester.ValidateAsync(client => client.V5Api.ExchangeData.GetAnnouncementsAsync("en-Us"), "GetAnnouncements");
@@ -115,7 +127,7 @@ namespace Bybit.Net.UnitTests
             var client = new BybitRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BybitCredentials().WithHMAC("123", "456");
             });
             var tester = new RestRequestValidator<BybitRestClient>(client, "Endpoints/V5Api/Trading", "https://api.bybit.com", IsAuthenticated, "result");
             await tester.ValidateAsync(client => client.V5Api.Trading.PlaceOrderAsync(Enums.Category.Option, "ETHUSDT", Enums.OrderSide.Buy, Enums.NewOrderType.Market, 1), "PlaceOrder");
@@ -155,7 +167,7 @@ namespace Bybit.Net.UnitTests
             var client = new BybitRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BybitCredentials().WithHMAC("123", "456");
             });
             var tester = new RestRequestValidator<BybitRestClient>(client, "Endpoints/V5Api/CryptoLoan", "https://api.bybit.com", IsAuthenticated, "result");
             await tester.ValidateAsync(client => client.V5Api.CryptoLoan.GetBorrowableAssetsAsync(AccountLevel.Vip5, "123"), "GetBorrowableAssets", nestedJsonProperty: "result.vipCoinList");
@@ -177,7 +189,7 @@ namespace Bybit.Net.UnitTests
             var client = new BybitRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BybitCredentials().WithHMAC("123", "456");
             });
             var tester = new RestRequestValidator<BybitRestClient>(client, "Endpoints/V5Api/Earn", "https://api.bybit.com", IsAuthenticated, "result");
             await tester.ValidateAsync(client => client.V5Api.Earn.GetProductInfoAsync(EarnCategory.FlexibleSaving, "123"), "GetProductInfo", nestedJsonProperty: "result");
@@ -186,7 +198,7 @@ namespace Bybit.Net.UnitTests
             await tester.ValidateAsync(client => client.V5Api.Earn.GetStakedPositionsAsync(EarnCategory.FlexibleSaving), "GetStakedPositions", nestedJsonProperty: "result");
         }
 
-        private bool IsAuthenticated(WebCallResult result)
+        private bool IsAuthenticated(IHttpResult result)
         {
             return result.RequestHeaders.Any(r => r.Key == "X-BAPI-SIGN");
         }

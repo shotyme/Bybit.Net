@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,22 +10,22 @@ namespace Bybit.Net.Enums
     public enum TickDirection
     {
         /// <summary>
-        /// Price rise tick
+        /// ["<c>PlusTick</c>"] Price rise tick
         /// </summary>
         [Map("PlusTick")]
         PlusTick,
         /// <summary>
-        /// Trade occurs at the same price as the previous trade, which occurred at a price higher than that for the trade preceding it
+        /// ["<c>ZeroPlusTick</c>"] Trade occurs at the same price as the previous trade, which occurred at a price higher than that for the trade preceding it
         /// </summary>
         [Map("ZeroPlusTick")]
         ZeroPlusTick,
         /// <summary>
-        /// Price drop tick
+        /// ["<c>MinusTick</c>"] Price drop tick
         /// </summary>
         [Map("MinusTick")]
         MinusTick,
         /// <summary>
-        /// Trade occurs at the same price as the previous trade, which occurred at a price lower than that for the trade preceding it
+        /// ["<c>ZeroMinusTick</c>"] Trade occurs at the same price as the previous trade, which occurred at a price lower than that for the trade preceding it
         /// </summary>
         [Map("ZeroMinusTick")]
         ZeroMinusTick

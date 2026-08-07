@@ -1,18 +1,43 @@
 using Bybit.Net.Objects.Internal;
+using Bybit.Net.Objects.Models;
 using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Sockets;
+using CryptoExchange.Net.Objects;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Converters
 {
+    [JsonSerializable(typeof(BybitResult<BybitTravelRuleStatus>))]
+    [JsonSerializable(typeof(BybitResult<BybitList<BybitLeverage>>))]
+
+    [JsonSerializable(typeof(BybitWithdrawQuestionnaireEu))]
+    [JsonSerializable(typeof(BybitWithdrawQuestionnaireTurkey))]
+    [JsonSerializable(typeof(BybitWithdrawQuestionnaireKazakhstan))]
+    [JsonSerializable(typeof(BybitWithdrawQuestionnaireIndia))]
+    [JsonSerializable(typeof(BybitWithdrawQuestionnaireKorea))]
+
+    [JsonSerializable(typeof(BybitResult<BybitList<BybitFeeGroup>>))]
+    [JsonSerializable(typeof(BybitResult<BybitList<BybitMarginAssetData>>))]
+    [JsonSerializable(typeof(BybitResult<BybitAnalysisTradeInfo>))]
+    [JsonSerializable(typeof(BybitResult<BybitOptionAssetInfoWrapper>))]
+    [JsonSerializable(typeof(BybitResult<BybitAccountOverview>))]
+    [JsonSerializable(typeof(BybitResult<BybitResponse<BybitFundingTransfer>>))]
+    [JsonSerializable(typeof(BybitResult<BybitSmallBalanceAssets>))]
+    [JsonSerializable(typeof(BybitResult<BybitSmallBalancesQuote>))]
+    [JsonSerializable(typeof(BybitResult<BybitSmallBalancesQuoteResult>))]
+    [JsonSerializable(typeof(BybitResult<BybitPage<BybitSmallBalancesExchangeItem>>))]
+    [JsonSerializable(typeof(BybitResult<BybitSpotMarginAutoRepayModeWrapper>))]
+    [JsonSerializable(typeof(BybitResult<BybitMaxSpreadQuantity>))]
+
     [JsonSerializable(typeof(BybitExtResult<BybitList<BybitBatchOrderId>, BybitList<BybitBatchResult>>))]
     [JsonSerializable(typeof(BybitRequestQueryResponse<BybitList<BybitBatchOrderId>, BybitList<BybitBatchResult>>))]
     [JsonSerializable(typeof(BybitRequestQueryResponse<object>))]
     [JsonSerializable(typeof(BybitRequestQueryResponse<BybitOrderId>))]
     [JsonSerializable(typeof(BybitRequestQueryResponse<BybitList<BybitBatchOrderId>>))]
     [JsonSerializable(typeof(Dictionary<string, string[]>))]
+    [JsonSerializable(typeof(Dictionary<string, List<string>>))]
     [JsonSerializable(typeof(BybitResult<BybitList<BybitSpreadSymbol>>))]
     [JsonSerializable(typeof(BybitResult<BybitList<BybitSpreadTicker>>))]
     [JsonSerializable(typeof(BybitResult<BybitList<BybitSpreadTrade>>))]
@@ -137,7 +162,7 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(BybitResult<BybitSubAccountWrapper>))]
     [JsonSerializable(typeof(BybitResult<BybitBorrowQuota>))]
     [JsonSerializable(typeof(BybitResult<BybitDcpStatusWrapper>))]
-    [JsonSerializable(typeof(BybitResult<BybitAssetExchageWrapper>))]
+    [JsonSerializable(typeof(BybitResult<BybitAssetExchangePage>))]
     [JsonSerializable(typeof(BybitResult<BybitLeverageTokenPurchase>))]
     [JsonSerializable(typeof(BybitResult<BybitLeverageTokenRedemption>))]
     [JsonSerializable(typeof(BybitSpotSocketEvent<BybitOptionTickerUpdate>))]
@@ -147,8 +172,6 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(BybitSpotSocketEvent<BybitLinearTickerUpdate>))]
     [JsonSerializable(typeof(BybitSpotSocketEvent<object>))]
     [JsonSerializable(typeof(BybitSpotSocketEvent<BybitSpotTickerUpdate>))]
-    [JsonSerializable(typeof(BybitSpotSocketEvent<BybitLeveragedTokenTicker>))]
-    [JsonSerializable(typeof(BybitSpotSocketEvent<BybitLeveragedTokenNav>))]
     [JsonSerializable(typeof(IDictionary<string, object>))]
     [JsonSerializable(typeof(BybitBatchResult<BybitBatchOrderId>))]
     [JsonSerializable(typeof(BybitAccountInfo[]))]
@@ -164,7 +187,7 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(BybitAllAssetBalances[]))]
     [JsonSerializable(typeof(BybitSingleAssetBalance[]))]
     [JsonSerializable(typeof(BybitAssetAccountBalance[]))]
-    [JsonSerializable(typeof(BybitAssetExchageWrapper[]))]
+    [JsonSerializable(typeof(BybitAssetExchangePage[]))]
     [JsonSerializable(typeof(BybitAssetExchange[]))]
     [JsonSerializable(typeof(BybitAssetInfoWrapper[]))]
     [JsonSerializable(typeof(BybitAccountAssetInfo[]))]
@@ -221,8 +244,6 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(BybitInsurance[]))]
     [JsonSerializable(typeof(BybitInternalDeposit[]))]
     [JsonSerializable(typeof(BybitKline[]))]
-    [JsonSerializable(typeof(BybitLeveragedTokenNav[]))]
-    [JsonSerializable(typeof(BybitLeveragedTokenTicker[]))]
     [JsonSerializable(typeof(BybitLeverageTokenWrapper[]))]
     [JsonSerializable(typeof(BybitLeverageToken[]))]
     [JsonSerializable(typeof(BybitLeverageTokenHistory[]))]
@@ -236,7 +257,7 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(BybitPrelistingInfo[]))]
     [JsonSerializable(typeof(BybitPrelistingFees[]))]
     [JsonSerializable(typeof(BybitPrelistingPhase[]))]
-    [JsonSerializable(typeof(BybitLinearInverseLeveragefilter[]))]
+    [JsonSerializable(typeof(BybitLinearInverseLeverageFilter[]))]
     [JsonSerializable(typeof(BybitLinearInverseLotSizeFilter[]))]
     [JsonSerializable(typeof(BybitLinearInversePriceFilter[]))]
     [JsonSerializable(typeof(BybitLinearInverseTicker[]))]
@@ -310,6 +331,8 @@ namespace Bybit.Net.Converters
     [JsonSerializable(typeof(decimal))]
     [JsonSerializable(typeof(DateTime))]
     [JsonSerializable(typeof(DateTime?))]
+    [JsonSerializable(typeof(Parameters))]
+    [JsonSerializable(typeof(Parameters[]))]
     internal partial class BybitSourceGenerationContext : JsonSerializerContext
     {
     }

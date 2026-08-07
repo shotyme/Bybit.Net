@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,57 +10,57 @@ namespace Bybit.Net.Enums
     public enum OrderStatus
     {
         /// <summary>
-        /// Created but not yet in matching engine
+        /// ["<c>Created</c>"] Created but not yet in matching engine
         /// </summary>
         [Map("Created")]
         Created,
         /// <summary>
-        /// Placed successfully
+        /// ["<c>New</c>"] Placed successfully
         /// </summary>
         [Map("New")]
         New,
         /// <summary>
-        /// Rejected
+        /// ["<c>Rejected</c>"] Rejected
         /// </summary>
         [Map("Rejected")]
         Rejected,
         /// <summary>
-        /// Partially filled
+        /// ["<c>PartiallyFilled</c>"] Partially filled
         /// </summary>
         [Map("PartiallyFilled")]
         PartiallyFilled,
         /// <summary>
-        /// Partially filled and cancelled
+        /// ["<c>PartiallyFilledCanceled</c>"] Partially filled and cancelled
         /// </summary>
         [Map("PartiallyFilledCanceled")]
         PartiallyFilledCanceled,
         /// <summary>
-        /// Filled
+        /// ["<c>Filled</c>"] Filled
         /// </summary>
         [Map("Filled")]
         Filled,
         /// <summary>
-        /// Cancelled
+        /// ["<c>Cancelled</c>"] Cancelled
         /// </summary>
         [Map("Cancelled")]
         Cancelled,
         /// <summary>
-        /// Untriggered
+        /// ["<c>Untriggered</c>"] Untriggered
         /// </summary>
         [Map("Untriggered")]
         Untriggered,
         /// <summary>
-        /// Triggered
+        /// ["<c>Triggered</c>"] Triggered
         /// </summary>
         [Map("Triggered")]
         Triggered,
         /// <summary>
-        /// Deactivated
+        /// ["<c>Deactivated</c>"] Deactivated
         /// </summary>
         [Map("Deactivated")]
         Deactivated,
         /// <summary>
-        /// Order has been triggered and the new active order has been successfully placed. Is the final state of a successful conditional order
+        /// ["<c>Active</c>"] Order has been triggered and the new active order has been successfully placed. Is the final state of a successful conditional order
         /// </summary>
         [Map("Active")]
         Active

@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,38 +11,38 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSettlementRecord
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Side
+        /// ["<c>side</c>"] Side
         /// </summary>
 
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>size</c>"] Quantity
         /// </summary>
         [JsonPropertyName("size")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Settlement price
+        /// ["<c>sessionAvgPrice</c>"] Settlement price
         /// </summary>
         [JsonPropertyName("sessionAvgPrice")]
         public decimal SettlementPrice { get; set; }
         /// <summary>
-        /// Mark price
+        /// ["<c>markPrice</c>"] Mark price
         /// </summary>
         [JsonPropertyName("markPrice")]
         public decimal MarkPrice { get; set; }
         /// <summary>
-        /// Realized profit and loss
+        /// ["<c>realisedPnl</c>"] Realized profit and loss
         /// </summary>
         [JsonPropertyName("realisedPnl")]
         public decimal RealizedPnl { get; set; }
         /// <summary>
-        /// Timestamp
+        /// ["<c>createdTime</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("createdTime")]
         [JsonConverter(typeof(DateTimeConverter))]

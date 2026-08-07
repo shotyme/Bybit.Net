@@ -7,12 +7,13 @@ using Bybit.Net.SymbolOrderBooks;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Interfaces.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Net;
 using System.Net.Http;
+using System.Threading;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -22,7 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Add services such as the IBybitRestClient and IBybitSocketClient. Configures the services based on the provided configuration.
+        /// Add services such as the IBybitRestClient and IBybitSocketClient. Configures the services based on the provided configuration.<br />
+        /// See <see href="https://github.com/JKorf/Bybit.Net/blob/main/Examples/example-config.json" /> for an example of how to set up the configuration.
         /// </summary>
         /// <param name="services">The service collection</param>
         /// <param name="configuration">The configuration(section) containing the options</param>
@@ -35,7 +37,15 @@ namespace Microsoft.Extensions.DependencyInjection
             // Reset environment so we know if they're overridden
             options.Rest.Environment = null!;
             options.Socket.Environment = null!;
-            configuration.Bind(options);
+
+            try
+            {
+                configuration.Bind(options);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Invalid configuration provided", ex);
+            }
 
             if (options.Rest == null || options.Socket == null)
                 throw new ArgumentException("Options null");
@@ -94,18 +104,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new BybitRestClient(client, serviceProvider.GetRequiredService<ILoggerFactory>(), serviceProvider.GetRequiredService<IOptions<BybitRestOptions>>());
             }).ConfigurePrimaryHttpMessageHandler((serviceProvider) => {
                 var options = serviceProvider.GetRequiredService<IOptions<BybitRestOptions>>().Value;
-                return LibraryHelpers.CreateHttpClientMessageHandler(options.Proxy, options.HttpKeepAliveInterval);
-            });
+                return LibraryHelpers.CreateHttpClientMessageHandler(options);
+            }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
             services.Add(new ServiceDescriptor(typeof(IBybitSocketClient), x => { return new BybitSocketClient(x.GetRequiredService<IOptions<BybitSocketOptions>>(), x.GetRequiredService<ILoggerFactory>()); }, socketClientLifeTime ?? ServiceLifetime.Singleton));
 
-            services.AddTransient<ICryptoRestClient, CryptoRestClient>();
-            services.AddTransient<ICryptoSocketClient, CryptoSocketClient>();
             services.AddTransient<IBybitOrderBookFactory, BybitOrderBookFactory>();
             services.AddTransient<IBybitTrackerFactory, BybitTrackerFactory>();
             services.AddTransient<ITrackerFactory, BybitTrackerFactory>();
             services.AddSingleton<IBybitUserClientProvider, BybitUserClientProvider>(x =>
             new BybitUserClientProvider(
-                x.GetRequiredService<HttpClient>(),
+                x.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IBybitRestClient).Name),
                 x.GetRequiredService<ILoggerFactory>(),
                 x.GetRequiredService<IOptions<BybitRestOptions>>(),
                 x.GetRequiredService<IOptions<BybitSocketOptions>>()));

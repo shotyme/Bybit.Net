@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,52 +8,52 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpreadTicker
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Bid price
+        /// ["<c>bidPrice</c>"] Bid price
         /// </summary>
         [JsonPropertyName("bidPrice")]
         public decimal? BidPrice { get; set; }
         /// <summary>
-        /// Bid quantity
+        /// ["<c>bidSize</c>"] Bid quantity
         /// </summary>
         [JsonPropertyName("bidSize")]
         public decimal? BidQuantity { get; set; }
         /// <summary>
-        /// Ask price
+        /// ["<c>askPrice</c>"] Ask price
         /// </summary>
         [JsonPropertyName("askPrice")]
         public decimal? AskPrice { get; set; }
         /// <summary>
-        /// Ask quantity
+        /// ["<c>askSize</c>"] Ask quantity
         /// </summary>
         [JsonPropertyName("askSize")]
         public decimal? AskQuantity { get; set; }
         /// <summary>
-        /// Last price
+        /// ["<c>lastPrice</c>"] Last price
         /// </summary>
         [JsonPropertyName("lastPrice")]
         public decimal LastPrice { get; set; }
         /// <summary>
-        /// High price24h
+        /// ["<c>highPrice24h</c>"] High price24h
         /// </summary>
         [JsonPropertyName("highPrice24h")]
         public decimal HighPrice24h { get; set; }
         /// <summary>
-        /// Low price24h
+        /// ["<c>lowPrice24h</c>"] Low price24h
         /// </summary>
         [JsonPropertyName("lowPrice24h")]
         public decimal LowPrice24h { get; set; }
         /// <summary>
-        /// Prev price24h
+        /// ["<c>prevPrice24h</c>"] Prev price24h
         /// </summary>
         [JsonPropertyName("prevPrice24h")]
         public decimal PrevPrice24h { get; set; }
         /// <summary>
-        /// Volume24h
+        /// ["<c>volume24h</c>"] Volume24h
         /// </summary>
         [JsonPropertyName("volume24h")]
         public decimal Volume24h { get; set; }

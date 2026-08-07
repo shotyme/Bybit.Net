@@ -1,7 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -13,7 +9,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitRepayId
     {
         /// <summary>
-        /// Repay id
+        /// ["<c>repayId</c>"] Repay id
         /// </summary>
         [JsonPropertyName("repayId")]
         public string RepayId { get; set; } = string.Empty;

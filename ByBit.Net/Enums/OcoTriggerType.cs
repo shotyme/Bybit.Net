@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum OcoTriggerType
     {
         /// <summary>
-        /// Trigger by unknown
+        /// ["<c>OcoTriggerByUnknown</c>"] Trigger by unknown
         /// </summary>
         [Map("OcoTriggerByUnknown")]
         OcoTriggerByUnknown,
         /// <summary>
-        /// Trigger by take profit
+        /// ["<c>OcoTriggerTp</c>"] Trigger by take profit
         /// </summary>
         [Map("OcoTriggerTp")]
         OcoTriggerTp,
         /// <summary>
-        /// Trigger by stop loss
+        /// ["<c>OcoTriggerBySl</c>"] Trigger by stop loss
         /// </summary>
         [Map("OcoTriggerBySl")]
         OcoTriggerBySl

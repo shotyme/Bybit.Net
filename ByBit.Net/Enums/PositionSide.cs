@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum PositionSide
     {
         /// <summary>
-        /// Buy
+        /// ["<c>Buy</c>"] Buy
         /// </summary>
         [Map("Buy")]
         Buy,
         /// <summary>
-        /// Sell
+        /// ["<c>Sell</c>"] Sell
         /// </summary>
         [Map("Sell")]
         Sell,
         /// <summary>
-        /// None
+        /// ["<c>None</c>"] None
         /// </summary>
         [Map("None")]
         None

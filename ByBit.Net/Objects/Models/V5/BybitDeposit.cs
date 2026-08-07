@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,7 +11,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDeposits : BybitBaseResponse
     {
         /// <summary>
-        /// Deposit list
+        /// ["<c>rows</c>"] Deposit list
         /// </summary>
         [JsonPropertyName("rows")]
         public BybitDeposit[] Deposits { get; set; } = Array.Empty<BybitDeposit>();
@@ -26,84 +24,84 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDeposit
     {
         /// <summary>
-        /// Deposit id
+        /// ["<c>id</c>"] Deposit id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Chain
+        /// ["<c>chain</c>"] Chain
         /// </summary>
         [JsonPropertyName("chain")]
         public string Network { get; set; } = string.Empty;
         /// <summary>
-        /// Quantity
+        /// ["<c>amount</c>"] Quantity
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Transaction id
+        /// ["<c>txID</c>"] Transaction id
         /// </summary>
         [JsonPropertyName("txID")]
         public string TransactionId { get; set; } = string.Empty;
         /// <summary>
-        /// Status
+        /// ["<c>status</c>"] Status
         /// </summary>
 
         [JsonPropertyName("status")]
         public DepositStatus Status { get; set; }
         /// <summary>
-        /// Tag
+        /// ["<c>tag</c>"] Tag
         /// </summary>
         [JsonPropertyName("tag")]
         public string Tag { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit fee
+        /// ["<c>depositFee</c>"] Deposit fee
         /// </summary>
         [JsonPropertyName("depositFee")]
         public decimal? DepositFee { get; set; }
         /// <summary>
-        /// To address
+        /// ["<c>toAddress</c>"] To address
         /// </summary>
         [JsonPropertyName("toAddress")]
         public string ToAddress { get; set; } = string.Empty;
         /// <summary>
-        /// Time of success
+        /// ["<c>successAt</c>"] Time of success
         /// </summary>
         [JsonPropertyName("successAt")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime? SuccessTime { get; set; }
         /// <summary>
-        /// Number of confirmations
+        /// ["<c>confirmations</c>"] Number of confirmations
         /// </summary>
         [JsonPropertyName("confirmations")]
         public int Confirmations { get; set; }
         /// <summary>
-        /// Transaction index
+        /// ["<c>txIndex</c>"] Transaction index
         /// </summary>
         [JsonPropertyName("txIndex")]
         public string TransactionIndex { get; set; } = string.Empty;
         /// <summary>
-        /// Block hash
+        /// ["<c>blockHash</c>"] Block hash
         /// </summary>
         [JsonPropertyName("blockHash")]
         public string BlockHash { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit limit. -1 if there is no limit.
+        /// ["<c>batchReleaseLimit</c>"] Deposit limit. -1 if there is no limit.
         /// </summary>
         [JsonPropertyName("batchReleaseLimit")]
         public decimal DepositLimit { get; set; }
         /// <summary>
-        /// The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
+        /// ["<c>depositType</c>"] The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit, 50: The deposit has been blocked due to an account or compliance restriction, pls go to web to withdraw the funds
         /// </summary>
         [JsonPropertyName("depositType")]
         public int DepositType { get; set; }
         /// <summary>
-        /// Source address
+        /// ["<c>fromAddress</c>"] Source address
         /// </summary>
         [JsonPropertyName("fromAddress")]
         public string FromAddress { get; set; } = string.Empty;

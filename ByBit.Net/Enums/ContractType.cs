@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum ContractTypeV5
     {
         /// <summary>
-        /// Inverse perpetual
+        /// ["<c>InversePerpetual</c>"] Inverse perpetual
         /// </summary>
         [Map("InversePerpetual")]
         InversePerpetual,
         /// <summary>
-        /// Linear perpetual
+        /// ["<c>LinearPerpetual</c>"] Linear perpetual
         /// </summary>
         [Map("LinearPerpetual")]
         LinearPerpetual,
         /// <summary>
-        /// Linear futures
+        /// ["<c>LinearFutures</c>"] Linear futures
         /// </summary>
         [Map("LinearFutures")]
         LinearFutures,
         /// <summary>
-        /// Inverse futures
+        /// ["<c>InverseFutures</c>"] Inverse futures
         /// </summary>
         [Map("InverseFutures")]
         InverseFutures,
         /// <summary>
-        /// Spot
+        /// ["<c>Spot</c>"] Spot
         /// </summary>
         [Map("Spot")]
         Spot

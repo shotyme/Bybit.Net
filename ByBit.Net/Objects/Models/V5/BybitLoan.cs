@@ -1,7 +1,4 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -13,57 +10,57 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLoan
     {
         /// <summary>
-        /// Collateral quantity
+        /// ["<c>collateralAmount</c>"] Collateral quantity
         /// </summary>
         [JsonPropertyName("collateralAmount")]
         public decimal CollateralQuantity { get; set; }
         /// <summary>
-        /// Collateral asset
+        /// ["<c>collateralCurrency</c>"] Collateral asset
         /// </summary>
         [JsonPropertyName("collateralCurrency")]
         public string CollateralAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Current LTV
+        /// ["<c>currentLTV</c>"] Current LTV
         /// </summary>
         [JsonPropertyName("currentLTV")]
         public decimal CurrentLtv { get; set; }
         /// <summary>
-        /// Expiration time
+        /// ["<c>expirationTime</c>"] Expiration time
         /// </summary>
         [JsonPropertyName("expirationTime")]
         public DateTime? ExpirationTime { get; set; }
         /// <summary>
-        /// Hourly interest rate
+        /// ["<c>hourlyInterestRate</c>"] Hourly interest rate
         /// </summary>
         [JsonPropertyName("hourlyInterestRate")]
         public decimal HourlyInterestRate { get; set; }
         /// <summary>
-        /// Loan asset
+        /// ["<c>loanCurrency</c>"] Loan asset
         /// </summary>
         [JsonPropertyName("loanCurrency")]
         public string LoanAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Loan term
+        /// ["<c>loanTerm</c>"] Loan term
         /// </summary>
         [JsonPropertyName("loanTerm")]
         public decimal? LoanTerm { get; set; }
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string OrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Residual interest
+        /// ["<c>residualInterest</c>"] Residual interest
         /// </summary>
         [JsonPropertyName("residualInterest")]
         public decimal ResidualInterest { get; set; }
         /// <summary>
-        /// Residual penalty interest
+        /// ["<c>residualPenaltyInterest</c>"] Residual penalty interest
         /// </summary>
         [JsonPropertyName("residualPenaltyInterest")]
         public decimal ResidualPenaltyInterest { get; set; }
         /// <summary>
-        /// Total debt
+        /// ["<c>totalDebt</c>"] Total debt
         /// </summary>
         [JsonPropertyName("totalDebt")]
         public decimal TotalDebt { get; set; }

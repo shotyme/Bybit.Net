@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,22 +10,22 @@ namespace Bybit.Net.Enums
     public enum TransferStatus
     {
         /// <summary>
-        /// Success
+        /// ["<c>SUCCESS</c>"] Success
         /// </summary>
         [Map("SUCCESS")]
         Success,
         /// <summary>
-        /// Pending
+        /// ["<c>PENDING</c>"] Pending
         /// </summary>
         [Map("PENDING")]
         Pending,
         /// <summary>
-        /// Failed
+        /// ["<c>FAILED</c>"] Failed
         /// </summary>
         [Map("FAILED")]
         Failed,
         /// <summary>
-        /// Unknown
+        /// ["<c>STATUS_UNKNOWN</c>"] Unknown
         /// </summary>
         [Map("STATUS_UNKNOWN")]
         Unknown

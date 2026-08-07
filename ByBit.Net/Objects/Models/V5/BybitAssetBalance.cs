@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,17 +11,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAllAssetBalances
     {
         /// <summary>
-        /// Account type
+        /// ["<c>accountType</c>"] Account type
         /// </summary>
         [JsonPropertyName("accountType")]
         public AccountType AccountType { get; set; }
         /// <summary>
-        /// Member id
+        /// ["<c>memberId</c>"] Member id
         /// </summary>
         [JsonPropertyName("memberId")]
         public string? MemberId { get; set; }
         /// <summary>
-        /// Balances
+        /// ["<c>balance</c>"] Balances
         /// </summary>
         [JsonPropertyName("balance")]
         public BybitAssetAccountBalance[] Balances { get; set; } = Array.Empty<BybitAssetAccountBalance>();
@@ -36,17 +34,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSingleAssetBalance
     {
         /// <summary>
-        /// Account type
+        /// ["<c>accountType</c>"] Account type
         /// </summary>
         [JsonPropertyName("accountType")]
         public AccountType AccountType { get; set; }
         /// <summary>
-        /// Member id
+        /// ["<c>memberId</c>"] Member id
         /// </summary>
         [JsonPropertyName("memberId")]
         public string? MemberId { get; set; }
         /// <summary>
-        /// Balances
+        /// ["<c>balance</c>"] Balances
         /// </summary>
         [JsonPropertyName("balance")]
         public BybitAssetAccountBalance Balances { get; set; } = null!;
@@ -59,22 +57,22 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAssetAccountBalance
     {
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Wallet balance
+        /// ["<c>walletBalance</c>"] Wallet balance
         /// </summary>
         [JsonPropertyName("walletBalance")]
         public decimal? WalletBalance { get; set; }
         /// <summary>
-        /// Transfer balance
+        /// ["<c>transferBalance</c>"] Transfer balance
         /// </summary>
         [JsonPropertyName("transferBalance")]
         public decimal TransferBalance { get; set; }
         /// <summary>
-        /// Bonus
+        /// ["<c>bonus</c>"] Bonus
         /// </summary>
         [JsonPropertyName("bonus")]
         public decimal? Bonus { get; set; }

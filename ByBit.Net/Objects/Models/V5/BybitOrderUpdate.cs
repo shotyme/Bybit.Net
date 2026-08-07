@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 
@@ -11,13 +10,13 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOrderUpdate : BybitOrder
     {
         /// <summary>
-        /// Closed profit and loss for a close position order.
+        /// ["<c>closedPnl</c>"] Closed profit and loss for a close position order.
         /// </summary>
         [JsonPropertyName("closedPnl")]
         public decimal? ClosedPnl { get; set; }
 
         /// <summary>
-        /// Category
+        /// ["<c>category</c>"] Category
         /// </summary>
 
         [JsonPropertyName("category")]

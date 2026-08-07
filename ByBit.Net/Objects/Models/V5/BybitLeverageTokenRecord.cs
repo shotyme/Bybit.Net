@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 
@@ -11,27 +10,27 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLeverageTokenRecord
     {
         /// <summary>
-        /// Token abbreviation
+        /// ["<c>ltCoin</c>"] Token abbreviation
         /// </summary>
         [JsonPropertyName("ltCoin")]
         public string Token { get; set; } = string.Empty;
         /// <summary>
-        /// Order status
+        /// ["<c>ltOrderStatus</c>"] Order status
         /// </summary>
         [JsonPropertyName("ltOrderStatus")]
         public LeverageTokenOrderStatus Status { get; set; }
         /// <summary>
-        /// Filled quantity
+        /// ["<c>execQty</c>"] Filled quantity
         /// </summary>
         [JsonPropertyName("execQty")]
         public decimal? QuantityFilled { get; set; }
         /// <summary>
-        /// Filled quantity
+        /// ["<c>execAmt</c>"] Filled quantity
         /// </summary>
         [JsonPropertyName("execAmt")]
         public decimal? ValueFilled { get; set; }
         /// <summary>
-        /// Purchase amount
+        /// ["<c>amount</c>"] Purchase amount
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal? Quantity { get; set; }
@@ -42,12 +41,12 @@ namespace Bybit.Net.Objects.Models.V5
             get => Quantity;
         }
         /// <summary>
-        /// Serial number
+        /// ["<c>serialNo</c>"] Serial number
         /// </summary>
         [JsonPropertyName("serialNo")]
         public string? ClientOrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Quote asset
+        /// ["<c>valueCoin</c>"] Quote asset
         /// </summary>
         [JsonPropertyName("valueCoin")]
         public string QuoteAsset { get; set; } = string.Empty;
@@ -60,7 +59,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLeverageTokenPurchase : BybitLeverageTokenRecord
     {
         /// <summary>
-        /// Purchase id
+        /// ["<c>purchaseId</c>"] Purchase id
         /// </summary>
         [JsonPropertyName("purchaseId")]
         public string PurchaseId { get; set; } = string.Empty;
@@ -73,7 +72,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLeverageTokenRedemption : BybitLeverageTokenRecord
     {
         /// <summary>
-        /// Redeem id
+        /// ["<c>redeemId</c>"] Redeem id
         /// </summary>
         [JsonPropertyName("redeemId")]
         public string RedeemId { get; set; } = string.Empty;

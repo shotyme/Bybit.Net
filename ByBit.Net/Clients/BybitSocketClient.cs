@@ -12,7 +12,7 @@ using CryptoExchange.Net.Objects.Options;
 namespace Bybit.Net.Clients
 {
     /// <inheritdoc cref="IBybitSocketClient" />
-    public class BybitSocketClient : BaseSocketClient, IBybitSocketClient
+    public class BybitSocketClient : BaseSocketClient<BybitEnvironment, BybitCredentials>, IBybitSocketClient
     {
         /// <inheritdoc />
         public IBybitSocketClientSpotApi V5SpotApi { get; }
@@ -45,23 +45,12 @@ namespace Bybit.Net.Clients
         {
             Initialize(options.Value);
 
-            V5SpotApi = AddApiClient(new BybitSocketClientSpotApi(_logger, options.Value));
-            V5InverseApi = AddApiClient(new BybitSocketClientInverseApi(_logger, options.Value));
-            V5LinearApi = AddApiClient(new BybitSocketClientLinearApi(_logger, options.Value));
-            V5OptionsApi = AddApiClient(new BybitSocketClientOptionApi(_logger, options.Value));
-            V5SpreadApi = AddApiClient(new BybitSocketClientSpreadApi(_logger, options.Value));
-            V5PrivateApi = AddApiClient(new BybitSocketClientPrivateApi(_logger, options.Value));
-        }
-
-        /// <inheritdoc />
-        public void SetOptions(UpdateOptions options)
-        {
-            V5SpotApi.SetOptions(options);
-            V5InverseApi.SetOptions(options);
-            V5LinearApi.SetOptions(options);
-            V5OptionsApi.SetOptions(options);
-            V5SpreadApi.SetOptions(options);
-            V5PrivateApi.SetOptions(options);
+            V5SpotApi = AddApiClient(new BybitSocketClientSpotApi(loggerFactory, options.Value));
+            V5InverseApi = AddApiClient(new BybitSocketClientInverseApi(loggerFactory, options.Value));
+            V5LinearApi = AddApiClient(new BybitSocketClientLinearApi(loggerFactory, options.Value));
+            V5OptionsApi = AddApiClient(new BybitSocketClientOptionApi(loggerFactory, options.Value));
+            V5SpreadApi = AddApiClient(new BybitSocketClientSpreadApi(loggerFactory, options.Value));
+            V5PrivateApi = AddApiClient(new BybitSocketClientPrivateApi(loggerFactory, options.Value));
         }
 
         /// <summary>
@@ -71,17 +60,6 @@ namespace Bybit.Net.Clients
         public static void SetDefaultOptions(Action<BybitSocketOptions> optionsDelegate)
         {
             BybitSocketOptions.Default = ApplyOptionsDelegate(optionsDelegate);
-        }
-
-        /// <inheritdoc />
-        public void SetApiCredentials(ApiCredentials credentials)
-        {
-            V5LinearApi.SetApiCredentials(credentials);
-            V5OptionsApi.SetApiCredentials(credentials);
-            V5InverseApi.SetApiCredentials(credentials);
-            V5PrivateApi.SetApiCredentials(credentials);
-            V5SpreadApi.SetApiCredentials(credentials);
-            V5SpotApi.SetApiCredentials(credentials);
         }
     }
 }

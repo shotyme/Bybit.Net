@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,28 +11,28 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitBaseResponse
     {
         /// <summary>
-        /// Category
+        /// ["<c>category</c>"] Category
         /// </summary>
 
         [JsonPropertyName("category")]
         public Category? Category { get; set; }
         /// <summary>
-        /// Total items
+        /// ["<c>total</c>"] Total items
         /// </summary>
         [JsonPropertyName("total")]
         public int? Total { get; set; }
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string? Symbol { get; set; }
         /// <summary>
-        /// Cursor for pagination
+        /// ["<c>nextPageCursor</c>"] Cursor for pagination
         /// </summary>
         [JsonPropertyName("nextPageCursor")]
         public string? NextPageCursor { get; set; }
         /// <summary>
-        /// Data updated time
+        /// ["<c>updatedTime</c>"] Data updated time
         /// </summary>
         [JsonPropertyName("updatedTime")]
         [JsonConverter(typeof(DateTimeConverter))]
@@ -49,7 +47,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitResponse<T> : BybitBaseResponse
     {
         /// <summary>
-        /// Data list
+        /// ["<c>list</c>"] Data list
         /// </summary>
         [JsonPropertyName("list")]
         public T[] List { get; set; } = Array.Empty<T>();

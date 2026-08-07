@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum LoanType
     {
         /// <summary>
-        /// Fixed term
+        /// ["<c>1</c>"] Fixed term
         /// </summary>
         [Map("1")]
         FixedTerm,
         /// <summary>
-        /// Flexible term
+        /// ["<c>2</c>"] Flexible term
         /// </summary>
         [Map("2")]
         FlexibleTerm

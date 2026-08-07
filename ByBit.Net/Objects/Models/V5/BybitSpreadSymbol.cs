@@ -1,10 +1,6 @@
-﻿using Bybit.Net.Enums;
+using Bybit.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -14,77 +10,77 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpreadSymbol
     {
         /// <summary>
-        /// Symbol name
+        /// ["<c>symbol</c>"] Symbol name
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Contract type
+        /// ["<c>contractType</c>"] Contract type
         /// </summary>
         [JsonPropertyName("contractType")]
         public SpreadContractType ContractType { get; set; }
         /// <summary>
-        /// Status
+        /// ["<c>status</c>"] Status
         /// </summary>
         [JsonPropertyName("status")]
         public SymbolStatus Status { get; set; }
         /// <summary>
-        /// Base asset
+        /// ["<c>baseCoin</c>"] Base asset
         /// </summary>
         [JsonPropertyName("baseCoin")]
         public string BaseAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Quote asset
+        /// ["<c>quoteCoin</c>"] Quote asset
         /// </summary>
         [JsonPropertyName("quoteCoin")]
         public string QuoteAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Settle asset
+        /// ["<c>settleCoin</c>"] Settle asset
         /// </summary>
         [JsonPropertyName("settleCoin")]
         public string SettleAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Tick quantity
+        /// ["<c>tickSize</c>"] Tick quantity
         /// </summary>
         [JsonPropertyName("tickSize")]
         public decimal TickQuantity { get; set; }
         /// <summary>
-        /// Min price
+        /// ["<c>minPrice</c>"] Min price
         /// </summary>
         [JsonPropertyName("minPrice")]
         public decimal MinPrice { get; set; }
         /// <summary>
-        /// Max price
+        /// ["<c>maxPrice</c>"] Max price
         /// </summary>
         [JsonPropertyName("maxPrice")]
         public decimal MaxPrice { get; set; }
         /// <summary>
-        /// Lot quantity
+        /// ["<c>lotSize</c>"] Lot quantity
         /// </summary>
         [JsonPropertyName("lotSize")]
         public decimal LotQuantity { get; set; }
         /// <summary>
-        /// Min quantity
+        /// ["<c>minSize</c>"] Min quantity
         /// </summary>
         [JsonPropertyName("minSize")]
         public decimal MinQuantity { get; set; }
         /// <summary>
-        /// Max quantity
+        /// ["<c>maxSize</c>"] Max quantity
         /// </summary>
         [JsonPropertyName("maxSize")]
         public decimal MaxQuantity { get; set; }
         /// <summary>
-        /// Launch time
+        /// ["<c>launchTime</c>"] Launch time
         /// </summary>
         [JsonPropertyName("launchTime")]
         public DateTime LaunchTime { get; set; }
         /// <summary>
-        /// Delivery time
+        /// ["<c>deliveryTime</c>"] Delivery time
         /// </summary>
         [JsonPropertyName("deliveryTime")]
         public DateTime? DeliveryTime { get; set; }
         /// <summary>
-        /// Legs
+        /// ["<c>legs</c>"] Legs
         /// </summary>
         [JsonPropertyName("legs")]
         public BybitSpreadSymbolLeg[] Legs { get; set; } = [];
@@ -96,12 +92,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpreadSymbolLeg
     {
         /// <summary>
-        /// Symbol name
+        /// ["<c>symbol</c>"] Symbol name
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Contract type
+        /// ["<c>contractType</c>"] Contract type
         /// </summary>
         [JsonPropertyName("contractType")]
         public ContractTypeV5 ContractType { get; set; }

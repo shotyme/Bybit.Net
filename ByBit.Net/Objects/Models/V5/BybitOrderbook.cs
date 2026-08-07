@@ -1,10 +1,7 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Interfaces;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
-using Bybit.Net.Converters;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -15,39 +12,39 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOrderbook
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>s</c>"] Symbol
         /// </summary>
         [JsonPropertyName("s")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Bids
+        /// ["<c>b</c>"] Bids
         /// </summary>
         [JsonPropertyName("b")]
         public BybitOrderbookEntry[] Bids { get; set; } = Array.Empty<BybitOrderbookEntry>();
         /// <summary>
-        /// Asks
+        /// ["<c>a</c>"] Asks
         /// </summary>
         [JsonPropertyName("a")]
         public BybitOrderbookEntry[] Asks { get; set; } = Array.Empty<BybitOrderbookEntry>();
         /// <summary>
-        /// Timestamp
+        /// ["<c>ts</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("ts")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Timestamp the matching engine produced the data
+        /// ["<c>cts</c>"] Timestamp the matching engine produced the data
         /// </summary>
         [JsonPropertyName("cts")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime MatchingEngineTimestamp { get; set; }
         /// <summary>
-        /// Update id
+        /// ["<c>u</c>"] Update id
         /// </summary>
         [JsonPropertyName("u")]
         public long UpdateId { get; set; }
         /// <summary>
-        /// Cross sequence
+        /// ["<c>seq</c>"] Cross sequence
         /// </summary>
         [JsonPropertyName("seq")]
         public long? Sequence { get; set; }

@@ -1,11 +1,14 @@
+using Bybit.Net.Clients.MessageHandlers;
 using Bybit.Net.Interfaces.Clients.V5;
 using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Options;
+using Bybit.Net.Objects.Sockets;
 using Bybit.Net.Objects.Sockets.Queries;
 using Bybit.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,11 +26,8 @@ namespace Bybit.Net.Clients.V5
     /// <inheritdoc cref="IBybitSocketClientLinearApi" />
     internal partial class BybitSocketClientInverseApi : BybitSocketClientBaseApi, IBybitSocketClientInverseApi
     {
-        private static readonly MessagePath _reqIdPath = MessagePath.Get().Property("req_id");
-        private static readonly MessagePath _topicPath = MessagePath.Get().Property("topic");
-
-        internal BybitSocketClientInverseApi(ILogger log, BybitSocketOptions options)
-            : base(log, options, "/v5/public/inverse")
+        internal BybitSocketClientInverseApi(ILoggerFactory? loggerFactory, BybitSocketOptions options)
+            : base(loggerFactory, options, "/v5/public/inverse")
         {
             RegisterPeriodicQuery(
                 "Heartbeat",
@@ -43,56 +44,98 @@ namespace Bybit.Net.Clients.V5
                 });
         }
         public IBybitSocketClientInverseApiShared SharedClient => this;
-
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BybitSocketMessageHandler1();
+        
         /// <inheritdoc />
-        public override string? GetListenerIdentifier(IMessageAccessor message)
-        {
-            var reqId = message.GetValue<string>(_reqIdPath);
-            if (reqId != null)
-                return reqId;
-
-            return message.GetValue<string>(_topicPath);
-        }
-
-
-        /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BybitLinearTickerUpdate>> handler, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BybitLinearTickerUpdate>> handler, CancellationToken ct = default)
             => SubscribeToTickerUpdatesAsync(new string[] { symbol }, handler, ct);
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLinearTickerUpdate>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLinearTickerUpdate>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitLinearTickerUpdate>(_logger, this, symbols.Select(x => $"tickers.{x}").ToArray(), handler);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitLinearTickerUpdate>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitLinearTickerUpdate>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitLinearTickerUpdate>(_logger, this, symbols.Select(x => $"tickers.{x}").ToArray(), internalHandler);
             return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default)
             => SubscribeToTradeUpdatesAsync(new string[] { symbol }, handler, ct);
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitTrade[]>(_logger, this, symbols.Select(s => $"publicTrade.{s}").ToArray(), handler);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitTrade[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitTrade[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitTrade[]>(_logger, this, symbols.Select(s => $"publicTrade.{s}").ToArray(), internalHandler);
             return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToInsurancePoolUpdatesAsync(Action<DataEvent<BybitInsuranceUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToInsurancePoolUpdatesAsync(Action<DataEvent<BybitInsuranceUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitInsuranceUpdate[]>(_logger, this, [$"insurance.inverse"], handler);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitInsuranceUpdate[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitInsuranceUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitInsuranceUpdate[]>(_logger, this, [$"insurance.inverse"], internalHandler);
             return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async virtual Task<CallResult<UpdateSubscription>> SubscribeToAdlAlertUpdatesAsync(Action<DataEvent<BybitAdlAlert[]>> updateHandler, CancellationToken ct = default)
+        public async virtual Task<WebSocketResult<UpdateSubscription>> SubscribeToAdlAlertUpdatesAsync(Action<DataEvent<BybitAdlAlert[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitAdlAlert[]>(_logger, this, ["adlAlert.inverse"], updateHandler);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitAdlAlert[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitAdlAlert[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitAdlAlert[]>(_logger, this, ["adlAlert.inverse"], internalHandler);
             return await SubscribeAsync(_wsPublicAddress.AppendPath(_baseEndpoint), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials) => new BybitAuthenticationProvider(credentials);
+        protected override BybitAuthenticationProvider CreateAuthenticationProvider(BybitCredentials credentials)
+            => new BybitAuthenticationProvider(credentials);
         
     }
 }

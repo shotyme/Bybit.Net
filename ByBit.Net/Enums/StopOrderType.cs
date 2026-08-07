@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,62 +10,62 @@ namespace Bybit.Net.Enums
     public enum StopOrderType
     {
         /// <summary>
-        /// Take profit
+        /// ["<c>TakeProfit</c>"] Take profit
         /// </summary>
         [Map("TakeProfit")]
         TakeProfit,
         /// <summary>
-        /// Stop loss
+        /// ["<c>StopLoss</c>"] Stop loss
         /// </summary>
         [Map("StopLoss")]
         StopLoss,
         /// <summary>
-        /// Trailing stop
+        /// ["<c>TrailingStop</c>"] Trailing stop
         /// </summary>
         [Map("TrailingStop")]
         TrailingStop,
         /// <summary>
-        /// Trailing profit
+        /// ["<c>TrailingProfit</c>"] Trailing profit
         /// </summary>
         [Map("TrailingProfit")]
         TrailingProfit,
         /// <summary>
-        /// Stop
+        /// ["<c>Stop</c>"] Stop
         /// </summary>
         [Map("Stop")]
         Stop,
         /// <summary>
-        /// Partial stop loss
+        /// ["<c>PartialStopLoss</c>"] Partial stop loss
         /// </summary>
         [Map("PartialStopLoss")]
         PartialStopLoss,
         /// <summary>
-        /// Partial stop loss
+        /// ["<c>PartialTakeProfit</c>"] Partial stop loss
         /// </summary>
         [Map("PartialTakeProfit")]
         PartialTakeProfit,
         /// <summary>
-        /// Spot TP/SL order
+        /// ["<c>tpslOrder</c>"] Spot TP/SL order
         /// </summary>
         [Map("tpslOrder")]
         TpSlOrder,
         /// <summary>
-        /// Oco Order
+        /// ["<c>OcoOrder</c>"] Oco Order
         /// </summary>
         [Map("OcoOrder")]
         OcoOrder,
         /// <summary>
-        /// MmRateClose (only from web)
+        /// ["<c>MmRateClose</c>"] MmRateClose (only from web)
         /// </summary>
         [Map("MmRateClose")]
         MmRateClose,
         /// <summary>
-        /// Spot bidirectional tpsl order
+        /// ["<c>BidirectionalTpslOrder</c>"] Spot bidirectional tpsl order
         /// </summary>
         [Map("BidirectionalTpslOrder")]
         BidirectionalTpslOrder,
         /// <summary>
-        /// Unknown type
+        /// ["<c>Unknown</c>"] Unknown type
         /// </summary>
         [Map("Unknown")]
         Unknown

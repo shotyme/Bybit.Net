@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,44 +11,50 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitInternalDeposit
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Quantity
+        /// ["<c>amount</c>"] Quantity
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Type (1: Internal deposit)
+        /// ["<c>type</c>"] Type (1: Internal deposit)
         /// </summary>
         [JsonPropertyName("type")]
         public int Type { get; set; }
         /// <summary>
-        /// The asset
+        /// ["<c>coin</c>"] The asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Email or phone number
+        /// ["<c>address</c>"] Email or phone number
         /// </summary>
         [JsonPropertyName("address")]
         public string Address { get; set; } = string.Empty;
         /// <summary>
-        /// Status
+        /// ["<c>status</c>"] Status
         /// </summary>
         [JsonPropertyName("status")]
 
         public InternalDepositStatus Status { get; set; }
         /// <summary>
-        /// Timestamp 
+        /// ["<c>complianceStatus</c>"] Compliance status, only applicable to Turkey users
+        /// </summary>
+        [JsonPropertyName("complianceStatus")]
+
+        public TravelRuleStatus? ComplianceStatus { get; set; }
+        /// <summary>
+        /// ["<c>createdTime</c>"] Timestamp 
         /// </summary>
         [JsonPropertyName("createdTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Transaction id
+        /// ["<c>txID</c>"] Transaction id
         /// </summary>
         [JsonPropertyName("txID")]
         public string TransactionId { get; set; } = string.Empty;

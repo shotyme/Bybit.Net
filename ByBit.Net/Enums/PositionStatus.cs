@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,19 +10,24 @@ namespace Bybit.Net.Enums
     public enum PositionStatus
     {
         /// <summary>
-        /// Normal
+        /// ["<c>Normal</c>"] Normal
         /// </summary>
         [Map("Normal")]
         Normal,
         /// <summary>
-        /// Liquidation
+        /// ["<c>Liq</c>"] Liquidation
         /// </summary>
         [Map("Liq")]
-        Liqidation,
+        Liquidation,
         /// <summary>
-        /// Auto deleverage
+        /// ["<c>Adl</c>"] Auto deleverage
         /// </summary>
         [Map("Adl")]
-        AutoDeleverage
+        AutoDeleverage,
+        /// <summary>
+        /// ["<c>Inactive</c>"] Inactive
+        /// </summary>
+        [Map("Inactive")]
+        Inactive
     }
 }

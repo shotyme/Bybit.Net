@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -12,7 +10,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitUserAssetInfos : BybitBaseResponse
     {
         /// <summary>
-        /// Assets
+        /// ["<c>rows</c>"] Assets
         /// </summary>
         [JsonPropertyName("rows")]
         public BybitUserAssetInfo[] Assets { get; set; } = Array.Empty<BybitUserAssetInfo>();
@@ -25,22 +23,22 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitUserAssetInfo
     {
         /// <summary>
-        /// Name
+        /// ["<c>name</c>"] Name
         /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
         /// <summary>
-        /// asset
+        /// ["<c>coin</c>"] asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Quantity remaining
+        /// ["<c>remainAmount</c>"] Quantity remaining
         /// </summary>
         [JsonPropertyName("remainAmount")]
         public decimal? QuantityRemaining { get; set; }
         /// <summary>
-        /// Networks
+        /// ["<c>chains</c>"] Networks
         /// </summary>
         [JsonPropertyName("chains")]
         public BybitAssetNetworkInfo[] Networks { get; set; } = [];
@@ -53,64 +51,69 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAssetNetworkInfo
     {
         /// <summary>
-        /// Network type
+        /// ["<c>chainType</c>"] Network type
         /// </summary>
         [JsonPropertyName("chainType")]
         public string NetworkType { get; set; } = string.Empty;
         /// <summary>
-        /// Confirmations
+        /// ["<c>confirmation</c>"] Confirmations
         /// </summary>
         [JsonPropertyName("confirmation")]
         public int? Confirmation { get; set; }
         /// <summary>
-        /// Withdrawal fee
+        /// ["<c>withdrawFee</c>"] Withdrawal fee
         /// </summary>
         [JsonPropertyName("withdrawFee")]
         public decimal? WithdrawFee { get; set; }
         /// <summary>
-        /// Min deposit quantity
+        /// ["<c>depositMin</c>"] Min deposit quantity
         /// </summary>
         [JsonPropertyName("depositMin")]
         public decimal? MinDeposit { get; set; }
         /// <summary>
-        /// Min withdrawal quantity
+        /// ["<c>withdrawMin</c>"] Min withdrawal quantity
         /// </summary>
         [JsonPropertyName("withdrawMin")]
         public decimal? MinWithdraw { get; set; }
         /// <summary>
-        /// Chain
+        /// ["<c>chain</c>"] Chain
         /// </summary>
         [JsonPropertyName("chain")]
         public string Network { get; set; } = string.Empty;
         /// <summary>
-        /// Chain deposit enabled
+        /// ["<c>chainDeposit</c>"] Chain deposit enabled
         /// </summary>
         [JsonPropertyName("chainDeposit")]
         [JsonConverter(typeof(BoolConverter))]
         public bool? NetworkDeposit { get; set; }
         /// <summary>
-        /// Chain withdraw enabled
+        /// ["<c>chainWithdraw</c>"] Chain withdraw enabled
         /// </summary>
         [JsonPropertyName("chainWithdraw")]
         [JsonConverter(typeof(BoolConverter))]
         public bool? NetworkWithdraw { get; set; }
         /// <summary>
-        /// Minimal accuracy
+        /// ["<c>minAccuracy</c>"] Minimal accuracy
         /// </summary>
         [JsonPropertyName("minAccuracy")]
         public int MinAccuracy { get; set; }
         /// <summary>
-        /// Withdrawal percentage fee
+        /// ["<c>withdrawPercentageFee</c>"] Withdrawal percentage fee
         /// </summary>
         [JsonPropertyName("withdrawPercentageFee")]
         public decimal? WithdrawPercentageFee { get; set; }
         /// <summary>
-        /// Contract address
+        /// ["<c>withdrawMax</c>"] Withdrawal max amount
+        /// </summary>
+        [JsonPropertyName("withdrawMax")]
+        public decimal? WithdrawMax { get; set; }
+        /// <summary>
+        /// ["<c>contractAddress</c>"] Contract address
         /// </summary>
         [JsonPropertyName("contractAddress")]
         public string ContractAddress { get; set; } = string.Empty;
         /// <summary>
-        /// Confirmations required for unlocking
+        /// ["<c>safeConfirmNumber</c>"] Confirmations required for unlocking
         /// </summary>
         [JsonPropertyName("safeConfirmNumber")]
         public int? RequiredConfirmations { get; set; }

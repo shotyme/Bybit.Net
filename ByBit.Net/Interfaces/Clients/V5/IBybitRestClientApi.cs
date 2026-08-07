@@ -1,12 +1,12 @@
 ﻿using Bybit.Net.Clients.V5;
-using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Interfaces.Clients;
 
 namespace Bybit.Net.Interfaces.Clients.V5
 {
     /// <summary>
     /// Bybit V5 API endpoints
     /// </summary>
-    public interface IBybitRestClientApi : IBaseApiClient, IRestApiClient
+    public interface IBybitRestClientApi : IRestApiClient<BybitCredentials>
     {
         /// <summary>
         /// Endpoints related to account settings, info or actions

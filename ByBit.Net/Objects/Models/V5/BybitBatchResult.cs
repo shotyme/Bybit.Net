@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -10,12 +9,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitBatchResult
     {
         /// <summary>
-        /// Result code
+        /// ["<c>code</c>"] Result code
         /// </summary>
         [JsonPropertyName("code")]
         public int Code { get; set; }
         /// <summary>
-        /// Result message
+        /// ["<c>msg</c>"] Result message
         /// </summary>
         [JsonPropertyName("msg")]
         public string Message { get; set; } = string.Empty;
@@ -29,7 +28,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitBatchResult<T> : BybitBatchResult
     {
         /// <summary>
-        /// Response data
+        /// ["<c>data</c>"] Response data
         /// </summary>
         [JsonPropertyName("data")]
         public T? Data { get; set; }

@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum AuctionPhase
     {
         /// <summary>
-        /// Not started
+        /// ["<c>NotStarted</c>"] Not started
         /// </summary>
         [Map("NotStarted")]
         NotStarted,
         /// <summary>
-        /// Pre-market trading is finished
+        /// ["<c>Finished</c>"] Pre-market trading is finished
         /// </summary>
         [Map("Finished")]
         Finished,
         /// <summary>
-        /// Auction phase of pre-market trading<br/>
+        /// ["<c>CallAuction</c>"] Auction phase of pre-market trading<br/>
         /// - only timeInForce=GTC, orderType=Limit order is allowed to submit<br/>
         /// - TP/SL are not supported; Conditional orders are not supported<br/>
         /// - cannot modify the order at this stage<br/>
@@ -30,7 +29,7 @@ namespace Bybit.Net.Enums
         [Map("CallAuction")]
         CallAuction,
         /// <summary>
-        /// Auction no cancel phase of pre-market trading<br/>
+        /// ["<c>CallAuctionNoCancel</c>"] Auction no cancel phase of pre-market trading<br/>
         /// only timeInForce=GTC, orderType=Limit order is allowed to submit<br/>
         /// TP/SL are not supported; Conditional orders are not supported<br/>
         /// cannot modify and cancel the order at this stage<br/>
@@ -39,14 +38,14 @@ namespace Bybit.Net.Enums
         [Map("CallAuctionNoCancel")]
         CallAuctionNoCancel,
         /// <summary>
-        /// cross matching phase<br/>
+        /// ["<c>CrossMatching</c>"] cross matching phase<br/>
         /// cannot create, modify and cancel the order at this stage<br/>
         /// Candle data is released from this stage
         /// </summary>
         [Map("CrossMatching")]
         CrossMatching,
         /// <summary>
-        /// Continuous trading phase<br/>
+        /// ["<c>ContinuousTrading</c>"] Continuous trading phase<br/>
         /// There is no restriction to create, amend, cancel orders<br/>
         /// orderbook, public trade data is released from this stage
         /// </summary>

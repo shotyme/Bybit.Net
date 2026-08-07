@@ -1,10 +1,5 @@
 ﻿using CryptoExchange.Net.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Enums
 {
@@ -15,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum MaintenanceType
     {
         /// <summary>
-        /// Planned maintenance
+        /// ["<c>1</c>"] Planned maintenance
         /// </summary>
         [Map("1")]
         PlannedMaintenance,
         /// <summary>
-        /// Temporary maintenance
+        /// ["<c>2</c>"] Temporary maintenance
         /// </summary>
         [Map("2")]
         TemporaryMaintenance,
         /// <summary>
-        /// Incident
+        /// ["<c>3</c>"] Incident
         /// </summary>
         [Map("3")]
         Incident

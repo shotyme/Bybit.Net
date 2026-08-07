@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,70 +11,75 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOptionSymbol
     {
         /// <summary>
-        /// Symbol name
+        /// ["<c>symbolId</c>"] Symbol id
+        /// </summary>
+        [JsonPropertyName("symbolId")]
+        public int SymbolId { get; set; }
+        /// <summary>
+        /// ["<c>symbol</c>"] Symbol name
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Name { get; set; } = string.Empty;
         /// <summary>
-        /// Display name
+        /// ["<c>displayName</c>"] Display name
         /// </summary>
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; } = string.Empty;
         /// <summary>
-        /// Options type
+        /// ["<c>optionsType</c>"] Options type
         /// </summary>
         [JsonPropertyName("optionsType")]
         public OptionType OptionType { get; set; }
         /// <summary>
-        /// Symbol type
+        /// ["<c>symbolType</c>"] Symbol type
         /// </summary>
         [JsonPropertyName("symbolType")]
         public SymbolType? SymbolType { get; set; }
         /// <summary>
-        /// Base asset
+        /// ["<c>baseCoin</c>"] Base asset
         /// </summary>
         [JsonPropertyName("baseCoin")]
         public string BaseAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Quote asset
+        /// ["<c>quoteCoin</c>"] Quote asset
         /// </summary>
         [JsonPropertyName("quoteCoin")]
         public string QuoteAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Settle asset
+        /// ["<c>settleCoin</c>"] Settle asset
         /// </summary>
         [JsonPropertyName("settleCoin")]
         public string SettleAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Launch time
+        /// ["<c>launchTime</c>"] Launch time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("launchTime")]
         public DateTime LaunchTime { get; set; }
         /// <summary>
-        /// Delivery time
+        /// ["<c>deliveryTime</c>"] Delivery time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("deliveryTime")]
         public DateTime DeliveryTime { get; set; }
         /// <summary>
-        /// Symbol status
+        /// ["<c>status</c>"] Symbol status
         /// </summary>
 
         [JsonPropertyName("status")]
         public SymbolStatus Status { get; set; }
         /// <summary>
-        /// Delivery fee rate
+        /// ["<c>deliveryFeeRate</c>"] Delivery fee rate
         /// </summary>
         [JsonPropertyName("deliveryFeeRate")]
         public decimal DeliveryFeeRate { get; set; }
         /// <summary>
-        /// Lot size order filter
+        /// ["<c>lotSizeFilter</c>"] Lot size order filter
         /// </summary>
         [JsonPropertyName("lotSizeFilter")]
         public BybitOptionLotSizeFilter? LotSizeFilter { get; set; }
         /// <summary>
-        /// Price order filter
+        /// ["<c>priceFilter</c>"] Price order filter
         /// </summary>
         [JsonPropertyName("priceFilter")]
         public BybitOptionPriceFilter? PriceFilter { get; set; }
@@ -88,17 +92,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOptionLotSizeFilter
     {
         /// <summary>
-        /// Quantity step
+        /// ["<c>qtyStep</c>"] Quantity step
         /// </summary>
         [JsonPropertyName("qtyStep")]
         public decimal QuantityStep { get; set; }
         /// <summary>
-        /// Min order quantity
+        /// ["<c>minOrderQty</c>"] Min order quantity
         /// </summary>
         [JsonPropertyName("minOrderQty")]
         public decimal MinOrderQuantity { get; set; }
         /// <summary>
-        /// Max order quantity
+        /// ["<c>maxOrderQty</c>"] Max order quantity
         /// </summary>
         [JsonPropertyName("maxOrderQty")]
         public decimal MaxOrderQuantity { get; set; }
@@ -111,17 +115,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOptionPriceFilter
     {
         /// <summary>
-        /// Tick size
+        /// ["<c>tickSize</c>"] Tick size
         /// </summary>
         [JsonPropertyName("tickSize")]
         public decimal TickSize { get; set; }
         /// <summary>
-        /// Min price
+        /// ["<c>minPrice</c>"] Min price
         /// </summary>
         [JsonPropertyName("minPrice")]
         public decimal MinPrice { get; set; }
         /// <summary>
-        /// Max price
+        /// ["<c>maxPrice</c>"] Max price
         /// </summary>
         [JsonPropertyName("maxPrice")]
         public decimal MaxPrice { get; set; }

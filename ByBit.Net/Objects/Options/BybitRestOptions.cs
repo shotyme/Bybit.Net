@@ -7,7 +7,7 @@ namespace Bybit.Net.Objects.Options
     /// <summary>
     /// Options for the BybitRestClient
     /// </summary>
-    public class BybitRestOptions : RestExchangeOptions<BybitEnvironment, ApiCredentials>
+    public class BybitRestOptions : RestExchangeOptions<BybitEnvironment, BybitCredentials>
     {
         /// <summary>
         /// Default options for the rest client

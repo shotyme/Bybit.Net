@@ -1,10 +1,5 @@
 ﻿using CryptoExchange.Net.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Enums
 {
@@ -15,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum ServiceType
     {
         /// <summary>
-        /// Trading service
+        /// ["<c>1</c>"] Trading service
         /// </summary>
         [Map("1")]
         TradingService,
         /// <summary>
-        /// Trading service REST
+        /// ["<c>2</c>"] Trading service REST
         /// </summary>
         [Map("2")]
         RestTradingService,
         /// <summary>
-        /// Trading service Websocket
+        /// ["<c>3</c>"] Trading service Websocket
         /// </summary>
         [Map("3")]
         WebsocketTradingService,
         /// <summary>
-        /// Private websocket stream
+        /// ["<c>4</c>"] Private websocket stream
         /// </summary>
         [Map("4")]
         PrivateWebsocketStream,
         /// <summary>
-        /// Market data service
+        /// ["<c>5</c>"] Market data service
         /// </summary>
         [Map("5")]
         MarketDataService

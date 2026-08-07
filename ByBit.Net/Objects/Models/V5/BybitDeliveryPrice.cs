@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
 
@@ -11,17 +10,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDeliveryPrice
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Delivery price
+        /// ["<c>deliveryPrice</c>"] Delivery price
         /// </summary>
         [JsonPropertyName("deliveryPrice")]
         public decimal DeliveryPrice { get; set; }
         /// <summary>
-        /// Delivery time
+        /// ["<c>deliveryTime</c>"] Delivery time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("deliveryTime")]

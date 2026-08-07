@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,32 +10,32 @@ namespace Bybit.Net.Enums
     public enum OpenInterestInterval
     {
         /// <summary>
-        /// 5
+        /// ["<c>5min</c>"] 5
         /// </summary>
         [Map("5min")]
         FiveMinutes = 60 * 5,
         /// <summary>
-        /// 15
+        /// ["<c>15min</c>"] 15
         /// </summary>
         [Map("15min")]
         FifteenMinutes = 60 * 15,
         /// <summary>
-        /// 30
+        /// ["<c>30min</c>"] 30
         /// </summary>
         [Map("30min")]
         ThirtyMinutes = 60 * 30,
         /// <summary>
-        /// 60
+        /// ["<c>1h</c>"] 60
         /// </summary>
         [Map("1h")]
         OneHour = 60 * 60,
         /// <summary>
-        /// 240
+        /// ["<c>4h</c>"] 240
         /// </summary>
         [Map("4h")]
         FourHours = 60 * 60 * 4,
         /// <summary>
-        /// D
+        /// ["<c>1d</c>"] D
         /// </summary>
         [Map("1d")]
         OneDay = 60 * 60 * 24

@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -19,12 +17,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAccountTypeInfo
     {
         /// <summary>
-        /// User id
+        /// ["<c>uid</c>"] User id
         /// </summary>
         [JsonPropertyName("uid")]
         public string UserId { get; set; } = string.Empty;
         /// <summary>
-        /// Account types
+        /// ["<c>accountType</c>"] Account types
         /// </summary>
         [JsonPropertyName("accountType")]
         public string[] AccountTypes { get; set; } = Array.Empty<string>();

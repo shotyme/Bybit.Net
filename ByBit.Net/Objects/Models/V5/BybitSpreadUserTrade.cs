@@ -1,10 +1,6 @@
-﻿using Bybit.Net.Enums;
+using Bybit.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -14,52 +10,52 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpreadUserTrade
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Client order id
+        /// ["<c>orderLinkId</c>"] Client order id
         /// </summary>
         [JsonPropertyName("orderLinkId")]
         public string? ClientOrderId { get; set; }
         /// <summary>
-        /// Order side
+        /// ["<c>side</c>"] Order side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide OrderSide { get; set; }
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string OrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Trade price
+        /// ["<c>execPrice</c>"] Trade price
         /// </summary>
         [JsonPropertyName("execPrice")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Legs
+        /// ["<c>legs</c>"] Legs
         /// </summary>
         [JsonPropertyName("legs")]
         public BybitSpreadUserTradeLeg[] Legs { get; set; } = [];
         /// <summary>
-        /// Trade time
+        /// ["<c>execTime</c>"] Trade time
         /// </summary>
         [JsonPropertyName("execTime")]
         public DateTime TradeTime { get; set; }
         /// <summary>
-        /// Trade type
+        /// ["<c>execType</c>"] Trade type
         /// </summary>
         [JsonPropertyName("execType")]
         public TradeType TradeType { get; set; }
         /// <summary>
-        /// Traded quantity
+        /// ["<c>execQty</c>"] Traded quantity
         /// </summary>
         [JsonPropertyName("execQty")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Trade id
+        /// ["<c>execId</c>"] Trade id
         /// </summary>
         [JsonPropertyName("execId")]
         public string TradeId { get; set; } = string.Empty;
@@ -71,62 +67,62 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpreadUserTradeLeg
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Order side
+        /// ["<c>side</c>"] Order side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide OrderSide { get; set; }
         /// <summary>
-        /// Trade price
+        /// ["<c>execPrice</c>"] Trade price
         /// </summary>
         [JsonPropertyName("execPrice")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Trade timestamp
+        /// ["<c>execTime</c>"] Trade timestamp
         /// </summary>
         [JsonPropertyName("execTime")]
         public DateTime TradeTime { get; set; }
         /// <summary>
-        /// Traded value
+        /// ["<c>execValue</c>"] Traded value
         /// </summary>
         [JsonPropertyName("execValue")]
         public decimal Value { get; set; }
         /// <summary>
-        /// Trade type
+        /// ["<c>execType</c>"] Trade type
         /// </summary>
         [JsonPropertyName("execType")]
         public TradeType TradeType { get; set; }
         /// <summary>
-        /// Category
+        /// ["<c>category</c>"] Category
         /// </summary>
         [JsonPropertyName("category")]
         public string Category { get; set; } = string.Empty;
         /// <summary>
-        /// Traded quantity
+        /// ["<c>execQty</c>"] Traded quantity
         /// </summary>
         [JsonPropertyName("execQty")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Trade fee
+        /// ["<c>execFee</c>"] Trade fee
         /// </summary>
         [JsonPropertyName("execFee")]
         public decimal Fee { get; set; }
         /// <summary>
-        /// Trade fee
+        /// ["<c>execFeeV2</c>"] Trade fee
         /// </summary>
         [JsonPropertyName("execFeeV2")]
         public decimal FeeV2 { get; set; }
         /// <summary>
-        /// Fee asset
+        /// ["<c>feeCurrency</c>"] Fee asset
         /// </summary>
         [JsonPropertyName("feeCurrency")]
         public string FeeAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Trade id
+        /// ["<c>execId</c>"] Trade id
         /// </summary>
         [JsonPropertyName("execId")]
         public string TradeId { get; set; } = string.Empty;

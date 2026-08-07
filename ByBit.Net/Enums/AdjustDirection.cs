@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum AdjustDirection
     {
         /// <summary>
-        /// Add
+        /// ["<c>0</c>"] Add
         /// </summary>
         [Map("0")]
         Add,
         /// <summary>
-        /// Reduce
+        /// ["<c>1</c>"] Reduce
         /// </summary>
         [Map("1")]
         Reduce

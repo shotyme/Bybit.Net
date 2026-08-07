@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,37 +10,37 @@ namespace Bybit.Net.Enums
     public enum AccountType
     {
         /// <summary>
-        /// Contract account (futures)
+        /// ["<c>CONTRACT</c>"] Contract account (futures)
         /// </summary>
         [Map("CONTRACT")]
         Contract,
         /// <summary>
-        /// Spot account
+        /// ["<c>SPOT</c>"] Spot account
         /// </summary>
         [Map("SPOT")]
         Spot,
         /// <summary>
-        /// Investment (defi) account
+        /// ["<c>INVESTMENT</c>"] Investment (defi) account
         /// </summary>
         [Map("INVESTMENT")]
         Investment,
         /// <summary>
-        /// Copy trading account
+        /// ["<c>COPYTRADING</c>"] Copy trading account
         /// </summary>
         [Map("COPYTRADING")]
         CopyTrading,
         /// <summary>
-        /// Option account
+        /// ["<c>OPTION</c>"] Option account
         /// </summary>
         [Map("OPTION")]
         Option,
         /// <summary>
-        /// Funding account
+        /// ["<c>FUND</c>"] Funding account
         /// </summary>
         [Map("FUND")]
         Fund,
         /// <summary>
-        /// Unified account
+        /// ["<c>UNIFIED</c>"] Unified account
         /// </summary>
         [Map("UNIFIED")]
         Unified,

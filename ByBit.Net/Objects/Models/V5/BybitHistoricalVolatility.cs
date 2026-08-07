@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
 
@@ -11,17 +10,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitHistoricalVolatility
     {
         /// <summary>
-        /// Period
+        /// ["<c>period</c>"] Period
         /// </summary>
         [JsonPropertyName("period")]
         public int Period { get; set; }
         /// <summary>
-        /// Value
+        /// ["<c>value</c>"] Value
         /// </summary>
         [JsonPropertyName("value")]
         public decimal Value { get; set; }
         /// <summary>
-        /// Timestamp
+        /// ["<c>time</c>"] Timestamp
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("time")]

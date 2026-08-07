@@ -1,6 +1,5 @@
-using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Enums
 {
@@ -11,24 +10,29 @@ namespace Bybit.Net.Enums
     public enum LoanTerm
     {
         /// <summary>
-        /// 7 days
+        /// ["<c>7</c>"] 7 days
         /// </summary>
+        [Map("7")]
         Days7,
         /// <summary>
-        /// 14 days
+        /// ["<c>14</c>"] 14 days
         /// </summary>
+        [Map("14")]
         Days14,
         /// <summary>
-        /// 30 days
+        /// ["<c>30</c>"] 30 days
         /// </summary>
+        [Map("30")]
         Days30,
         /// <summary>
-        /// 90 days
+        /// ["<c>90</c>"] 90 days
         /// </summary>
+        [Map("90")]
         Days90,
         /// <summary>
-        /// 180 days
+        /// ["<c>180</c>"] 180 days
         /// </summary>
+        [Map("180")]
         Days180
     }
 }

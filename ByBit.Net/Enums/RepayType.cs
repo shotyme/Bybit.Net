@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum RepayType
     {
         /// <summary>
-        /// By user
+        /// ["<c>1</c>"] By user
         /// </summary>
         [Map("1")]
         ByUser,
         /// <summary>
-        /// By liquidation
+        /// ["<c>2</c>"] By liquidation
         /// </summary>
         [Map("2")]
         ByLiquidation

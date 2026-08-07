@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum EarnProductStatus
     {
         /// <summary>
-        /// Available
+        /// ["<c>Available</c>"] Available
         /// </summary>
         [Map("Available")]
         Available,
         /// <summary>
-        /// Not available
+        /// ["<c>NotAvailable</c>"] Not available
         /// </summary>
         [Map("NotAvailable")]
         NotAvailable

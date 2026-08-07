@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum SubAccountType
     {
         /// <summary>
-        /// Normal account
+        /// ["<c>1</c>"] Normal account
         /// </summary>
         [Map("1")]
         NormalAccount,
         /// <summary>
-        /// Custodial account
+        /// ["<c>6</c>"] Custodial account
         /// </summary>
         [Map("6")]
         CustodialAccount

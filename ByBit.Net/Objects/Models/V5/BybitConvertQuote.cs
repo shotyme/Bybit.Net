@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
 
@@ -11,42 +10,42 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitConvertQuote
     {
         /// <summary>
-        /// Quote transaction id
+        /// ["<c>quoteTxId</c>"] Quote transaction id
         /// </summary>
         [JsonPropertyName("quoteTxId")]
         public string QuoteTransactionId { get; set; } = string.Empty;
         /// <summary>
-        /// Exchange rate
+        /// ["<c>exchangeRate</c>"] Exchange rate
         /// </summary>
         [JsonPropertyName("exchangeRate")]
         public decimal ExchangeRate { get; set; }
         /// <summary>
-        /// From asset
+        /// ["<c>fromCoin</c>"] From asset
         /// </summary>
         [JsonPropertyName("fromCoin")]
         public string FromAsset { get; set; } = string.Empty;
         /// <summary>
-        /// From asset type
+        /// ["<c>fromCoinType</c>"] From asset type
         /// </summary>
         [JsonPropertyName("fromCoinType")]
         public string FromAssetType { get; set; } = string.Empty;
         /// <summary>
-        /// To asset
+        /// ["<c>toCoin</c>"] To asset
         /// </summary>
         [JsonPropertyName("toCoin")]
         public string ToAsset { get; set; } = string.Empty;
         /// <summary>
-        /// To asset type
+        /// ["<c>toCoinType</c>"] To asset type
         /// </summary>
         [JsonPropertyName("toCoinType")]
         public string ToAssetType { get; set; } = string.Empty;
         /// <summary>
-        /// From quantity
+        /// ["<c>fromAmount</c>"] From quantity
         /// </summary>
         [JsonPropertyName("fromAmount")]
         public decimal FromQuantity { get; set; }
         /// <summary>
-        /// To quantity
+        /// ["<c>toAmount</c>"] To quantity
         /// </summary>
         [JsonPropertyName("toAmount")]
         public decimal ToQuantity { get; set; }
@@ -56,7 +55,7 @@ namespace Bybit.Net.Objects.Models.V5
         [JsonPropertyName("expiredTime"), JsonConverter(typeof(DateTimeConverter))]
         public DateTime ExpireTime { get; set; }
         /// <summary>
-        /// Request id
+        /// ["<c>requestId</c>"] Request id
         /// </summary>
         [JsonPropertyName("requestId")]
         public string? RequestId { get; set; }

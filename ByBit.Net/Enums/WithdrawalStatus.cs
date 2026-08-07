@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,42 +10,42 @@ namespace Bybit.Net.Enums
     public enum WithdrawalStatus
     {
         /// <summary>
-        /// Security check
+        /// ["<c>SecurityCheck</c>"] Security check
         /// </summary>
         [Map("SecurityCheck")]
         SecurityCheck,
         /// <summary>
-        /// Pending
+        /// ["<c>Pending</c>"] Pending
         /// </summary>
         [Map("Pending")]
         Pending,
         /// <summary>
-        /// Success
+        /// ["<c>success</c>"] Success
         /// </summary>
         [Map("success")]
         Success,
         /// <summary>
-        /// Canceled by user
+        /// ["<c>CancelByUser</c>"] Canceled by user
         /// </summary>
         [Map("CancelByUser")]
         CanceledByUser,
         /// <summary>
-        /// Rejected
+        /// ["<c>Reject</c>"] Rejected
         /// </summary>
         [Map("Reject")]
         Rejected,
         /// <summary>
-        /// Failed
+        /// ["<c>Fail</c>"] Failed
         /// </summary>
         [Map("Fail")]
         Failed,
         /// <summary>
-        /// Blockchain confirmed
+        /// ["<c>BlockchainConfirmed</c>"] Blockchain confirmed
         /// </summary>
         [Map("BlockchainConfirmed")]
         BlockchainConfirmed,
         /// <summary>
-        /// More information required
+        /// ["<c>MoreInformationRequired</c>"] More information required
         /// </summary>
         [Map("MoreInformationRequired")]
         MoreInformationRequired

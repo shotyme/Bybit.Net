@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum PositionIdx
     {
         /// <summary>
-        /// One way mode
+        /// ["<c>0</c>"] One way mode
         /// </summary>
         [Map("0")]
         OneWayMode = 0,
         /// <summary>
-        /// Buy side of hedge mode
+        /// ["<c>1</c>"] Buy side of hedge mode
         /// </summary>
         [Map("1")]
         BuyHedgeMode = 1,
         /// <summary>
-        /// Sell side of hedge mode
+        /// ["<c>2</c>"] Sell side of hedge mode
         /// </summary>
         [Map("2")]
         SellHedgeMode = 2

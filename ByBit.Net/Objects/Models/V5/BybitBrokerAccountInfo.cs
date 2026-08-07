@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
 
@@ -11,28 +10,28 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitBrokerAccountInfo
     {
         /// <summary>
-        /// Current sub account quantity
+        /// ["<c>subAcctQty</c>"] Current sub account quantity
         /// </summary>
         [JsonPropertyName("subAcctQty")]
         public int SubAccountCount { get; set; }
         /// <summary>
-        /// Max sub account quantity
+        /// ["<c>maxSubAcctQty</c>"] Max sub account quantity
         /// </summary>
         [JsonPropertyName("maxSubAcctQty")]
         public int MaxSubAccountCount { get; set; }
         /// <summary>
-        /// Timestamp
+        /// ["<c>ts</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("ts")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Base fee rebate rates
+        /// ["<c>baseFeeRebateRate</c>"] Base fee rebate rates
         /// </summary>
         [JsonPropertyName("baseFeeRebateRate")]
         public BybitBrokerRebateRate BaseFeeRebateRates { get; set; } = null!;
         /// <summary>
-        /// Markup fee rebate rates
+        /// ["<c>markupFeeRebateRate</c>"] Markup fee rebate rates
         /// </summary>
         [JsonPropertyName("markupFeeRebateRate")]
         public BybitBrokerRebateRate MarkupFeeRebateRates { get; set; } = null!;
@@ -45,17 +44,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitBrokerRebateRate
     {
         /// <summary>
-        /// Spot rebate rate
+        /// ["<c>spot</c>"] Spot rebate rate
         /// </summary>
         [JsonPropertyName("spot")]
         public string Spot { get; set; } = string.Empty;
         /// <summary>
-        /// Derivatives rebate rate
+        /// ["<c>derivatives</c>"] Derivatives rebate rate
         /// </summary>
         [JsonPropertyName("derivatives")]
         public string Derivatives { get; set; } = string.Empty;
         /// <summary>
-        /// Convert rebate rate
+        /// ["<c>convert</c>"] Convert rebate rate
         /// </summary>
         [JsonPropertyName("convert")]
         public string? Convert { get; set; }

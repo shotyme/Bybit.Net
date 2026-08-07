@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum LeverageTokenRecordType
     {
         /// <summary>
-        /// Purchase record
+        /// ["<c>1</c>"] Purchase record
         /// </summary>
         [Map("1")]
         Purchase,
         /// <summary>
-        /// Redeem record
+        /// ["<c>2</c>"] Redeem record
         /// </summary>
         [Map("2")]
         Redeem

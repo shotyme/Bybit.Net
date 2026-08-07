@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -10,67 +9,72 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitCollateralInfo
     {
         /// <summary>
-        /// Asset
+        /// ["<c>currency</c>"] Asset
         /// </summary>
         [JsonPropertyName("currency")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Hourly borrow rate
+        /// ["<c>hourlyBorrowRate</c>"] Hourly borrow rate
         /// </summary>
         [JsonPropertyName("hourlyBorrowRate")]
         public decimal HourlyBorrowRate { get; set; }
         /// <summary>
-        /// Max borrow amount
+        /// ["<c>maxBorrowingAmount</c>"] Max borrow amount
         /// </summary>
         [JsonPropertyName("maxBorrowingAmount")]
         public decimal MaxBorrowAmount { get; set; }
         /// <summary>
-        /// Free borrow amount
+        /// ["<c>freeBorrowAmount</c>"] Free borrow amount
         /// </summary>
         [JsonPropertyName("freeBorrowAmount")]
         public decimal? FreeBorrowAmount { get; set; }
+        [JsonInclude, JsonPropertyName("freeBorrowingAmount")]
+        internal decimal? FreeBorrowAmountInt
+        {
+            set => FreeBorrowAmount = value;
+        }
         /// <summary>
-        /// The maximum limit for interest-free borrowing
+        /// ["<c>freeBorrowingLimit</c>"] The maximum limit for interest-free borrowing
         /// </summary>
         [JsonPropertyName("freeBorrowingLimit")]
         public decimal? FreeBorrowingLimit { get; set; }
         /// <summary>
-        /// Borrow amount
+        /// ["<c>borrowAmount</c>"] Borrow amount
         /// </summary>
         [JsonPropertyName("borrowAmount")]
         public decimal BorrowAmount { get; set; }
         /// <summary>
-        /// The sum of borrowing amount for other accounts under the same main account
+        /// ["<c>otherBorrowAmount</c>"] The sum of borrowing amount for other accounts under the same main account
         /// </summary>
         [JsonPropertyName("otherBorrowAmount")]
         public decimal OtherBorrowAmount { get; set; }
         /// <summary>
-        /// Available to borrow
+        /// ["<c>availableToBorrow</c>"] Available to borrow
         /// </summary>
         [JsonPropertyName("availableToBorrow")]
         public decimal AvailableToBorrow { get; set; }
         /// <summary>
-        /// Is borrowable
+        /// ["<c>borrowable</c>"] Is borrowable
         /// </summary>
         [JsonPropertyName("borrowable")]
         public bool Borrowable { get; set; }
         /// <summary>
-        /// Whether it can be used as a margin collateral currency
+        /// ["<c>marginCollateral</c>"] Whether it can be used as a margin collateral currency
         /// </summary>
         [JsonPropertyName("marginCollateral")]
         public bool MarginCollateral { get; set; }
         /// <summary>
-        /// Whether the collateral is turned on by user 
+        /// ["<c>collateralSwitch</c>"] Whether the collateral is turned on by user 
         /// </summary>
         [JsonPropertyName("collateralSwitch")]
         public bool CollateralSwitch { get; set; }
         /// <summary>
-        /// Collateral ratio
+        /// ["<c>collateralRatio</c>"] Collateral ratio
         /// </summary>
         [JsonPropertyName("collateralRatio")]
         public decimal CollateralRatio { get; set; }
         /// <summary>
-        /// Borrow usage rate
+        /// ["<c>borrowUsageRate</c>"] Borrow usage rate
         /// </summary>
         [JsonPropertyName("borrowUsageRate")]
         public decimal? BorrowUsageRate { get; set; }

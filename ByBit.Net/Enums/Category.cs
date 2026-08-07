@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,22 +10,22 @@ namespace Bybit.Net.Enums
     public enum Category
     {
         /// <summary>
-        /// Linear perpetual, including USDC perp.
+        /// ["<c>linear</c>"] Linear perpetual, including USDC perp.
         /// </summary>
         [Map("linear")]
         Linear,
         /// <summary>
-        /// Inverse futures, including inverse perpetual, inverse futures.
+        /// ["<c>inverse</c>"] Inverse futures, including inverse perpetual, inverse futures.
         /// </summary>
         [Map("inverse")]
         Inverse,
         /// <summary>
-        /// Spot
+        /// ["<c>spot</c>"] Spot
         /// </summary>
         [Map("spot")]
         Spot,
         /// <summary>
-        /// USDC Option
+        /// ["<c>option</c>"] USDC Option
         /// </summary>
         [Map("option")]
         Option,

@@ -1,10 +1,6 @@
-﻿using Bybit.Net.Enums;
+using Bybit.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -14,57 +10,57 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSystemStatus
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Title
+        /// ["<c>title</c>"] Title
         /// </summary>
         [JsonPropertyName("title")]
         public string Title { get; set; } = string.Empty;
         /// <summary>
-        /// Status
+        /// ["<c>state</c>"] Status
         /// </summary>
         [JsonPropertyName("state")]
         public SystemStatus Status { get; set; }
         /// <summary>
-        /// Begin time
+        /// ["<c>begin</c>"] Begin time
         /// </summary>
         [JsonPropertyName("begin")]
         public DateTime BeginTime { get; set; }
         /// <summary>
-        /// End time
+        /// ["<c>end</c>"] End time
         /// </summary>
         [JsonPropertyName("end")]
         public DateTime EndTime { get; set; }
         /// <summary>
-        /// Link
+        /// ["<c>href</c>"] Link
         /// </summary>
         [JsonPropertyName("href")]
         public string? Link { get; set; }
         /// <summary>
-        /// Service types
+        /// ["<c>serviceTypes</c>"] Service types
         /// </summary>
         [JsonPropertyName("serviceTypes")]
         public ServiceType[] ServiceTypes { get; set; } = [];
         /// <summary>
-        /// Product
+        /// ["<c>product</c>"] Product
         /// </summary>
         [JsonPropertyName("product")]
         public ProductType[] Product { get; set; } = [];
         /// <summary>
-        /// Uid suffix
+        /// ["<c>uidSuffix</c>"] Uid suffix
         /// </summary>
         [JsonPropertyName("uidSuffix")]
         public string[] UidSuffix { get; set; } = [];
         /// <summary>
-        /// Maintenance type
+        /// ["<c>maintainType</c>"] Maintenance type
         /// </summary>
         [JsonPropertyName("maintainType")]
         public MaintenanceType MaintenanceType { get; set; }
         /// <summary>
-        /// Environment
+        /// ["<c>env</c>"] Environment
         /// </summary>
         [JsonPropertyName("env")]
         public SystemEnvironment Environment { get; set; }

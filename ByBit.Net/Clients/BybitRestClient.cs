@@ -11,7 +11,7 @@ using CryptoExchange.Net.Objects.Options;
 namespace Bybit.Net.Clients
 {
     /// <inheritdoc cref="IBybitRestClient" />
-    public class BybitRestClient : BaseRestClient, IBybitRestClient
+    public class BybitRestClient : BaseRestClient<BybitEnvironment, BybitCredentials>, IBybitRestClient
     {
         /// <inheritdoc />
         public Interfaces.Clients.V5.IBybitRestClientApi V5Api { get; }
@@ -37,16 +37,10 @@ namespace Bybit.Net.Clients
         {
             Initialize(options.Value);
 
-            V5Api = AddApiClient(new V5.BybitRestClientApi(_logger, httpClient, options.Value));
+            V5Api = AddApiClient(new V5.BybitRestClientApi(loggerFactory, httpClient, options.Value));
         }
 
         #endregion
-
-        /// <inheritdoc />
-        public void SetOptions(UpdateOptions options)
-        {
-            V5Api.SetOptions(options);
-        }
 
         /// <summary>
         /// Set the default options to be used when creating new clients
@@ -55,12 +49,6 @@ namespace Bybit.Net.Clients
         public static void SetDefaultOptions(Action<BybitRestOptions> optionsDelegate)
         {
             BybitRestOptions.Default = ApplyOptionsDelegate(optionsDelegate);
-        }
-
-        /// <inheritdoc />
-        public void SetApiCredentials(ApiCredentials credentials)
-        {
-            V5Api.SetApiCredentials(credentials);
         }
     }
 }

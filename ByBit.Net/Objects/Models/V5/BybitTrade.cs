@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,55 +11,55 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitTrade
     {
         /// <summary>
-        /// Trade timestamp
+        /// ["<c>T</c>"] Trade timestamp
         /// </summary>
         [JsonPropertyName("T")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Symbol
+        /// ["<c>s</c>"] Symbol
         /// </summary>
         [JsonPropertyName("s")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Side
+        /// ["<c>S</c>"] Side
         /// </summary>
         [JsonPropertyName("S")]
 
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>v</c>"] Quantity
         /// </summary>
         [JsonPropertyName("v")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>p</c>"] Price
         /// </summary>
         [JsonPropertyName("p")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Direction
+        /// ["<c>L</c>"] Direction
         /// </summary>
         [JsonPropertyName("L")]
 
         public TickDirection? Direction { get; set; }
         /// <summary>
-        /// Trade id
+        /// ["<c>i</c>"] Trade id
         /// </summary>
         [JsonPropertyName("i")]
         public string TradeId { get; set; } = string.Empty;
         /// <summary>
-        /// Is block trade
+        /// ["<c>BT</c>"] Is block trade
         /// </summary>
         [JsonPropertyName("BT")]
         public bool? IsBlockTrade { get; set; }
         /// <summary>
-        /// Is Retail Price Improvement trade
+        /// ["<c>RPI</c>"] Is Retail Price Improvement trade
         /// </summary>
         [JsonPropertyName("RPI")]
         public bool? IsRpiTrade { get; set; }
         /// <summary>
-        /// Cross sequence
+        /// ["<c>seq</c>"] Cross sequence
         /// </summary>
         [JsonPropertyName("seq")]
         public long? Sequence { get; set; }

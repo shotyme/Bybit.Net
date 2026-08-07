@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,32 +8,32 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPreCheckResult
     {
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string OrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Client order id
+        /// ["<c>orderLinkId</c>"] Client order id
         /// </summary>
         [JsonPropertyName("orderLinkId")]
         public string? ClientOrderId { get; set; }
         /// <summary>
-        /// Initial margin rate before checking, keep four decimal places. For examples, 30 means IMR = 30/1e4 = 0.30%
+        /// ["<c>preImrE4</c>"] Initial margin rate before checking, keep four decimal places. For examples, 30 means IMR = 30/1e4 = 0.30%
         /// </summary>
         [JsonPropertyName("preImrE4")]
         public decimal InitialMarginRatePreCheck { get; set; }
         /// <summary>
-        /// Maintenance margin rate before checking, keep four decimal places. For examples, 30 means MMR = 30/1e4 = 0.30%
+        /// ["<c>preMmrE4</c>"] Maintenance margin rate before checking, keep four decimal places. For examples, 30 means MMR = 30/1e4 = 0.30%
         /// </summary>
         [JsonPropertyName("preMmrE4")]
         public decimal MaintenanceMarginRatePreCheck { get; set; }
         /// <summary>
-        /// Initial margin rate calculated after checking, keep four decimal places. For examples, 30 means IMR = 30/1e4 = 0.30%
+        /// ["<c>postImrE4</c>"] Initial margin rate calculated after checking, keep four decimal places. For examples, 30 means IMR = 30/1e4 = 0.30%
         /// </summary>
         [JsonPropertyName("postImrE4")]
         public decimal InitialMarginRatePostCheck { get; set; }
         /// <summary>
-        /// Maintenance margin rate calculated after checking, keep four decimal places. For examples, 30 means MMR = 30/1e4 = 0.30%
+        /// ["<c>postMmrE4</c>"] Maintenance margin rate calculated after checking, keep four decimal places. For examples, 30 means MMR = 30/1e4 = 0.30%
         /// </summary>
         [JsonPropertyName("postMmrE4")]
         public decimal MaintenanceMarginRatePostCheck { get; set; }

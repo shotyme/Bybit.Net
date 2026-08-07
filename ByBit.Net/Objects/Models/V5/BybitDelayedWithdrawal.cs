@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -10,12 +9,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDelayedWithdrawal
     {
         /// <summary>
-        /// Limit quantity usd
+        /// ["<c>limitAmountUsd</c>"] Limit quantity usd
         /// </summary>
         [JsonPropertyName("limitAmountUsd")]
         public decimal LimitQuantityUsd { get; set; }
         /// <summary>
-        /// Withdrawable amount per account
+        /// ["<c>withdrawableAmount</c>"] Withdrawable amount per account
         /// </summary>
         [JsonPropertyName("withdrawableAmount")]
         public BybitDelayedWithdrawalQuantities WithdrawableQuantities { get; set; } = null!;
@@ -28,20 +27,25 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDelayedWithdrawalQuantities
     {
         /// <summary>
-        /// Spot account
+        /// ["<c>SPOT</c>"] Spot account
         /// </summary>
         [JsonPropertyName("SPOT")]
         public BybitDelayedWithdrawalQuantity Spot { get; set; } = null!;
         /// <summary>
-        /// Fund account
+        /// ["<c>FUND</c>"] Fund account
         /// </summary>
         [JsonPropertyName("FUND")]
         public BybitDelayedWithdrawalQuantity Fund { get; set; } = null!;
         /// <summary>
-        /// Universal Trade Account
+        /// ["<c>UTA</c>"] Universal Trade Account
         /// </summary>
         [JsonPropertyName("UTA")]
         public BybitDelayedWithdrawalQuantity Uta { get; set; } = null!;
+        /// <summary>
+        /// ["<c>EARN</c>"] Earn account
+        /// </summary>
+        [JsonPropertyName("EARN")]
+        public BybitDelayedWithdrawalQuantity Earn { get; set; } = null!;
     }
 
     /// <summary>
@@ -51,17 +55,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDelayedWithdrawalQuantity
     {
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Withdrawable quantity
+        /// ["<c>withdrawableAmount</c>"] Withdrawable quantity
         /// </summary>
         [JsonPropertyName("withdrawableAmount")]
         public decimal WithdrwawableQuantity { get; set; }
         /// <summary>
-        /// Available balance
+        /// ["<c>availableBalance</c>"] Available balance
         /// </summary>
         [JsonPropertyName("availableBalance")]
         public decimal AvailableBalance { get; set; }

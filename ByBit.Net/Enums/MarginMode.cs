@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum MarginMode
     {
         /// <summary>
-        /// Regular margin
+        /// ["<c>REGULAR_MARGIN</c>"] Regular margin
         /// </summary>
         [Map("REGULAR_MARGIN")]
         RegularMargin,
         /// <summary>
-        /// Portfolio margin
+        /// ["<c>PORTFOLIO_MARGIN</c>"] Portfolio margin
         /// </summary>
         [Map("PORTFOLIO_MARGIN")]
         PortfolioMargin,
         /// <summary>
-        /// Isolated margin
+        /// ["<c>ISOLATED_MARGIN</c>"] Isolated margin
         /// </summary>
         [Map("ISOLATED_MARGIN")]
         IsolatedMargin

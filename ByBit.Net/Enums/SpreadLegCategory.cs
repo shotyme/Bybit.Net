@@ -1,10 +1,5 @@
 ﻿using CryptoExchange.Net.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bybit.Net.Enums
 {
@@ -15,17 +10,17 @@ namespace Bybit.Net.Enums
     public enum SpreadLegCategory
     {
         /// <summary>
-        /// Combination
+        /// ["<c>combination</c>"] Combination
         /// </summary>
         [Map("combination")]
         Combination,
         /// <summary>
-        /// Spot leg
+        /// ["<c>spot_leg</c>"] Spot leg
         /// </summary>
         [Map("spot_leg")]
         SpotLeg,
         /// <summary>
-        /// Futures leg
+        /// ["<c>future_leg</c>"] Futures leg
         /// </summary>
         [Map("future_leg")]
         FutureLeg

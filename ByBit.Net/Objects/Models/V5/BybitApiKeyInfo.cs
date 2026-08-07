@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,126 +11,126 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitApiKeyInfo
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Key name
+        /// ["<c>note</c>"] Key name
         /// </summary>
         [JsonPropertyName("note")]
         public string Note { get; set; } = string.Empty;
         /// <summary>
-        /// Api key
+        /// ["<c>apiKey</c>"] Api key
         /// </summary>
         [JsonPropertyName("apiKey")]
         public string ApiKey { get; set; } = string.Empty;
         /// <summary>
-        /// Secret (when creating new API key)
+        /// ["<c>secret</c>"] Secret (when creating new API key)
         /// </summary>
         [JsonPropertyName("secret")]
         public string? Secret { get; set; }
         /// <summary>
-        /// Is read only
+        /// ["<c>readOnly</c>"] Is read only
         /// </summary>
         [JsonConverter(typeof(BoolConverter))]
         [JsonPropertyName("readOnly")]
         public bool Readonly { get; set; }
         /// <summary>
-        /// Allowed ip addresses
+        /// ["<c>ips</c>"] Allowed ip addresses
         /// </summary>
         [JsonPropertyName("ips")]
         public string[] Ips { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Remaining valid days
+        /// ["<c>deadlineDay</c>"] Remaining valid days
         /// </summary>
         [JsonPropertyName("deadlineDay")]
         public int DeadlineDays { get; set; }
         /// <summary>
-        /// Expire time
+        /// ["<c>expiredAt</c>"] Expire time
         /// </summary>
         [JsonPropertyName("expiredAt")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime ExpireTime { get; set; }
         /// <summary>
-        /// Creation time
+        /// ["<c>createdAt</c>"] Creation time
         /// </summary>
         [JsonPropertyName("createdAt")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Is unified margin account
+        /// ["<c>unified</c>"] Is unified margin account
         /// </summary>
         [JsonConverter(typeof(BoolConverter))]
         [JsonPropertyName("unified")]
         public bool Unified { get; set; }
         /// <summary>
-        /// Is unified trade account
+        /// ["<c>uta</c>"] Is unified trade account
         /// </summary>
         [JsonConverter(typeof(BoolConverter))]
         [JsonPropertyName("uta")]
         public bool Uta { get; set; }
         /// <summary>
-        /// User id
+        /// ["<c>userID</c>"] User id
         /// </summary>
         [JsonPropertyName("userID")]
         public long UserId { get; set; }
         /// <summary>
-        /// Inviter id
+        /// ["<c>inviterID</c>"] Inviter id
         /// </summary>
         [JsonPropertyName("inviterID")]
         public long? InviterId { get; set; }
         /// <summary>
-        /// Vip level
+        /// ["<c>vipLevel</c>"] Vip level
         /// </summary>
         [JsonPropertyName("vipLevel")]
         public AccountLevel VipLevel { get; set; }
         /// <summary>
-        /// Market maker level
+        /// ["<c>mktMakerLevel</c>"] Market maker level
         /// </summary>
         [JsonPropertyName("mktMakerLevel")]
         public string MarketMakerLevel { get; set; } = string.Empty;
         /// <summary>
-        /// Affiliate id
+        /// ["<c>affiliateID</c>"] Affiliate id
         /// </summary>
         [JsonPropertyName("affiliateID")]
         public long AffiliateId { get; set; }
         /// <summary>
-        /// Public key
+        /// ["<c>rsaPublicKey</c>"] Public key
         /// </summary>
         [JsonPropertyName("rsaPublicKey")]
         public string RsaPublicKey { get; set; } = string.Empty;
         /// <summary>
-        /// Is master
+        /// ["<c>isMaster</c>"] Is master
         /// </summary>
         [JsonPropertyName("isMaster")]
         public bool IsMaster { get; set; }
 
         /// <summary>
-        /// Parent Uid, 0 if main account
+        /// ["<c>parentUid</c>"] Parent Uid, 0 if main account
         /// </summary>
         [JsonPropertyName("parentUid")]
         public string? ParentUid { get; set; }
 
         /// <summary>
-        /// Personal account kyc level. LEVEL_DEFAULT, LEVEL_1， LEVEL_2
+        /// ["<c>kycLevel</c>"] Parent Uid, 0 if main account
         /// </summary>
         [JsonPropertyName("kycLevel")]
         public KycLevel? KycLevel { get; set; }
 
         /// <summary>
-        /// Personal account kyc region
+        /// ["<c>kycRegion</c>"] Parent Uid, 0 if main account
         /// </summary>
         [JsonPropertyName("kycRegion")]
         public string? KycRegion { get; set; }
 
         /// <summary>
-        /// The type of api key. 1：personal, 2：connected to the third-party app
+        /// ["<c>type</c>"] The type of api key. 1ï¼špersonal, 2ï¼šconnected to the third-party app
         /// </summary>
         [JsonPropertyName("type")]
         public int ApiKeyType { get; set; }
         /// <summary>
-        /// Permissions
+        /// ["<c>permissions</c>"] Permissions
         /// </summary>
         [JsonPropertyName("permissions")]
         public BybitPermissions Permissions { get; set; } = null!;
@@ -145,54 +143,84 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPermissions
     {
         /// <summary>
-        /// Contract trade permissions
+        /// ["<c>ContractTrade</c>"] Contract trade permissions
         /// </summary>
         [JsonPropertyName("ContractTrade")]
         public string[] ContractTrade { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Spot permissions
+        /// ["<c>Spot</c>"] Spot permissions
         /// </summary>
         [JsonPropertyName("Spot")]
         public string[] Spot { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Wallet permissions
+        /// ["<c>Wallet</c>"] Wallet permissions
         /// </summary>
         [JsonPropertyName("Wallet")]
         public string[] Wallet { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Options permissions
+        /// ["<c>Options</c>"] Options permissions
         /// </summary>
         [JsonPropertyName("Options")]
         public string[] Options { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Derivatives permissions
+        /// ["<c>Derivatives</c>"] Derivatives permissions
         /// </summary>
         [JsonPropertyName("Derivatives")]
         public string[] Derivatives { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Copy trading permissions
+        /// ["<c>CopyTrading</c>"] Copy trading permissions
         /// </summary>
         [JsonPropertyName("CopyTrading")]
         public string[] CopyTrading { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Block trade permissions
+        /// ["<c>BlockTrade</c>"] Block trade permissions
         /// </summary>
         [JsonPropertyName("BlockTrade")]
         public string[] BlockTrade { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Exchange permissions
+        /// ["<c>Exchange</c>"] Exchange permissions
         /// </summary>
         [JsonPropertyName("Exchange")]
         public string[] Exchange { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// NFT permissions
+        /// ["<c>NFT</c>"] NFT permissions
         /// </summary>
         [JsonPropertyName("NFT")]
         public string[] NFT { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// Affiliate permissions
+        /// ["<c>Affiliate</c>"] Affiliate permissions
         /// </summary>
         [JsonPropertyName("Affiliate")]
         public string[] Affiliate { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>Earn</c>"] Earn permissions
+        /// </summary>
+        [JsonPropertyName("Earn")]
+        public string[] Earn { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>FiatP2P</c>"] Fiat P2P permissions
+        /// </summary>
+        [JsonPropertyName("FiatP2P")]
+        public string[] FiatP2P { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>FiatConvertBroker</c>"] Fiat convert broker permissions
+        /// </summary>
+        [JsonPropertyName("FiatConvertBroker")]
+        public string[] FiatConvertBroker { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>FiatBitPay</c>"] Fiat bit pay permissions
+        /// </summary>
+        [JsonPropertyName("FiatBitPay")]
+        public string[] FiatBitPay { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>BitCard</c>"] Bit card permissions
+        /// </summary>
+        [JsonPropertyName("BitCard")]
+        public string[] BitCard { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// ["<c>ByXPost</c>"] ByX Post permissions
+        /// </summary>
+        [JsonPropertyName("ByXPost")]
+        public string[] ByXPost { get; set; } = Array.Empty<string>();
     }
 }

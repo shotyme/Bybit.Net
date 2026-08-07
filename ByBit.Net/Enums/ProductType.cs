@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,22 +10,22 @@ namespace Bybit.Net.Enums
     public enum ProductType
     {
         /// <summary>
-        /// Options
+        /// ["<c>OPTIONS</c>"] Options
         /// </summary>
         [Map("OPTIONS", "3")]
         Options,
         /// <summary>
-        /// Derivatives
+        /// ["<c>DERIVATIVES</c>"] Derivatives
         /// </summary>
         [Map("DERIVATIVES", "1")]
         Derivatives,
         /// <summary>
-        /// Spot
+        /// ["<c>SPOT</c>"] Spot
         /// </summary>
         [Map("SPOT", "2")]
         Spot,
         /// <summary>
-        /// Spread
+        /// ["<c>SPREAD</c>"] Spread
         /// </summary>
         [Map("SPREAD", "4")]
         Spread

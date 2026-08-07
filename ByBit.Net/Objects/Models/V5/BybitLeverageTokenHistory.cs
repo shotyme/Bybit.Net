@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,47 +11,47 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLeverageTokenHistory
     {
         /// <summary>
-        /// Token abbreviation
+        /// ["<c>ltCoin</c>"] Token abbreviation
         /// </summary>
         [JsonPropertyName("ltCoin")]
         public string Token { get; set; } = string.Empty;
         /// <summary>
-        /// Order status
+        /// ["<c>ltOrderStatus</c>"] Order status
         /// </summary>
         [JsonPropertyName("ltOrderStatus")]
         public LeverageTokenOrderStatus Status { get; set; }
         /// <summary>
-        /// Order record type
+        /// ["<c>ltOrderType</c>"] Order record type
         /// </summary>
         [JsonPropertyName("ltOrderType")]
         public LeverageTokenRecordType OrderType { get; set; }
         /// <summary>
-        /// Filled value
+        /// ["<c>value</c>"] Filled value
         /// </summary>
         [JsonPropertyName("value")]
         public decimal? Value { get; set; }
         /// <summary>
-        /// Filled quantity
+        /// ["<c>amount</c>"] Filled quantity
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string PurchaseId { get; set; } = string.Empty;
         /// <summary>
-        /// Serial number
+        /// ["<c>serialNo</c>"] Serial number
         /// </summary>
         [JsonPropertyName("serialNo")]
         public string? ClientOrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Quote asset
+        /// ["<c>valueCoin</c>"] Quote asset
         /// </summary>
         [JsonPropertyName("valueCoin")]
         public string QuoteAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Fee
+        /// ["<c>fee</c>"] Fee
         /// </summary>
         [JsonPropertyName("fee")]
         public decimal Fee { get; set; }

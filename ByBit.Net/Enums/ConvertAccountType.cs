@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum ConvertAccountType
     {
         /// <summary>
-        /// Funding account
+        /// ["<c>eb_convert_funding</c>"] Funding account
         /// </summary>
         [Map("eb_convert_funding")]
         ConvertFunding,
         /// <summary>
-        /// UTA account
+        /// ["<c>eb_convert_uta</c>"] UTA account
         /// </summary>
         [Map("eb_convert_uta")]
         ConvertUta,
         /// <summary>
-        /// Spot account
+        /// ["<c>eb_convert_spot</c>"] Spot account
         /// </summary>
         [Map("eb_convert_spot")]
         ConvertSpot,
         /// <summary>
-        /// Contract account
+        /// ["<c>eb_convert_contract</c>"] Contract account
         /// </summary>
         [Map("eb_convert_contract")]
         ConvertContract,
         /// <summary>
-        /// Inverse account
+        /// ["<c>eb_convert_inverse</c>"] Inverse account
         /// </summary>
         [Map("eb_convert_inverse")]
         ConvertInverse

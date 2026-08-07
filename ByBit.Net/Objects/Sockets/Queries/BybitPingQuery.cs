@@ -1,7 +1,7 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default.Routing;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Sockets.Queries
 {
@@ -10,7 +10,7 @@ namespace Bybit.Net.Objects.Sockets.Queries
         public BybitPingQuery() : base(new BybitRequestMessage { RequestId = ExchangeHelpers.NextId().ToString(), Operation = "ping", Args = null }, false, 1)
         {
             RequestTimeout = TimeSpan.FromSeconds(5);
-            MessageMatcher = MessageMatcher.Create<BybitPong>("pong");
+            MessageRouter = MessageRouter.CreateVoid<BybitPong>("pong");
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum EarnOrderType
     {
         /// <summary>
-        /// Stake
+        /// ["<c>Stake</c>"] Stake
         /// </summary>
         [Map("Stake")]
         Stake,
         /// <summary>
-        /// Redeem
+        /// ["<c>Redeem</c>"] Redeem
         /// </summary>
         [Map("Redeem")]
         Redeem

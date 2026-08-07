@@ -1,9 +1,6 @@
 using Bybit.Net.Enums;
-using Bybit.Net.Objects.Internal;
 using Bybit.Net.Objects.Models.V5;
 using CryptoExchange.Net.Objects;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,123 +13,178 @@ namespace Bybit.Net.Interfaces.Clients.V5
     {
         /// <summary>
         /// Get collateral assets
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/collateral-coin" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/collateral-coin" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/collateral-data
+        /// </para>
         /// </summary>
-        /// <param name="level">Account level</param>
-        /// <param name="asset">Filter by asset</param>
+        /// <param name="level">["<c>vipLevel</c>"] Account level</param>
+        /// <param name="asset">["<c>currency</c>"] Filter by asset</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BybitCollateralAsset[]>> GetCollateralAssetsAsync(
+        Task<HttpResult<BybitCollateralAsset[]>> GetCollateralAssetsAsync(
             AccountLevel? level = null,
             string? asset = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// Get borrowable asssets
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/loan-coin" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/loan-coin" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/loanable-data
+        /// </para>
         /// </summary>
-        /// <param name="accountLevel">Filter by account level</param>
-        /// <param name="asset">Filter by asset, for example `ETH`</param>
+        /// <param name="accountLevel">["<c>vipLevel</c>"] Filter by account level</param>
+        /// <param name="asset">["<c>currency</c>"] Filter by asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitBorrowAsset[]>> GetBorrowableAssetsAsync(AccountLevel? accountLevel = null, string? asset = null, CancellationToken ct = default);
+        Task<HttpResult<BybitBorrowAsset[]>> GetBorrowableAssetsAsync(AccountLevel? accountLevel = null, string? asset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get borrow/collateral limits
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/acct-borrow-collateral" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/acct-borrow-collateral" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/borrowable-collateralisable-number
+        /// </para>
         /// </summary>
-        /// <param name="loanAsset">The loan asset, for example `ETH`</param>
-        /// <param name="collateralAsset">The collateral asset, for example `ETH`</param>
+        /// <param name="loanAsset">["<c>loanCurrency</c>"] The loan asset, for example `ETH`</param>
+        /// <param name="collateralAsset">["<c>collateralCurrency</c>"] The collateral asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitBorrowLimits>> GetLimitsAsync(string loanAsset, string collateralAsset, CancellationToken ct = default);
+        Task<HttpResult<BybitBorrowLimits>> GetLimitsAsync(string loanAsset, string collateralAsset, CancellationToken ct = default);
 
         /// <summary>
         /// Borrow an asset
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/borrow" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/borrow" /><br />
+        /// Endpoint:<br />
+        /// POST /v5/crypto-loan/borrow
+        /// </para>
         /// </summary>
-        /// <param name="loanAsset">The loan asset, for example `ETH`</param>
-        /// <param name="collateralAsset">The collateral asset, for example `ETH`</param>
-        /// <param name="loanQuantity">Quantity to borrow, either this or collateralQuantity should be provided</param>
-        /// <param name="collateralQuantity">Quantity to use as collateral, either this or loanQuantity should be provided</param>
-        /// <param name="loanTerm">The term for the loan, null for flexible term</param>
+        /// <param name="loanAsset">["<c>loanCurrency</c>"] The loan asset, for example `ETH`</param>
+        /// <param name="collateralAsset">["<c>collateralCurrency</c>"] The collateral asset, for example `ETH`</param>
+        /// <param name="loanQuantity">["<c>loanAmount</c>"] Quantity to borrow, either this or collateralQuantity should be provided</param>
+        /// <param name="collateralQuantity">["<c>collateralAmount</c>"] Quantity to use as collateral, either this or loanQuantity should be provided</param>
+        /// <param name="loanTerm">["<c>loanTerm</c>"] The term for the loan, null for flexible term</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitOrderId>> BorrowAsync(string loanAsset, string collateralAsset, decimal? loanQuantity = null, decimal? collateralQuantity = null, LoanTerm? loanTerm = null, CancellationToken ct = default);
+        Task<HttpResult<BybitOrderId>> BorrowAsync(string loanAsset, string collateralAsset, decimal? loanQuantity = null, decimal? collateralQuantity = null, LoanTerm? loanTerm = null, CancellationToken ct = default);
 
         /// <summary>
         /// Repay a loan
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/repay" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/repay" /><br />
+        /// Endpoint:<br />
+        /// POST /v5/crypto-loan/repay
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Loan order id</param>
-        /// <param name="quantity">Quantity to repay</param>
+        /// <param name="orderId">["<c>orderId</c>"] Loan order id</param>
+        /// <param name="quantity">["<c>amount</c>"] Quantity to repay</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitRepayId>> RepayAsync(string orderId, decimal quantity, CancellationToken ct = default);
+        Task<HttpResult<BybitRepayId>> RepayAsync(string orderId, decimal quantity, CancellationToken ct = default);
 
         /// <summary>
         /// Get unpaid loans
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/unpaid-loan-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/unpaid-loan-order" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/ongoing-orders
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Filter by loan order id</param>
-        /// <param name="loanAsset">Filter by loan asset</param>
-        /// <param name="collateralAsset">Filter by collateral asset</param>
-        /// <param name="loanType">Filter by loan type</param>
-        /// <param name="loanTerm">Filter by loan term</param>
-        /// <param name="limit">Max number of results</param>
-        /// <param name="cursor">Page cursor</param>
+        /// <param name="orderId">["<c>orderId</c>"] Filter by loan order id</param>
+        /// <param name="loanAsset">["<c>loanCurrency</c>"] Filter by loan asset</param>
+        /// <param name="collateralAsset">["<c>collateralCurrency</c>"] Filter by collateral asset</param>
+        /// <param name="loanType">["<c>loanTermType</c>"] Filter by loan type</param>
+        /// <param name="loanTerm">["<c>loanTerm</c>"] Filter by loan term</param>
+        /// <param name="limit">["<c>limit</c>"] Max number of results</param>
+        /// <param name="cursor">["<c>cursor</c>"] Page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitResponse<BybitLoan>>> GetOpenLoansAsync(string? orderId = null, string? loanAsset = null, string? collateralAsset = null, LoanType? loanType = null, LoanTerm? loanTerm = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<BybitResponse<BybitLoan>>> GetOpenLoansAsync(string? orderId = null, string? loanAsset = null, string? collateralAsset = null, LoanType? loanType = null, LoanTerm? loanTerm = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get repayment history
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/repay-transaction" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/repay-transaction" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/repayment-history
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Filter by order id</param>
-        /// <param name="repayId">Filter by repayment id</param>
-        /// <param name="loanAsset">Filter by loan asset, for example `ETH`</param>
-        /// <param name="limit">Max number of results</param>
-        /// <param name="cursor">Page cursor</param>
+        /// <param name="orderId">["<c>orderId</c>"] Filter by order id</param>
+        /// <param name="repayId">["<c>repayId</c>"] Filter by repayment id</param>
+        /// <param name="loanAsset">["<c>loanCurrency</c>"] Filter by loan asset, for example `ETH`</param>
+        /// <param name="limit">["<c>limit</c>"] Max number of results</param>
+        /// <param name="cursor">["<c>cursor</c>"] Page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitResponse<BybitRepayment>>> GetRepayHistoryAsync(string? orderId = null, string? repayId = null, string? loanAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<BybitResponse<BybitRepayment>>> GetRepayHistoryAsync(string? orderId = null, string? repayId = null, string? loanAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get completed loan orders
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/comleted-loan-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/comleted-loan-order" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/borrow-history
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Filter by order id</param>
-        /// <param name="loanAsset">Filter by loan asset</param>
-        /// <param name="collateralAsset">Filter by collateral asset</param>
-        /// <param name="limit">Max number of results</param>
-        /// <param name="cursor">Page cursor</param>
+        /// <param name="orderId">["<c>orderId</c>"] Filter by order id</param>
+        /// <param name="loanAsset">["<c>loanCurrency</c>"] Filter by loan asset</param>
+        /// <param name="collateralAsset">["<c>collateralCurrency</c>"] Filter by collateral asset</param>
+        /// <param name="limit">["<c>limit</c>"] Max number of results</param>
+        /// <param name="cursor">["<c>cursor</c>"] Page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitResponse<BybitLoanOrder>>> GetCompletedLoanOrdersAsync(string? orderId = null, string? loanAsset = null, string? collateralAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<BybitResponse<BybitLoanOrder>>> GetCompletedLoanOrdersAsync(string? orderId = null, string? loanAsset = null, string? collateralAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get max collateral for a loan
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/reduce-max-collateral-amt" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/reduce-max-collateral-amt" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/max-collateral-amount
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Order id</param>
+        /// <param name="orderId">["<c>orderId</c>"] Order id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitMaxCollateral>> GetMaxCollateralAsync(string orderId, CancellationToken ct = default);
+        Task<HttpResult<BybitMaxCollateral>> GetMaxCollateralAsync(string orderId, CancellationToken ct = default);
 
         /// <summary>
         /// Adjust collateral
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/adjust-collateral" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/adjust-collateral" /><br />
+        /// Endpoint:<br />
+        /// POST /v5/crypto-loan/adjust-ltv
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Order id</param>
-        /// <param name="quantity">Quantity</param>
-        /// <param name="direction">Direction</param>
+        /// <param name="orderId">["<c>orderID</c>"] Order id</param>
+        /// <param name="quantity">["<c>amount</c>"] Quantity</param>
+        /// <param name="direction">["<c>direction</c>"] Direction</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitAdjustId>> AdjustCollateralAsync(string orderId, decimal quantity, AdjustDirection direction, CancellationToken ct = default);
+        Task<HttpResult<BybitAdjustId>> AdjustCollateralAsync(string orderId, decimal quantity, AdjustDirection direction, CancellationToken ct = default);
 
         /// <summary>
         /// Get collateral adjustment history
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/ltv-adjust-history" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://bybit-exchange.github.io/docs/v5/crypto-loan/ltv-adjust-history" /><br />
+        /// Endpoint:<br />
+        /// GET /v5/crypto-loan/adjustment-history
+        /// </para>
         /// </summary>
-        /// <param name="orderId">Filter by order id</param>
-        /// <param name="adjustId">Filter by adjust id</param>
-        /// <param name="collateralAsset">Filter by collateral asset, for example `ETH`</param>
-        /// <param name="limit">Max number of results</param>
-        /// <param name="cursor">Page cursor</param>
+        /// <param name="orderId">["<c>orderId</c>"] Filter by order id</param>
+        /// <param name="adjustId">["<c>adjustId</c>"] Filter by adjust id</param>
+        /// <param name="collateralAsset">["<c>collateralCurrency</c>"] Filter by collateral asset, for example `ETH`</param>
+        /// <param name="limit">["<c>limit</c>"] Max number of results</param>
+        /// <param name="cursor">["<c>cursor</c>"] Page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BybitResponse<BybitAdjustHistory>>> GetCollateralAdjustHistoryAsync(string? orderId = null, string? adjustId = null, string? collateralAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<BybitResponse<BybitAdjustHistory>>> GetCollateralAdjustHistoryAsync(string? orderId = null, string? adjustId = null, string? collateralAsset = null, int? limit = null, string? cursor = null, CancellationToken ct = default);
 
     }
 }

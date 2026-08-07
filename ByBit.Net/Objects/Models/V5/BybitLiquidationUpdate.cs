@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,28 +11,28 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLiquidationUpdate
     {
         /// <summary>
-        /// Price
+        /// ["<c>p</c>"] Price
         /// </summary>
         [JsonPropertyName("p")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Side
+        /// ["<c>S</c>"] Side
         /// </summary>
 
         [JsonPropertyName("S")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>v</c>"] Quantity
         /// </summary>
         [JsonPropertyName("v")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Symbol
+        /// ["<c>s</c>"] Symbol
         /// </summary>
         [JsonPropertyName("s")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Timestamp
+        /// ["<c>T</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("T")]
         [JsonConverter(typeof(DateTimeConverter))]

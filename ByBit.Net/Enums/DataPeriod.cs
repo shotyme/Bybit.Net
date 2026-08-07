@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,32 +10,32 @@ namespace Bybit.Net.Enums
     public enum DataPeriod
     {
         /// <summary>
-        /// 5min
+        /// ["<c>5min</c>"] 5min
         /// </summary>
         [Map("5min")]
         FiveMinutes,
         /// <summary>
-        /// 15min
+        /// ["<c>15min</c>"] 15min
         /// </summary>
         [Map("15min")]
         FifteenMinutes,
         /// <summary>
-        /// 30min
+        /// ["<c>30min</c>"] 30min
         /// </summary>
         [Map("30min")]
         ThirtyMinutes,
         /// <summary>
-        /// 1h
+        /// ["<c>1h</c>"] 1h
         /// </summary>
         [Map("1h")]
         OneHour,
         /// <summary>
-        /// 4h
+        /// ["<c>4h</c>"] 4h
         /// </summary>
         [Map("4h")]
         FourHours,
         /// <summary>
-        /// 1d
+        /// ["<c>1d</c>"] 1d
         /// </summary>
         [Map("1d")]
         OneDay

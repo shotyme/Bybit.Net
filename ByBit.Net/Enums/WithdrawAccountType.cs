@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,22 +10,22 @@ namespace Bybit.Net.Enums
     public enum WithdrawAccountType
     {
         /// <summary>
-        /// Spot account
+        /// ["<c>SPOT</c>"] Spot account
         /// </summary>
         [Map("SPOT")]
         Spot,
         /// <summary>
-        /// Funding account
+        /// ["<c>FUND</c>"] Funding account
         /// </summary>
         [Map("FUND")]
         Fund,
         /// <summary>
-        /// UTA account
+        /// ["<c>UTA</c>"] UTA account
         /// </summary>
         [Map("UTA")]
         Uta,
         /// <summary>
-        /// Use funding account first and UTA account after
+        /// ["<c>FUND,UTA</c>"] Use funding account first and UTA account after
         /// </summary>
         [Map("FUND,UTA")]
         FundAndUta,

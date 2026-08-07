@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -10,127 +9,127 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitOptionTicker
     {
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Best bid price
+        /// ["<c>bid1Price</c>"] Best bid price
         /// </summary>
         [JsonPropertyName("bid1Price")]
         public decimal BestBidPrice { get; set; }
         /// <summary>
-        /// Best bid quantity
+        /// ["<c>bid1Size</c>"] Best bid quantity
         /// </summary>
         [JsonPropertyName("bid1Size")]
         public decimal BestBidQuantity { get; set; }
         /// <summary>
-        /// Best bid IV
+        /// ["<c>bid1Iv</c>"] Best bid IV
         /// </summary>
         [JsonPropertyName("bid1Iv")]
         public decimal BestBidIv { get; set; }
         /// <summary>
-        /// Best ask price
+        /// ["<c>ask1Price</c>"] Best ask price
         /// </summary>
         [JsonPropertyName("ask1Price")]
         public decimal BestAskPrice { get; set; }
         /// <summary>
-        /// Best ask quantity
+        /// ["<c>ask1Size</c>"] Best ask quantity
         /// </summary>
         [JsonPropertyName("ask1Size")]
         public decimal BestAskQuantity { get; set; }
         /// <summary>
-        /// Best ask IV
+        /// ["<c>ask1Iv</c>"] Best ask IV
         /// </summary>
         [JsonPropertyName("ask1Iv")]
         public decimal BestAskIv { get; set; }
         /// <summary>
-        /// Last trade price
+        /// ["<c>lastPrice</c>"] Last trade price
         /// </summary>
         [JsonPropertyName("lastPrice")]
         public decimal LastPrice { get; set; }
         /// <summary>
-        /// High price last 24h
+        /// ["<c>highPrice24h</c>"] High price last 24h
         /// </summary>
         [JsonPropertyName("highPrice24h")]
         public decimal HighPrice24h { get; set; }
         /// <summary>
-        /// Low price last 24h
+        /// ["<c>lowPrice24h</c>"] Low price last 24h
         /// </summary>
         [JsonPropertyName("lowPrice24h")]
         public decimal LowPrice24h { get; set; }
         /// <summary>
-        /// Mark price
+        /// ["<c>markPrice</c>"] Mark price
         /// </summary>
         [JsonPropertyName("markPrice")]
         public decimal MarkPrice { get; set; }
         /// <summary>
-        /// Index price
+        /// ["<c>indexPrice</c>"] Index price
         /// </summary>
         [JsonPropertyName("indexPrice")]
         public decimal IndexPrice { get; set; }
         /// <summary>
-        /// Mark iv
+        /// ["<c>markIv</c>"] Mark iv
         /// </summary>
         [JsonPropertyName("markIv")]
         public decimal MarkIv { get; set; }
         /// <summary>
-        /// Underlying asset price
+        /// ["<c>underlyingPrice</c>"] Underlying asset price
         /// </summary>
         [JsonPropertyName("underlyingPrice")]
         public decimal UnderlyingPrice { get; set; }
         /// <summary>
-        /// Open interest
+        /// ["<c>openInterest</c>"] Open interest
         /// </summary>
         [JsonPropertyName("openInterest")]
         public decimal OpenInterest { get; set; }
         /// <summary>
-        /// Turnover last 24h
+        /// ["<c>turnover24h</c>"] Turnover last 24h
         /// </summary>
         [JsonPropertyName("turnover24h")]
         public decimal Turnover24h { get; set; }
         /// <summary>
-        /// Volume last 24h
+        /// ["<c>volume24h</c>"] Volume last 24h
         /// </summary>
         [JsonPropertyName("volume24h")]
         public decimal Volume24h { get; set; }
         /// <summary>
-        /// Total volume
+        /// ["<c>totalVolume</c>"] Total volume
         /// </summary>
         [JsonPropertyName("totalVolume")]
         public decimal TotalVolume { get; set; }
         /// <summary>
-        /// Total turnover
+        /// ["<c>totalTurnover</c>"] Total turnover
         /// </summary>
         [JsonPropertyName("totalTurnover")]
         public decimal TotalTurnover { get; set; }
         /// <summary>
-        /// Delta
+        /// ["<c>delta</c>"] Delta
         /// </summary>
         [JsonPropertyName("delta")]
         public decimal Delta { get; set; }
         /// <summary>
-        /// Gamma
+        /// ["<c>gamma</c>"] Gamma
         /// </summary>
         [JsonPropertyName("gamma")]
         public decimal Gamma { get; set; }
         /// <summary>
-        /// Vega
+        /// ["<c>vega</c>"] Vega
         /// </summary>
         [JsonPropertyName("vega")]
         public decimal Vega { get; set; }
         /// <summary>
-        /// Theta
+        /// ["<c>theta</c>"] Theta
         /// </summary>
         [JsonPropertyName("theta")]
         public decimal Theta { get; set; }
         /// <summary>
-        /// Predicted delivery price
+        /// ["<c>predictedDeliveryPrice</c>"] Predicted delivery price
         /// </summary>
         [JsonPropertyName("predictedDeliveryPrice")]
         public decimal PredictedDeliveryPrice { get; set; }
         /// <summary>
-        /// Change since 24h ago
+        /// ["<c>change24h</c>"] Change since 24h ago
         /// </summary>
         [JsonPropertyName("change24h")]
         public decimal Change24h { get; set; }

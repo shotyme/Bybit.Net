@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,72 +10,72 @@ namespace Bybit.Net.Enums
     public enum TransactionLogType
     {
         /// <summary>
-        /// Transfer in
+        /// ["<c>TRANSFER_IN</c>"] Transfer in
         /// </summary>
         [Map("TRANSFER_IN")]
         TransferIn,
         /// <summary>
-        /// Transfer out
+        /// ["<c>TRANSFER_OUT</c>"] Transfer out
         /// </summary>
         [Map("TRANSFER_OUT")]
         TransferOut,
         /// <summary>
-        /// Trade
+        /// ["<c>TRADE</c>"] Trade
         /// </summary>
         [Map("TRADE")]
         Trade,
         /// <summary>
-        /// Settlement
+        /// ["<c>SETTLEMENT</c>"] Settlement
         /// </summary>
         [Map("SETTLEMENT")]
         Settlement,
         /// <summary>
-        /// Delivery
+        /// ["<c>DELIVERY</c>"] Delivery
         /// </summary>
         [Map("DELIVERY")]
         Delivery,
         /// <summary>
-        /// Liquidation
+        /// ["<c>LIQUIDATION</c>"] Liquidation
         /// </summary>
         [Map("LIQUIDATION")]
         Liquidation,
         /// <summary>
-        /// Auto deleveraging
+        /// ["<c>ADL</c>"] Auto deleveraging
         /// </summary>
         [Map("ADL")]
         Adl,
         /// <summary>
-        /// Airdrop
+        /// ["<c>AIRDROP</c>"] Airdrop
         /// </summary>
         [Map("AIRDROP")]
         Airdrop,
         /// <summary>
-        /// Bonus
+        /// ["<c>BONUS</c>"] Bonus
         /// </summary>
         [Map("BONUS")]
         Bonus,
         /// <summary>
-        /// Bonus expired
+        /// ["<c>BONUS_RECOLLECT</c>"] Bonus expired
         /// </summary>
         [Map("BONUS_RECOLLECT")]
         BonusRecollect,
         /// <summary>
-        /// Fee refund
+        /// ["<c>FEE_REFUND</c>"] Fee refund
         /// </summary>
         [Map("FEE_REFUND")]
         FeeRefund,
         /// <summary>
-        /// Interest
+        /// ["<c>INTEREST</c>"] Interest
         /// </summary>
         [Map("INTEREST")]
         Interest,
         /// <summary>
-        /// Currency buy
+        /// ["<c>CURRENCY_BUY</c>"] Currency buy
         /// </summary>
         [Map("CURRENCY_BUY")]
         CurrencyBuy,
         /// <summary>
-        /// Currency sell
+        /// ["<c>CURRENCY_SELL</c>"] Currency sell
         /// </summary>
         [Map("CURRENCY_SELL")]
         CurrencySell,

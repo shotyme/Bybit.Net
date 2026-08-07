@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum OrderFilter
     {
         /// <summary>
-        /// Active order
+        /// ["<c>Order</c>"] Active order
         /// </summary>
         [Map("Order")]
         Order,
         /// <summary>
-        /// Conditional order
+        /// ["<c>StopOrder</c>"] Conditional order
         /// </summary>
         [Map("StopOrder")]
         StopOrder,
         /// <summary>
-        /// Spot TakeProfit/StopLoss order
+        /// ["<c>tpslOrder</c>"] Spot TakeProfit/StopLoss order
         /// </summary>
         [Map("tpslOrder")]
         TpSlOrder,
         /// <summary>
-        /// Oco order
+        /// ["<c>OcoOrder</c>"] Oco order
         /// </summary>
         [Map("OcoOrder")]
         OcoOrder,
         /// <summary>
-        /// Bidirectional TakeProfit/StopLoss order
+        /// ["<c>BidirectionalTpslOrder</c>"] Bidirectional TakeProfit/StopLoss order
         /// </summary>
         [Map("BidirectionalTpslOrder")]
         BidirectionalTpslOrder

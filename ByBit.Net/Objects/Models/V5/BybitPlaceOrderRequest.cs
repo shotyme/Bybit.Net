@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 
@@ -11,17 +10,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPlaceOrderRequest
     {
         /// <summary>
-        /// The symbol
+        /// ["<c>symbol</c>"] The symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Type of order
+        /// ["<c>orderType</c>"] Type of order
         /// </summary>
         [JsonPropertyName("orderType")]
         public NewOrderType OrderType { get; set; }
         /// <summary>
-        /// Side of the order
+        /// ["<c>side</c>"] Side of the order
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
@@ -154,6 +153,31 @@ namespace Bybit.Net.Objects.Models.V5
         /// </summary>
         [JsonPropertyName("isLeverage"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int? IsLeverage { get; set; }
+        /// <summary>
+        /// Slippage tolerance type
+        /// </summary>
+        [JsonPropertyName("slippageToleranceType"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public SlippageToleranceType? SlippageToleranceType { get; set; }
+        /// <summary>
+        /// Slippage tolerance value
+        /// </summary>
+        [JsonPropertyName("slippageTolerance"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
+        public decimal? SlippageTolerance { get; set; }
+        /// <summary>
+        /// BBO side type
+        /// </summary>
+        [JsonPropertyName("bboSideType"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public BboSideType? BboSideType { get; set; }
+        /// <summary>
+        /// BBO level
+        /// </summary>
+        [JsonPropertyName("bboLevel"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int? BboLevel { get; set; }
+        /// <summary>
+        /// When true matches against RPI quotes
+        /// </summary>
+        [JsonPropertyName("rpiTakerAccess"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool? RpiTakerAccess { get; set; }
     }
 
     [SerializationModel]

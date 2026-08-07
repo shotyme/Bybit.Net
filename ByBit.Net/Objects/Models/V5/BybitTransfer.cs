@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,51 +11,51 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitTransfer
     {
         /// <summary>
-        /// Transfer id
+        /// ["<c>transferId</c>"] Transfer id
         /// </summary>
         [JsonPropertyName("transferId")]
         public string TransferId { get; set; } = string.Empty;
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Quantity
+        /// ["<c>amount</c>"] Quantity
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// From account
+        /// ["<c>fromAccountType</c>"] From account
         /// </summary>
 
         [JsonPropertyName("fromAccountType")]
         public AccountType FromAccountType { get; set; }
         /// <summary>
-        /// To account
+        /// ["<c>toAccountType</c>"] To account
         /// </summary>
 
         [JsonPropertyName("toAccountType")]
         public AccountType ToAccountType { get; set; }
         /// <summary>
-        /// Timestamp
+        /// ["<c>timestamp</c>"] Timestamp
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Status
+        /// ["<c>status</c>"] Status
         /// </summary>
 
         [JsonPropertyName("status")]
         public TransferStatus Status { get; set; }
         /// <summary>
-        /// [UniversalTransfer] From member id
+        /// ["<c>fromMemberId</c>"] [UniversalTransfer] From member id
         /// </summary>
         [JsonPropertyName("fromMemberId")]
         public string? FromMemberId { get; set; }
         /// <summary>
-        /// [UniversalTransfer] To member id
+        /// ["<c>toMemberId</c>"] [UniversalTransfer] To member id
         /// </summary>
         [JsonPropertyName("toMemberId")]
         public string? ToMemberId { get; set; }

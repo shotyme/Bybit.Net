@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 
@@ -11,42 +10,42 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitEarnProduct
     {
         /// <summary>
-        /// Earn category
+        /// ["<c>category</c>"] Earn category
         /// </summary>
         [JsonPropertyName("category")]
         public EarnCategory Category { get; set; }
         /// <summary>
-        /// Estimate APR
+        /// ["<c>estimateApr</c>"] Estimate APR
         /// </summary>
         [JsonPropertyName("estimateApr")]
         public string EstimateApr { get; set; } = string.Empty;
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Min stake quantity
+        /// ["<c>minStakeAmount</c>"] Min stake quantity
         /// </summary>
         [JsonPropertyName("minStakeAmount")]
         public decimal MinStakeQuantity { get; set; }
         /// <summary>
-        /// Max stake quantity
+        /// ["<c>maxStakeAmount</c>"] Max stake quantity
         /// </summary>
         [JsonPropertyName("maxStakeAmount")]
         public decimal MaxStakeQuantity { get; set; }
         /// <summary>
-        /// Precision
+        /// ["<c>precision</c>"] Precision
         /// </summary>
         [JsonPropertyName("precision")]
         public int Precision { get; set; }
         /// <summary>
-        /// Product id
+        /// ["<c>productId</c>"] Product id
         /// </summary>
         [JsonPropertyName("productId")]
         public string ProductId { get; set; } = string.Empty;
         /// <summary>
-        /// Earn product status
+        /// ["<c>status</c>"] Earn product status
         /// </summary>
         [JsonPropertyName("status")]
         public EarnProductStatus Status { get; set; }

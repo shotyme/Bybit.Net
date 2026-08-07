@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -12,7 +10,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAllowedDepositInfoResponse : BybitBaseResponse
     {
         /// <summary>
-        /// Asset list
+        /// ["<c>configList</c>"] Asset list
         /// </summary>
         [JsonPropertyName("configList")]
         public BybitAllowedDepositInfo[] Assets { get; set; } = Array.Empty<BybitAllowedDepositInfo>();
@@ -25,32 +23,32 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAllowedDepositInfo
     {
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Network
+        /// ["<c>chain</c>"] Network
         /// </summary>
         [JsonPropertyName("chain")]
         public string Network { get; set; } = string.Empty;
         /// <summary>
-        /// Display name
+        /// ["<c>coinShowName</c>"] Display name
         /// </summary>
         [JsonPropertyName("coinShowName")]
         public string AssetShowName { get; set; } = string.Empty;
         /// <summary>
-        /// Network type
+        /// ["<c>chainType</c>"] Network type
         /// </summary>
         [JsonPropertyName("chainType")]
         public string NetworkType { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit confirmation number
+        /// ["<c>blockConfirmNumber</c>"] Deposit confirmation number
         /// </summary>
         [JsonPropertyName("blockConfirmNumber")]
         public int BlockConfirmNumber { get; set; }
         /// <summary>
-        /// Min deposit amount
+        /// ["<c>minDepositAmount</c>"] Min deposit amount
         /// </summary>
         [JsonPropertyName("minDepositAmount")]
         public decimal MinDepositAmount { get; set; }

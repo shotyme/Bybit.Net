@@ -33,12 +33,12 @@
         };
 
         /// <summary>
-        /// The addresses to connect to the main net for users from The Netherlands
+        /// The addresses to connect to the main net for users from the European Union
         /// </summary>
-        public static BybitApiAddresses Netherlands = new BybitApiAddresses
+        public static BybitApiAddresses Eu = new BybitApiAddresses
         {
-            RestBaseAddress = "https://api.bybit.nl",
-            SocketBaseAddress = "wss://stream.bybit.com" // As per Telegram support, normal address should be used for websockets
+            RestBaseAddress = "https://api.bybit.eu",
+            SocketBaseAddress = "wss://stream.bybit.eu" // As per Telegram support, normal address should be used for websockets
         };
 
         /// <summary>
@@ -75,6 +75,33 @@
         {
             RestBaseAddress = "https://api.bybitgeorgia.ge",
             SocketBaseAddress = "wss://stream.bybitgeorgia.ge"
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from the United Arab Emirates
+        /// </summary>
+        public static BybitApiAddresses UnitedArabEmirates = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit.ae",
+            SocketBaseAddress = "wss://stream.bybit.ae"
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from Indonesia
+        /// </summary>
+        public static BybitApiAddresses Indonesia = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.bybit.id",
+            SocketBaseAddress = "wss://stream.bybitgeorgia.id"
+        };
+
+        /// <summary>
+        /// The addresses to connect to the Bybit main net for users from Japan
+        /// </summary>
+        public static BybitApiAddresses Japan = new BybitApiAddresses
+        {
+            RestBaseAddress = "https://api.moneypartners.co.jp",
+            SocketBaseAddress = "wss://stream.moneypartners.co.jp"
         };
 
         /// <summary>

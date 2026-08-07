@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -10,27 +9,27 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitGreeks
     {
         /// <summary>
-        /// Asset
+        /// ["<c>baseCoin</c>"] Asset
         /// </summary>
         [JsonPropertyName("baseCoin")]
         public string BaseAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Delta
+        /// ["<c>totalDelta</c>"] Delta
         /// </summary>
         [JsonPropertyName("totalDelta")]
         public decimal TotalDelta { get; set; }
         /// <summary>
-        /// Gamma
+        /// ["<c>totalGamma</c>"] Gamma
         /// </summary>
         [JsonPropertyName("totalGamma")]
         public decimal TotalGamma { get; set; }
         /// <summary>
-        /// Vega
+        /// ["<c>totalVega</c>"] Vega
         /// </summary>
         [JsonPropertyName("totalVega")]
         public decimal TotalVega { get; set; }
         /// <summary>
-        /// Theta
+        /// ["<c>totalTheta</c>"] Theta
         /// </summary>
         [JsonPropertyName("totalTheta")]
         public decimal TotalTheta { get; set; }

@@ -1,17 +1,17 @@
 ﻿using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Sockets.Subscriptions
 {
-    internal class BybitOrderBookSubscription : Subscription<BybitQueryResponse, BybitQueryResponse>
+    internal class BybitOrderBookSubscription : Subscription
     {
         private readonly SocketApiClient _client;
         private string[] _topics;
@@ -23,16 +23,28 @@ namespace Bybit.Net.Objects.Sockets.Subscriptions
             _topics = topics;
             _handler = handler;
 
-            MessageMatcher = MessageMatcher.Create<BybitSpotSocketEvent<BybitOrderbook>>(topics, DoHandleMessage);
+            IndividualSubscriptionCount = topics.Length;
+
+            MessageRouter = MessageRouter.CreateForEvent<BybitSpotSocketEvent<BybitOrderbook>>(topics, DoHandleMessage);
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<BybitSpotSocketEvent<BybitOrderbook>> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BybitSpotSocketEvent<BybitOrderbook> message)
         {
-            var splitIndex = message.Data.Topic.LastIndexOf('.');
-            message.Data.Data.Timestamp = message.Data.Timestamp;
-            message.Data.Data.MatchingEngineTimestamp = message.Data.CTimestamp!.Value;
-            _handler?.Invoke(message.As(message.Data.Data, message.Data.Topic, splitIndex == -1 ? null : message.Data.Topic.Substring(splitIndex + 1), string.Equals(message.Data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update).WithDataTimestamp(message.Data.Timestamp));
-            return CallResult.SuccessResult;
+            var splitIndex = message.Topic.LastIndexOf('.');
+            message.Data.Timestamp = message.Data.Timestamp;
+            message.Data.MatchingEngineTimestamp = message.CTimestamp!.Value;
+
+            _client.UpdateTimeOffset(message.Timestamp);
+
+            _handler?.Invoke(
+                new DataEvent<BybitOrderbook>(BybitExchange.ExchangeName, message.Data, receiveTime, originalData)
+                    .WithStreamId(message.Topic)
+                    .WithSymbol(splitIndex == -1 ? null : message.Topic.Substring(splitIndex + 1))
+                    .WithUpdateType(string.Equals(message.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
+                    .WithSequenceNumber(message.Data.Sequence)
+                );
+            return CallResult.Ok();
         }
 
         protected override Query? GetSubQuery(SocketConnection connection)

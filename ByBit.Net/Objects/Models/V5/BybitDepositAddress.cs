@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -12,12 +10,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDepositAddress
     {
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Networks
+        /// ["<c>chains</c>"] Networks
         /// </summary>
         [JsonPropertyName("chains")]
         public BybitDepositChainAddress[] Networks { get; set; } = Array.Empty<BybitDepositChainAddress>();
@@ -30,32 +28,32 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDepositChainAddress
     {
         /// <summary>
-        /// Network type
+        /// ["<c>chainType</c>"] Network type
         /// </summary>
         [JsonPropertyName("chainType")]
         public string NetworkType { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit address
+        /// ["<c>addressDeposit</c>"] Deposit address
         /// </summary>
         [JsonPropertyName("addressDeposit")]
         public string DepositAddress { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit tag
+        /// ["<c>tagDeposit</c>"] Deposit tag
         /// </summary>
         [JsonPropertyName("tagDeposit")]
         public string DepositTag { get; set; } = string.Empty;
         /// <summary>
-        /// Network
+        /// ["<c>chain</c>"] Network
         /// </summary>
         [JsonPropertyName("chain")]
         public string Network { get; set; } = string.Empty;
         /// <summary>
-        /// Deposit limit. -1 if there is no limit.
+        /// ["<c>batchReleaseLimit</c>"] Deposit limit. -1 if there is no limit.
         /// </summary>
         [JsonPropertyName("batchReleaseLimit")]
         public decimal DepositLimit { get; set; }
         /// <summary>
-        /// Network contract asset, only last 6 characters
+        /// ["<c>contractAddress</c>"] Network contract asset, only last 6 characters
         /// </summary>
         [JsonPropertyName("contractAddress")]
         public string ContractAddress { get; set; } = string.Empty;

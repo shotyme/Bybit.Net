@@ -1,8 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -14,47 +11,47 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitEarnOrder
     {
         /// <summary>
-        /// Asset
+        /// ["<c>coin</c>"] Asset
         /// </summary>
         [JsonPropertyName("coin")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Order value
+        /// ["<c>orderValue</c>"] Order value
         /// </summary>
         [JsonPropertyName("orderValue")]
         public decimal OrderValue { get; set; }
         /// <summary>
-        /// Earn order type
+        /// ["<c>orderType</c>"] Earn order type
         /// </summary>
         [JsonPropertyName("orderType")]
         public EarnOrderType OrderType { get; set; }
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string OrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Order link id
+        /// ["<c>orderLinkId</c>"] Order link id
         /// </summary>
         [JsonPropertyName("orderLinkId")]
         public string OrderLinkId { get; set; } = string.Empty;
         /// <summary>
-        /// Earn status
+        /// ["<c>status</c>"] Earn status
         /// </summary>
         [JsonPropertyName("status")]
         public EarnOrderStatus Status { get; set; }
         /// <summary>
-        /// Create time
+        /// ["<c>createdAt</c>"] Create time
         /// </summary>
         [JsonPropertyName("createdAt")]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Product id
+        /// ["<c>productId</c>"] Product id
         /// </summary>
         [JsonPropertyName("productId")]
         public string ProductId { get; set; } = string.Empty;
         /// <summary>
-        /// Update time
+        /// ["<c>updatedAt</c>"] Update time
         /// </summary>
         [JsonPropertyName("updatedAt")]
         public DateTime? UpdateTime { get; set; }

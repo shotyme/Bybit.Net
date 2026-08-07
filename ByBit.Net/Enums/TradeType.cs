@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,49 +10,54 @@ namespace Bybit.Net.Enums
     public enum TradeType
     {
         /// <summary>
-        /// Normal trade
+        /// ["<c>Trade</c>"] Normal trade
         /// </summary>
         [Map("Trade")]
         Trade,
         /// <summary>
-        /// Adl trade
+        /// ["<c>AdlTrade</c>"] Adl trade
         /// </summary>
         [Map("AdlTrade")]
         AdlTrade,
         /// <summary>
-        /// Funding trade
+        /// ["<c>Funding</c>"] Funding trade
         /// </summary>
         [Map("Funding")]
         Funding,
         /// <summary>
-        /// Bankruptcy trade
+        /// ["<c>BustTrade</c>"] Bankruptcy trade
         /// </summary>
         [Map("BustTrade")]
         BustTrade,
         /// <summary>
-        /// Settle
+        /// ["<c>Settle</c>"] Settle
         /// </summary>
         [Map("Settle")]
         Settle,
         /// <summary>
-        /// Delivery
+        /// ["<c>Delivery</c>"] Delivery
         /// </summary>
         [Map("Delivery")]
         Delivery,
         /// <summary>
-        /// Block trade
+        /// ["<c>BlockTrade</c>"] Block trade
         /// </summary>
         [Map("BlockTrade")]
         BlockTrade,
         /// <summary>
-        /// Move position
+        /// ["<c>MovePosition</c>"] Move position
         /// </summary>
         [Map("MovePosition")]
         MovePosition,
         /// <summary>
-        /// Spread trade
+        /// ["<c>FutureSpread</c>"] Spread trade
         /// </summary>
         [Map("FutureSpread")]
-        FutureSpread
+        FutureSpread,
+        /// <summary>
+        /// ["<c>CorporateAction</c>"] Stock split or reverse stock split
+        /// </summary>
+        [Map("CorporateAction")]
+        CorporateAction
     }
 }

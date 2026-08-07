@@ -1,48 +1,48 @@
-using Bybit.Net.Interfaces.Clients.V5;
+using Bybit.Net.Clients.MessageHandlers;
 using Bybit.Net.Enums;
+using Bybit.Net.Interfaces.Clients.V5;
 using Bybit.Net.Objects.Models.V5;
 using Bybit.Net.Objects.Options;
+using Bybit.Net.Objects.Sockets;
 using Bybit.Net.Objects.Sockets.Queries;
 using Bybit.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Objects.Sockets;
+using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using CryptoExchange.Net.SharedApis;
-using System.Drawing;
 using System.Linq;
 using System.Net.WebSockets;
-using CryptoExchange.Net.Objects.Errors;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bybit.Net.Clients.V5
 {
     /// <inheritdoc cref="IBybitSocketClientPrivateApi" />
-    internal partial class BybitSocketClientPrivateApi : SocketApiClient, IBybitSocketClientPrivateApi
+    internal partial class BybitSocketClientPrivateApi : SocketApiClient<BybitEnvironment, BybitAuthenticationProvider, BybitCredentials>, IBybitSocketClientPrivateApi
     {
-        private static readonly MessagePath _reqIdPath = MessagePath.Get().Property("req_id");
-        private static readonly MessagePath _reqId2Path = MessagePath.Get().Property("reqId");
-        private static readonly MessagePath _topicPath = MessagePath.Get().Property("topic");
-        private static readonly MessagePath _opPath = MessagePath.Get().Property("op");
-
         protected override ErrorMapping ErrorMapping => BybitErrors.WebsocketErrors;
 
         public new BybitSocketOptions ClientOptions => (BybitSocketOptions)base.ClientOptions;
 
-        internal BybitSocketClientPrivateApi(ILogger logger, BybitSocketOptions options)
-            : base(logger, options.Environment.SocketBaseAddress, options, options.V5Options)
+        internal BybitSocketClientPrivateApi(ILoggerFactory? loggerFactory, BybitSocketOptions options)
+            : base(loggerFactory, BybitExchange.Metadata.Id, options.Environment.SocketBaseAddress, options, options.V5Options)
         {
-            UnhandledMessageExpected = true;
             KeepAliveInterval = TimeSpan.Zero;
+
+            _clientName = "BybitSocketClientApi";
 
             RegisterPeriodicQuery(
                 "Heartbeat",
@@ -61,10 +61,10 @@ namespace Bybit.Net.Clients.V5
             SetDedicatedConnection(BaseAddress.AppendPath("/v5/trade"), true);
         }
 
-        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BybitExchange._serializerContext));
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BybitExchange._serializerContext));
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BybitSocketMessageHandler3();
 
-        private Query GetPingQuery(SocketConnection connection)
+        private Query GetPingQuery(ISocketConnection connection)
         {
             if (connection.ConnectionUri.AbsolutePath.EndsWith("private"))
             {
@@ -77,7 +77,8 @@ namespace Bybit.Net.Clients.V5
         }
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials) => new BybitAuthenticationProvider(credentials);
+        protected override BybitAuthenticationProvider CreateAuthenticationProvider(BybitCredentials credentials)
+            => new BybitAuthenticationProvider(credentials);
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
@@ -99,124 +100,173 @@ namespace Bybit.Net.Clients.V5
         public IBybitSocketClientPrivateApiShared SharedClient => this;
 
         /// <inheritdoc />
-        protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToPositionUpdatesAsync(Action<DataEvent<BybitPositionUpdate[]>> handler, CancellationToken ct = default)
         {
-            if (connection.ConnectionUri.AbsolutePath.EndsWith("private"))
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitPositionUpdate[]>>((receiveTime, originalData, data) =>
             {
-                // Auth subscription
-                var expireTime = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddSeconds(30))!;
-                var authProvider = (BybitAuthenticationProvider)AuthenticationProvider!;
-                var key = authProvider.ApiKey;
-                var sign = authProvider.Sign($"GET/realtime{expireTime}");
+                UpdateTimeOffset(data.Timestamp);
 
-                return Task.FromResult<Query?>(new BybitQuery(this, "auth", new object[]
-                {
-                key,
-                expireTime,
-                sign
-                }));
-            }
-            else
+                handler(
+                    new DataEvent<BybitPositionUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitPositionUpdate[]>(_logger, this, new[] { "position" }, internalHandler, true);
+            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(Action<DataEvent<BybitUserTradeUpdate[]>> handler, CancellationToken ct = default)
+        {
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitUserTradeUpdate[]>>((receiveTime, originalData, data) =>
             {
-                // Trading
-                var expireTime = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddSeconds(30))!;
-                var authProvider = (BybitAuthenticationProvider)AuthenticationProvider!;
-                var key = authProvider.ApiKey;
-                var sign = authProvider.Sign($"GET/realtime{expireTime}");
+                UpdateTimeOffset(data.Timestamp);
 
-                return Task.FromResult<Query?>(new BybitRequestQuery<object>(this, "auth", null, new object[]
-                {
-                key,
-                expireTime,
-                sign
-                }));
-            }
-        }
+                handler(
+                    new DataEvent<BybitUserTradeUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
 
-        /// <inheritdoc />
-        public override string? GetListenerIdentifier(IMessageAccessor message)
-        {
-            var reqId = message.GetValue<string>(_reqIdPath);
-            if (reqId != null)
-                return reqId;
-
-            var reqId2 = message.GetValue<string>(_reqId2Path);
-            if (reqId2 != null)
-                return reqId2;
-
-            var op = message.GetValue<string>(_opPath);
-            if (string.Equals(op, "pong"))
-                return op;
-
-            return message.GetValue<string>(_topicPath);
-        }
-
-        /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToPositionUpdatesAsync(Action<DataEvent<BybitPositionUpdate[]>> handler, CancellationToken ct = default)
-        {
-            var subscription = new BybitSubscription<BybitPositionUpdate[]>(_logger, this, new[] { "position" }, handler, true);
+            var subscription = new BybitSubscription<BybitUserTradeUpdate[]>(_logger, this, new[] { "execution" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(Action<DataEvent<BybitUserTradeUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToSpreadUserTradeUpdatesAsync(Action<DataEvent<BybitSpreadUserTradeUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitUserTradeUpdate[]>(_logger, this, new[] { "execution" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitSpreadUserTradeUpdate[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitSpreadUserTradeUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitSpreadUserTradeUpdate[]>(_logger, this, new[] { "spread.execution" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToSpreadUserTradeUpdatesAsync(Action<DataEvent<BybitSpreadUserTradeUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToMinimalUserTradeUpdatesAsync(Action<DataEvent<BybitMinimalUserTradeUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitSpreadUserTradeUpdate[]>(_logger, this, new[] { "spread.execution" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitMinimalUserTradeUpdate[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitMinimalUserTradeUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitMinimalUserTradeUpdate[]>(_logger, this, new[] { "execution.fast" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToMinimalUserTradeUpdatesAsync(Action<DataEvent<BybitMinimalUserTradeUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitMinimalUserTradeUpdate[]>(_logger, this, new[] { "execution.fast" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitOrderUpdate[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitOrderUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "order" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToSpreadOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "order" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitOrderUpdate[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitOrderUpdate[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithSymbol(data.Data.First().Symbol)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "spread.order" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToSpreadOrderUpdatesAsync(Action<DataEvent<BybitOrderUpdate[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<DataEvent<BybitBalance[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitOrderUpdate[]>(_logger, this, new[] { "spread.order" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitBalance[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitBalance[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitBalance[]>(_logger, this, new[] { "wallet" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<DataEvent<BybitBalance[]>> handler, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToGreekUpdatesAsync(Action<DataEvent<BybitGreeks[]>> handler, CancellationToken ct = default)
         {
-            var subscription = new BybitSubscription<BybitBalance[]>(_logger, this, new[] { "wallet" }, handler, true);
+            var internalHandler = new Action<DateTime, string?, BybitSpotSocketEvent<BybitGreeks[]>>((receiveTime, originalData, data) =>
+            {
+                UpdateTimeOffset(data.Timestamp);
+
+                handler(
+                    new DataEvent<BybitGreeks[]>(BybitExchange.ExchangeName, data.Data, receiveTime, originalData)
+                        .WithUpdateType(string.Equals(data.Type, "snapshot", StringComparison.Ordinal) ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                        .WithStreamId(data.Topic)
+                        .WithDataTimestamp(data.Timestamp, GetTimeOffset())
+                    );
+            });
+
+            var subscription = new BybitSubscription<BybitGreeks[]>(_logger, this, new[] { "greeks" }, internalHandler, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToGreekUpdatesAsync(Action<DataEvent<BybitGreeks[]>> handler, CancellationToken ct = default)
-        {
-            var subscription = new BybitSubscription<BybitGreeks[]>(_logger, this, new[] { "greeks" }, handler, true);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToDisconnectCancelAllTopicAsync(ProductType productType, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToDisconnectCancelAllTopicAsync(ProductType productType, CancellationToken ct = default)
         {
             var product = productType == ProductType.Spot ? "spot" : productType == ProductType.Options ? "option" : "future";
-            var subscription = new BybitSubscription<object>(_logger, this, new[] { "dcp." + product }, x => { }, true);
+            var subscription = new BybitSubscription<object>(_logger, this, new[] { "dcp." + product }, (time, data, x) => { }, true);
             return await SubscribeAsync(BaseAddress.AppendPath("/v5/private"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BybitOrderId>> PlaceOrderAsync(Category category,
+        public async Task<QueryResult<BybitOrderId>> PlaceOrderAsync(Category category,
             string symbol,
             OrderSide side,
             NewOrderType type,
@@ -245,6 +295,11 @@ namespace Bybit.Net.Clients.V5
             StopLossTakeProfitMode? stopLossTakeProfitMode = null,
             SelfMatchPreventionType? selfMatchPreventionType = null,
             MarketUnit? marketUnit = null,
+            SlippageToleranceType? slippageToleranceType = null,
+            decimal? slippageTolerance = null,
+            BboSideType? bboSideType = null,
+            int? bboLevel = null,
+            bool? rpiTakerAccess = null,
             CancellationToken ct = default)
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
@@ -294,7 +349,7 @@ namespace Bybit.Net.Clients.V5
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BybitOrderId>> EditOrderAsync(Category category,
+        public async Task<QueryResult<BybitOrderId>> EditOrderAsync(Category category,
             string symbol,
             string? orderId = null,
             string? clientOrderId = null,
@@ -346,7 +401,7 @@ namespace Bybit.Net.Clients.V5
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BybitOrderId>> CancelOrderAsync(Category category,
+        public async Task<QueryResult<BybitOrderId>> CancelOrderAsync(Category category,
             string symbol,
             string? orderId = null,
             string? clientOrderId = null,
@@ -376,14 +431,14 @@ namespace Bybit.Net.Clients.V5
 		}
 
         /// <inheritdoc />
-        public async Task<CallResult<CallResult<BybitBatchOrderId>[]>> PlaceMultipleOrdersAsync(
+        public async Task<QueryResult<CallResult<BybitBatchOrderId>[]>> PlaceMultipleOrdersAsync(
             Category category,
             IEnumerable<BybitPlaceOrderRequest> orderRequests,
             CancellationToken ct = default)
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
 
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BybitExchange._parameterSerializationSettings)
             {
                 { "category", EnumConverter.GetString(category) },
                 { "request", orderRequests.ToArray() }
@@ -401,33 +456,33 @@ namespace Bybit.Net.Clients.V5
             );
 
             var resultData = await QueryAsync(BaseAddress.AppendPath("/v5/trade"), query, ct).ConfigureAwait(false);
-            if (!resultData)
-                return resultData.As<CallResult<BybitBatchOrderId>[]>(default);
+            if (!resultData.Success)
+                return QueryResult.Fail<CallResult<BybitBatchOrderId>[]>(resultData);
 
             var result = new List<CallResult<BybitBatchOrderId>>();
             foreach (var item in resultData.Data!)
             {
                 if (item.Code != 0)
-                    result.Add(new CallResult<BybitBatchOrderId>(new ServerError(item.Code, GetErrorInfo(item.Code, item.Message!))));
+                    result.Add(CallResult<BybitBatchOrderId>.Fail(new ServerError(item.Code, GetErrorInfo(item.Code, item.Message!))));
                 else
-                    result.Add(new CallResult<BybitBatchOrderId>(item.Data!));
+                    result.Add(CallResult<BybitBatchOrderId>.Ok(item.Data!));
             }
 
             if (result.All(x => !x.Success))
-                return resultData.AsErrorWithData(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), result.ToArray());
+                return QueryResult.Fail<CallResult<BybitBatchOrderId>[]>(resultData, new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), result.ToArray());
 
-            return resultData.As(result.ToArray());
+            return QueryResult.Ok(resultData, result.ToArray());
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BybitBatchResult<BybitBatchOrderId>[]>> EditMultipleOrdersAsync(
+        public async Task<QueryResult<BybitBatchResult<BybitBatchOrderId>[]>> EditMultipleOrdersAsync(
             Category category,
             IEnumerable<BybitEditOrderRequest> orderRequests,
             CancellationToken ct = default)
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
 
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BybitExchange._parameterSerializationSettings)
             {
                 { "category", EnumConverter.GetString(category) },
                 { "request", orderRequests.ToArray() }
@@ -448,14 +503,14 @@ namespace Bybit.Net.Clients.V5
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BybitBatchResult<BybitBatchOrderId>[]>> CancelMultipleOrdersAsync(
+        public async Task<QueryResult<BybitBatchResult<BybitBatchOrderId>[]>> CancelMultipleOrdersAsync(
             Category category,
             IEnumerable<BybitCancelOrderRequest> orderRequests,
             CancellationToken ct = default)
         {
             var timestamp = DateTimeConverter.ConvertToMilliseconds(DateTime.UtcNow.AddMilliseconds(-1000)).Value.ToString(CultureInfo.InvariantCulture);
 
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BybitExchange._parameterSerializationSettings)
             {
                 { "category", EnumConverter.GetString(category) },
                 { "request", orderRequests.ToArray() }

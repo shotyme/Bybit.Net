@@ -20,68 +20,6 @@ namespace Bybit.Net.Interfaces.Clients.V5
         IBybitSocketClientSpotApiShared SharedClient { get; }
 
         /// <summary>
-        /// Subscribe to leveraged token kline updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline" /></para>
-        /// </summary>
-        /// <param name="symbols">The symbols to subscribe, for example `ETHUSDT`</param>
-        /// <param name="interval">Kline interval</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenKlineUpdatesAsync(IEnumerable<string> symbols, KlineInterval interval, Action<DataEvent<BybitKlineUpdate[]>> handler, CancellationToken ct = default);
-
-        /// <summary>
-        /// Subscribe to leveraged token kline updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline" /></para>
-        /// </summary>
-        /// <param name="symbol">The symbol to subscribe, for example `ETHUSDT`</param>
-        /// <param name="interval">Kline interval</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<BybitKlineUpdate[]>> handler, CancellationToken ct = default);
-
-        /// <summary>
-        /// Subscribe to leveraged token NAV updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-nav" /></para>
-        /// </summary>
-        /// <param name="symbols">The symbols to subscribe, for example `ETHUSDT`</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenNavUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLeveragedTokenNav>> handler, CancellationToken ct = default);
-
-        /// <summary>
-        /// Subscribe to leveraged token NAV updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-nav" /></para>
-        /// </summary>
-        /// <param name="symbol">The symbol to subscribe, for example `ETHUSDT`</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenNavUpdatesAsync(string symbol, Action<DataEvent<BybitLeveragedTokenNav>> handler, CancellationToken ct = default);
-
-        /// <summary>
-        /// Subscribe to leveraged token ticker updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-ticker" /></para>
-        /// </summary>
-        /// <param name="symbols">The symbols to subscribe, for example `ETHUSDT`</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitLeveragedTokenTicker>> handler, CancellationToken ct = default);
-
-        /// <summary>
-        /// Subscribe to leveraged token ticker updates
-        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/etp-ticker" /></para>
-        /// </summary>
-        /// <param name="symbol">The symbol to subscribe, for example `ETHUSDT`</param>
-        /// <param name="handler">Data handler</param>
-        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToLeveragedTokenTickerUpdatesAsync(string symbol, Action<DataEvent<BybitLeveragedTokenTicker>> handler, CancellationToken ct = default);
-
-        /// <summary>
         /// Subscribe to ticker updates
         /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/ticker" /></para>
         /// </summary>
@@ -89,7 +27,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitSpotTickerUpdate>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitSpotTickerUpdate>> handler, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to ticker updates
@@ -99,7 +37,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BybitSpotTickerUpdate>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BybitSpotTickerUpdate>> handler, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to public trade updates
@@ -109,7 +47,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to public trade updates
@@ -119,7 +57,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BybitTrade[]>> handler, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to order price limit updates
@@ -128,7 +66,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="symbol">The symbol to subscribe, for example `ETHUSDT`</param>
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(string symbol, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(string symbol, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to order price limit updates
@@ -137,6 +75,27 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="symbols">The symbols to subscribe, for example `ETHUSDT`</param>
         /// <param name="handler">Data handler</param>
         /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToPriceLimitUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitOrderPriceLimit>> handler, CancellationToken ct = default);
+
+        /// <summary>
+        /// Subscribe to order book delta updates for the full book
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/full-ob" /></para>
+        /// </summary>
+        /// <param name="symbols">The symbols to subscribe, for example `ETHUSDT`</param>
+        /// <param name="updateHandler">Update handler</param>
+        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
+        /// <returns></returns>
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderbookDeltaUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BybitOrderbook>> updateHandler, CancellationToken ct = default);
+
+        /// <summary>
+        /// Subscribe to order book delta updates for the full book
+        /// <para><a href="https://bybit-exchange.github.io/docs/v5/websocket/public/full-ob" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe, for example `ETHUSDT`</param>
+        /// <param name="updateHandler">Update handler</param>
+        /// <param name="ct">Cancellation token. Cancelling will cancel the subscription</param>
+        /// <returns></returns>
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderbookDeltaUpdatesAsync(string symbol, Action<DataEvent<BybitOrderbook>> updateHandler, CancellationToken ct = default);
+
     }
 }

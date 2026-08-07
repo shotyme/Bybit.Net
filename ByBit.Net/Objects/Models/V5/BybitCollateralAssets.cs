@@ -1,8 +1,4 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -24,12 +20,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitCollateralAsset
     {
         /// <summary>
-        /// Account level
+        /// ["<c>vipLevel</c>"] Account level
         /// </summary>
         [JsonPropertyName("vipLevel")]
         public AccountLevel AccountLevel { get; set; }
         /// <summary>
-        /// Assets list
+        /// ["<c>list</c>"] Assets list
         /// </summary>
         [JsonPropertyName("list")]
         public BybitCollateralAssetInfo[] Assets { get; set; } = [];
@@ -42,32 +38,32 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitCollateralAssetInfo
     {
         /// <summary>
-        /// Precision for collateral
+        /// ["<c>collateralAccuracy</c>"] Precision for collateral
         /// </summary>
         [JsonPropertyName("collateralAccuracy")]
         public int CollateralAccuracy { get; set; }
         /// <summary>
-        /// Asset name
+        /// ["<c>currency</c>"] Asset name
         /// </summary>
         [JsonPropertyName("currency")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Initial LTV
+        /// ["<c>initialLTV</c>"] Initial LTV
         /// </summary>
         [JsonPropertyName("initialLTV")]
         public decimal InitialLtv { get; set; }
         /// <summary>
-        /// Liquidation LTV
+        /// ["<c>liquidationLTV</c>"] Liquidation LTV
         /// </summary>
         [JsonPropertyName("liquidationLTV")]
         public decimal LiquidationLtv { get; set; }
         /// <summary>
-        /// Margin call LTV
+        /// ["<c>marginCallLTV</c>"] Margin call LTV
         /// </summary>
         [JsonPropertyName("marginCallLTV")]
         public decimal MarginCallLtv { get; set; }
         /// <summary>
-        /// Max Limit
+        /// ["<c>maxLimit</c>"] Max Limit
         /// </summary>
         [JsonPropertyName("maxLimit")]
         public decimal MaxLimit { get; set; }

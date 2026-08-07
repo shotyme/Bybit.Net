@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
 
@@ -11,17 +10,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSpotMarginBorrowRate
     {
         /// <summary>
-        /// The asset
+        /// ["<c>currency</c>"] The asset
         /// </summary>
         [JsonPropertyName("currency")]
         public string Asset { get; set; } = string.Empty;
         /// <summary>
-        /// Vip level
+        /// ["<c>vipLevel</c>"] Vip level
         /// </summary>
         [JsonPropertyName("vipLevel")]
         public string VipLevel { get; set; } = string.Empty;
         /// <summary>
-        /// Collateral ratio
+        /// ["<c>hourlyBorrowRate</c>"] Collateral ratio
         /// </summary>
         [JsonPropertyName("hourlyBorrowRate")]
         public decimal HourlyBorrowRate { get; set; }

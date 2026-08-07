@@ -1,0 +1,28 @@
+GET
+/v5/account/trade-info-for-analysis
+true
+{
+    "retCode": 0,
+    "retMsg": "Success",
+    "result": {
+        "symbolRnl": "0",
+        "sumBuyExecValue": "0",
+        "sumBuyExecQty": "0",
+        "sumSellExecFee": "0",
+        "netExecQty": "0",
+        "sumExecQty": "0",
+        "settleCoin": "USDT",
+        "sumExecValue": "0",
+        "sumSellExecValue": "0",
+        "sumBuyOrderQty": "0",
+        "sumSellOrderQty": "0",
+        "maxMarginVersion": 0,
+        "avgSellExecPrice": "0",
+        "avgBuyExecPrice": "0",
+        "sumBuyExecFee": "0",
+        "sumSellExecQty": "0",
+        "baseCoin": "ETH"
+    },
+    "retExtInfo": {},
+    "time": 1773230927308
+}

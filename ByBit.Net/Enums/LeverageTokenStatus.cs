@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum LeverageTokenStatus
     {
         /// <summary>
-        /// Purchaseable and redeemable
+        /// ["<c>1</c>"] Purchaseable and redeemable
         /// </summary>
         [Map("1")]
         YesPurchaseYesRedeem,
         /// <summary>
-        /// Purchasable but not redeemable
+        /// ["<c>2</c>"] Purchasable but not redeemable
         /// </summary>
         [Map("2")]
         YesPurchaseNoRedeem,
         /// <summary>
-        /// Not purchasable but is redeemable
+        /// ["<c>3</c>"] Not purchasable but is redeemable
         /// </summary>
         [Map("3")]
         NoPurchaseYesRedeem,
         /// <summary>
-        /// Not purchasable or redeemable
+        /// ["<c>4</c>"] Not purchasable or redeemable
         /// </summary>
         [Map("4")]
         NoPurchaseNoRedeem,
         /// <summary>
-        /// Adjusting position
+        /// ["<c>5</c>"] Adjusting position
         /// </summary>
         [Map("5")]
         AdjustingPosition

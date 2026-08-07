@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum EarnCategory
     {
         /// <summary>
-        /// Flexible saving
+        /// ["<c>FlexibleSaving</c>"] Flexible saving
         /// </summary>
         [Map("FlexibleSaving")]
         FlexibleSaving,
         /// <summary>
-        /// On chain
+        /// ["<c>OnChain</c>"] On chain
         /// </summary>
         [Map("OnChain")]
         OnChain

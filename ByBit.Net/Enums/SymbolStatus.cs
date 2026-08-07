@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,27 +10,27 @@ namespace Bybit.Net.Enums
     public enum SymbolStatus
     {
         /// <summary>
-        /// Pre launch
+        /// ["<c>PreLaunch</c>"] Pre launch
         /// </summary>
         [Map("PreLaunch")]
         PreLaunch,
         /// <summary>
-        /// Currently trading
+        /// ["<c>Trading</c>"] Currently trading
         /// </summary>
         [Map("Trading")]
         Trading,
         /// <summary>
-        /// Settling
+        /// ["<c>Settling</c>"] Settling
         /// </summary>
         [Map("Settling")]
         Settling,
         /// <summary>
-        /// Settling
+        /// ["<c>Delivering</c>"] Settling
         /// </summary>
         [Map("Delivering")]
         Delivering,
         /// <summary>
-        /// Closed
+        /// ["<c>Closed</c>"] Closed
         /// </summary>
         [Map("Closed")]
         Closed

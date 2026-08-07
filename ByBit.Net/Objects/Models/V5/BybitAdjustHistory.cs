@@ -1,8 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Bybit.Net.Objects.Models.V5
@@ -14,42 +11,42 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitAdjustHistory
     {
         /// <summary>
-        /// Adjust id
+        /// ["<c>adjustId</c>"] Adjust id
         /// </summary>
         [JsonPropertyName("adjustId")]
         public string AdjustId { get; set; } = string.Empty;
         /// <summary>
-        /// Adjust time
+        /// ["<c>adjustTime</c>"] Adjust time
         /// </summary>
         [JsonPropertyName("adjustTime")]
         public DateTime AdjustTime { get; set; }
         /// <summary>
-        /// After LTV
+        /// ["<c>afterLTV</c>"] After LTV
         /// </summary>
         [JsonPropertyName("afterLTV")]
         public decimal AfterLtv { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>amount</c>"] Quantity
         /// </summary>
         [JsonPropertyName("amount")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Collateral asset
+        /// ["<c>collateralCurrency</c>"] Collateral asset
         /// </summary>
         [JsonPropertyName("collateralCurrency")]
         public string CollateralAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Adjustment direction
+        /// ["<c>direction</c>"] Adjustment direction
         /// </summary>
         [JsonPropertyName("direction")]
         public AdjustDirection AdjustDirection { get; set; }
         /// <summary>
-        /// Order id
+        /// ["<c>orderId</c>"] Order id
         /// </summary>
         [JsonPropertyName("orderId")]
         public string OrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Pre LTV
+        /// ["<c>preLTV</c>"] Pre LTV
         /// </summary>
         [JsonPropertyName("preLTV")]
         public decimal PreLtv { get; set; }

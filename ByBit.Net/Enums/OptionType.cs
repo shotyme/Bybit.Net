@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,12 +10,12 @@ namespace Bybit.Net.Enums
     public enum OptionType
     {
         /// <summary>
-        /// Call
+        /// ["<c>Call</c>"] Call
         /// </summary>
         [Map("Call")]
         Call,
         /// <summary>
-        /// Put
+        /// ["<c>Put</c>"] Put
         /// </summary>
         [Map("Put")]
         Put

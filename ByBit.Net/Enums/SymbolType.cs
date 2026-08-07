@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Attributes;
 
 namespace Bybit.Net.Enums
@@ -11,19 +10,34 @@ namespace Bybit.Net.Enums
     public enum SymbolType
     {
         /// <summary>
-        /// Innovation
+        /// ["<c>innovation</c>"] Innovation
         /// </summary>
         [Map("innovation")]
         Innovation,
         /// <summary>
-        /// Adventure
+        /// ["<c>adventure</c>"] Adventure
         /// </summary>
         [Map("adventure")]
         Adventure,
         /// <summary>
-        /// X Stocks
+        /// ["<c>xstocks</c>"] X Stocks
         /// </summary>
         [Map("xstocks")]
         XStocks,
+        /// <summary>
+        /// ["<c>commodity</c>"] Commodity
+        /// </summary>
+        [Map("commodity")]
+        Commodity,
+        /// <summary>
+        /// ["<c>stock</c>"] Stock
+        /// </summary>
+        [Map("stock")]
+        Stock,
+        /// <summary>
+        /// ["<c>forex</c>"] Forex
+        /// </summary>
+        [Map("forex")]
+        Forex,
     }
 }

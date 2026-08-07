@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -12,7 +10,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSetMarginModeResult
     {
         /// <summary>
-        /// Failure reasons. If empty it was successful
+        /// ["<c>reasons</c>"] Failure reasons. If empty it was successful
         /// </summary>
         [JsonPropertyName("reasons")]
         public BybitReason[] Reasons { get; set; } = Array.Empty<BybitReason>();
@@ -25,12 +23,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitReason
     {
         /// <summary>
-        /// Reason code
+        /// ["<c>reasonCode</c>"] Reason code
         /// </summary>
         [JsonPropertyName("reasonCode")]
         public string ReasonCode { get; set; } = string.Empty;
         /// <summary>
-        /// Reason message
+        /// ["<c>reasonMsg</c>"] Reason message
         /// </summary>
         [JsonPropertyName("reasonMsg")]
         public string ReasonMessage { get; set; } = string.Empty;

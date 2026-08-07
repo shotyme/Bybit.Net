@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
-using System.Collections.Generic;
 
 namespace Bybit.Net.Objects.Models.V5
 {
@@ -13,136 +11,136 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLinearInverseSymbol
     {
         /// <summary>
-        /// Symbol name
+        /// ["<c>symbolId</c>"] Symbol id
+        /// </summary>
+        [JsonPropertyName("symbolId")]
+        public int SymbolId { get; set; }
+        /// <summary>
+        /// ["<c>symbol</c>"] Symbol name
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Display name
+        /// ["<c>displayName</c>"] Display name
         /// </summary>
         [JsonPropertyName("displayName")]
         public string? DisplayName { get; set; }
 
         /// <summary>
-        /// Whether to prohibit unrealised profit withdrawal
+        /// ["<c>forbidUplWithdrawal</c>"] Whether to prohibit unrealised profit withdrawal
         /// </summary>
         [JsonPropertyName("forbidUplWithdrawal")]
         public bool? ForbidUnrealizedPnlWithdrawal { get; set; }
 
         /// <summary>
-        /// Contract type
+        /// ["<c>contractType</c>"] Contract type
         /// </summary>
         [JsonPropertyName("contractType")]
 
         public ContractTypeV5 ContractType { get; set; }
         /// <summary>
-        /// Base asset
+        /// ["<c>baseCoin</c>"] Base asset
         /// </summary>
         [JsonPropertyName("baseCoin")]
         public string BaseAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Quote asset
+        /// ["<c>quoteCoin</c>"] Quote asset
         /// </summary>
         [JsonPropertyName("quoteCoin")]
         public string QuoteAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Settle asset
+        /// ["<c>settleCoin</c>"] Settle asset
         /// </summary>
         [JsonPropertyName("settleCoin")]
         public string SettleAsset { get; set; } = string.Empty;
         /// <summary>
-        /// Launch time
+        /// ["<c>launchTime</c>"] Launch time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("launchTime")]
         public DateTime LaunchTime { get; set; }
         /// <summary>
-        /// Delivery time
+        /// ["<c>deliveryTime</c>"] Delivery time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("deliveryTime")]
         public DateTime? DeliveryTime { get; set; }
         /// <summary>
-        /// Symbol status
+        /// ["<c>status</c>"] Symbol status
         /// </summary>
 
         [JsonPropertyName("status")]
         public SymbolStatus Status { get; set; }
         /// <summary>
-        /// Delivery fee rate
+        /// ["<c>deliveryFeeRate</c>"] Delivery fee rate
         /// </summary>
         [JsonPropertyName("deliveryFeeRate")]
         public decimal? DeliveryFeeRate { get; set; }
         /// <summary>
-        /// Price scale
+        /// ["<c>priceScale</c>"] Price scale
         /// </summary>
         [JsonPropertyName("priceScale")]
-        public decimal PriceScale { get; set; }
+        public int PriceScale { get; set; }
         /// <summary>
-        /// Unified margin trade
+        /// ["<c>unifiedMarginTrade</c>"] Unified margin trade
         /// </summary>
         [JsonPropertyName("unifiedMarginTrade")]
         public bool UnifiedMarginTrade { get; set; }
         /// <summary>
-        /// Funding interval in minutes
+        /// ["<c>fundingInterval</c>"] Funding interval in minutes
         /// </summary>
         [JsonPropertyName("fundingInterval")]
         public int FundingInterval { get; set; }
         /// <summary>
-        /// Copy trading support
+        /// ["<c>copyTrading</c>"] Copy trading support
         /// </summary>
         [JsonPropertyName("copyTrading")]
         public CopyTradeType CopyTrading { get; set; }
         /// <summary>
-        /// Upper limit of funding date
+        /// ["<c>upperFundingRate</c>"] Upper limit of funding date
         /// </summary>
         [JsonPropertyName("upperFundingRate")]
         public decimal UpperFundingRate { get; set; }
         /// <summary>
-        /// Lower limit of funding data
+        /// ["<c>lowerFundingRate</c>"] Lower limit of funding data
         /// </summary>
         [JsonPropertyName("lowerFundingRate")]
         public decimal LowerFundingRate { get; set; }
         /// <summary>
-        /// Whether the contract is a pre-market contract
+        /// ["<c>isPreListing</c>"] Whether the contract is a pre-market contract
         /// </summary>
         [JsonPropertyName("isPreListing")]
         public bool IsPrelisting { get; set; }
         /// <summary>
-        /// Symbol type
+        /// ["<c>symbolType</c>"] Symbol type
         /// </summary>
         [JsonPropertyName("symbolType")]
         public SymbolType? SymbolType { get; set; }
 
         /// <summary>
-        /// Prelisting information
+        /// ["<c>preListingInfo</c>"] Prelisting information
         /// </summary>
         [JsonPropertyName("preListingInfo")]
         public BybitPrelistingInfo? PrelistingInfo { get; set; }
 
         /// <summary>
-        /// Lot size order filter
+        /// ["<c>lotSizeFilter</c>"] Lot size order filter
         /// </summary>
         [JsonPropertyName("lotSizeFilter")]
         public BybitLinearInverseLotSizeFilter? LotSizeFilter { get; set; }
         /// <summary>
-        /// Price order filter
+        /// ["<c>priceFilter</c>"] Price order filter
         /// </summary>
         [JsonPropertyName("priceFilter")]
         public BybitLinearInversePriceFilter? PriceFilter { get; set; }
         /// <summary>
-        /// Leverage
+        /// ["<c>leverageFilter</c>"] Leverage
         /// </summary>
         [JsonPropertyName("leverageFilter")]
-        public BybitLinearInverseLeveragefilter? LeverageFilter { get; set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+        public BybitLinearInverseLeverageFilter? LeverageFilter { get; set; }
         /// <summary>
-        /// Risk limit parameters
+        /// ["<c>riskParameters</c>"] Risk limit parameters
         /// </summary>
         [JsonPropertyName("riskParameters")]
         public BybitRiskParameters? BybitRiskParameters { get; set; }
@@ -155,12 +153,12 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitRiskParameters
     {
         /// <summary>
-        /// Price limit ratio X value
+        /// ["<c>priceLimitRatioX</c>"] Price limit ratio X value
         /// </summary>
         [JsonPropertyName("priceLimitRatioX")]
         public decimal? PriceLimitRatioX { get; set; }
         /// <summary>
-        /// Price limit ratio Y value
+        /// ["<c>priceLimitRatioY</c>"] Price limit ratio Y value
         /// </summary>
         [JsonPropertyName("priceLimitRatioY")]
         public decimal? PriceLimitRatioY { get; set; }
@@ -173,19 +171,19 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPrelistingInfo
     {
         /// <summary>
-        /// Current auction phase
+        /// ["<c>curAuctionPhase</c>"] Current auction phase
         /// </summary>
         [JsonPropertyName("curAuctionPhase")]
         public AuctionPhase CurrentPhase { get; set; }
 
         /// <summary>
-        /// Phases
+        /// ["<c>phases</c>"] Phases
         /// </summary>
         [JsonPropertyName("phases")]
         public BybitPrelistingPhase[] Phases { get; set; } = Array.Empty<BybitPrelistingPhase>();
 
         /// <summary>
-        /// Fee info
+        /// ["<c>auctionFeeInfo</c>"] Fee info
         /// </summary>
         [JsonPropertyName("auctionFeeInfo")]
         public BybitPrelistingFees Fees { get; set; } = null!;
@@ -198,17 +196,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPrelistingFees
     {
         /// <summary>
-        /// The trading fee rate during auction phase
+        /// ["<c>auctionFeeRate</c>"] The trading fee rate during auction phase
         /// </summary>
         [JsonPropertyName("auctionFeeRate")]
         public decimal AuctionFeeRate { get; set; }
         /// <summary>
-        /// The taker fee rate during continues trading phase
+        /// ["<c>takerFeeRate</c>"] The taker fee rate during continues trading phase
         /// </summary>
         [JsonPropertyName("takerFeeRate")]
         public decimal TakerFeeRate { get; set; }
         /// <summary>
-        /// The maker fee rate during continues trading phase
+        /// ["<c>makerFeeRate</c>"] The maker fee rate during continues trading phase
         /// </summary>
         [JsonPropertyName("makerFeeRate")]
         public decimal MakerFeeRate { get; set; }
@@ -221,7 +219,7 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitPrelistingPhase
     {
         /// <summary>
-        /// Phase
+        /// ["<c>phase</c>"] Phase
         /// </summary>
         [JsonPropertyName("phase")]
         public AuctionPhase Phase { get; set; }
@@ -241,20 +239,20 @@ namespace Bybit.Net.Objects.Models.V5
     /// Leverage filter info
     /// </summary>
     [SerializationModel]
-    public record BybitLinearInverseLeveragefilter
+    public record BybitLinearInverseLeverageFilter
     {
         /// <summary>
-        /// Min leverage
+        /// ["<c>minLeverage</c>"] Min leverage
         /// </summary>
         [JsonPropertyName("minLeverage")]
         public decimal MinLeverage { get; set; }
         /// <summary>
-        /// Max leverage
+        /// ["<c>maxLeverage</c>"] Max leverage
         /// </summary>
         [JsonPropertyName("maxLeverage")]
         public decimal MaxLeverage { get; set; }
         /// <summary>
-        /// Leverage step
+        /// ["<c>leverageStep</c>"] Leverage step
         /// </summary>
         [JsonPropertyName("leverageStep")]
         public decimal LeverageStep { get; set; }
@@ -267,30 +265,35 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLinearInverseLotSizeFilter
     {
         /// <summary>
-        /// Quantity step
+        /// ["<c>qtyStep</c>"] Quantity step
         /// </summary>
         [JsonPropertyName("qtyStep")]
         public decimal QuantityStep { get; set; }
         /// <summary>
-        /// Min order quantity
+        /// ["<c>minOrderQty</c>"] Min order quantity
         /// </summary>
         [JsonPropertyName("minOrderQty")]
         public decimal MinOrderQuantity { get; set; }
         /// <summary>
-        /// Max order quantity
+        /// ["<c>maxOrderQty</c>"] Max order quantity
         /// </summary>
         [JsonPropertyName("maxOrderQty")]
         public decimal MaxOrderQuantity { get; set; }
         /// <summary>
-        /// Max market order quantity
+        /// ["<c>maxMktOrderQty</c>"] Max market order quantity
         /// </summary>
         [JsonPropertyName("maxMktOrderQty")]
         public decimal MaxMarketOrderQuantity { get; set; }
         /// <summary>
-        /// Minimal notional value of an order
+        /// ["<c>minNotionalValue</c>"] Minimal notional value of an order
         /// </summary>
         [JsonPropertyName("minNotionalValue")]
         public decimal? MinNotionalValue { get; set; }
+        /// <summary>
+        /// ["<c>postOnlyMaxOrderQty</c>"] Max order quantity for post only orders
+        /// </summary>
+        [JsonPropertyName("postOnlyMaxOrderQty")]
+        public decimal? PostOnlyMaxOrderQuantity { get; set; }
     }
 
     /// <summary>
@@ -300,17 +303,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitLinearInversePriceFilter
     {
         /// <summary>
-        /// Tick size
+        /// ["<c>tickSize</c>"] Tick size
         /// </summary>
         [JsonPropertyName("tickSize")]
         public decimal TickSize { get; set; }
         /// <summary>
-        /// Min price
+        /// ["<c>minPrice</c>"] Min price
         /// </summary>
         [JsonPropertyName("minPrice")]
         public decimal MinPrice { get; set; }
         /// <summary>
-        /// Max price
+        /// ["<c>maxPrice</c>"] Max price
         /// </summary>
         [JsonPropertyName("maxPrice")]
         public decimal MaxPrice { get; set; }

@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 
@@ -11,17 +10,17 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitSetRiskLimit
     {
         /// <summary>
-        /// The risk id
+        /// ["<c>riskId</c>"] The risk id
         /// </summary>
         [JsonPropertyName("riskId")]
         public int RiskId { get; set; }
         /// <summary>
-        /// Risk limit value
+        /// ["<c>riskLimitValue</c>"] Risk limit value
         /// </summary>
         [JsonPropertyName("riskLimitValue")]
         public decimal RiskLimitValue { get; set; }
         /// <summary>
-        /// Category
+        /// ["<c>category</c>"] Category
         /// </summary>
 
         [JsonPropertyName("category")]

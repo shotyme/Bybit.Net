@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bybit.Net.Enums;
 using System.Text.Json.Serialization;
 using System;
@@ -12,49 +11,49 @@ namespace Bybit.Net.Objects.Models.V5
     public record BybitDeliveryRecord
     {
         /// <summary>
-        /// Delivery time
+        /// ["<c>deliveryTime</c>"] Delivery time
         /// </summary>
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonPropertyName("deliveryTime")]
         public DateTime DeliveryTime { get; set; }
         /// <summary>
-        /// Symbol
+        /// ["<c>symbol</c>"] Symbol
         /// </summary>
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// Order side
+        /// ["<c>side</c>"] Order side
         /// </summary>
 
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Executed quantity
+        /// ["<c>position</c>"] Executed quantity
         /// </summary>
         [JsonPropertyName("position")]
         public decimal Position { get; set; }
         /// <summary>
-        /// Delivery price
+        /// ["<c>deliveryPrice</c>"] Delivery price
         /// </summary>
         [JsonPropertyName("deliveryPrice")]
         public decimal DeliveryPrice { get; set; }
         /// <summary>
-        /// Average entry price
+        /// ["<c>entryPrice</c>"] Average entry price
         /// </summary>
         [JsonPropertyName("entryPrice")]
         public decimal? AverageEntryPrice { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>strike</c>"] Price
         /// </summary>
         [JsonPropertyName("strike")]
         public decimal Strike { get; set; }
         /// <summary>
-        /// Fee
+        /// ["<c>fee</c>"] Fee
         /// </summary>
         [JsonPropertyName("fee")]
         public decimal Fee { get; set; }
         /// <summary>
-        /// Realized profit and loss
+        /// ["<c>deliveryRpl</c>"] Realized profit and loss
         /// </summary>
         [JsonPropertyName("deliveryRpl")]
         public decimal RealizedPnl { get; set; }
