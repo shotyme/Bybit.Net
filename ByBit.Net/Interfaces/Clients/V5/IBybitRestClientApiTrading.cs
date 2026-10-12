@@ -76,6 +76,7 @@ namespace Bybit.Net.Interfaces.Clients.V5
         /// <param name="takeProfitLimitPrice">["<c>tpLimitPrice</c>"] New take profit limit price</param>
         /// <param name="stopLossLimitPrice">["<c>slLimitPrice</c>"] New stop loss limit price</param>
         /// <param name="ct">Cancellation token</param>
+        /// <param name="orderFilter">["<c>orderFilter</c>"] Spot order family; StopOrder selects a conditional order</param>
         /// <returns></returns>
         Task<HttpResult<BybitOrderId>> EditOrderAsync(
             Category category, 
@@ -94,7 +95,8 @@ namespace Bybit.Net.Interfaces.Clients.V5
             StopLossTakeProfitMode? stopLossTakeProfitMode = null,
             decimal? takeProfitLimitPrice = null,
             decimal? stopLossLimitPrice = null,
-            CancellationToken ct = default);
+            CancellationToken ct = default,
+            OrderFilter? orderFilter = null);
 
         /// <summary>
         /// Get asset exchange history

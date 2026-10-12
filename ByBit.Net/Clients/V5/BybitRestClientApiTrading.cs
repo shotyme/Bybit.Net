@@ -266,7 +266,8 @@ namespace Bybit.Net.Clients.V5
             StopLossTakeProfitMode? stopLossTakeProfitMode = null,
             decimal? takeProfitLimitPrice = null,
             decimal? stopLossLimitPrice = null,
-            CancellationToken ct = default)
+            CancellationToken ct = default,
+            OrderFilter? orderFilter = null)
         {
             var parameters = new Parameters(BybitExchange._parameterSerializationSettings)
             {
@@ -274,6 +275,7 @@ namespace Bybit.Net.Clients.V5
                 { "symbol", symbol }
             };
 
+            parameters.Add("orderFilter", orderFilter);
             parameters.Add("qty", quantity);
             parameters.Add("price", price);
             parameters.Add("triggerPrice", triggerPrice);
